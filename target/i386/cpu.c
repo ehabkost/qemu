@@ -2476,9 +2476,12 @@ static X86CPUDefinition builtin_x86_defs[] = {
             },
             {
                 .version = 3,
+                .alias = "Skylake-Client-noTSX-IBRS",
                 .props = (PropValue[]) {
                     { "hle", "off" },
                     { "rtm", "off" },
+                    { "model-id",
+                      "Intel Core Processor (Skylake, no TSX, IBRS)" },
                     { /* end of list */ }
                 }
             },
@@ -2551,9 +2554,12 @@ static X86CPUDefinition builtin_x86_defs[] = {
             },
             {
                 .version = 3,
+                .alias = "Skylake-Server-noTSX-IBRS",
                 .props = (PropValue[]) {
                     { "hle", "off" },
                     { "rtm", "off" },
+                    { "model-id",
+                      "Intel Xeon Processor (Skylake, no TSX, IBRS)" },
                     { /* end of list */ }
                 }
             },
@@ -2625,9 +2631,11 @@ static X86CPUDefinition builtin_x86_defs[] = {
               },
             },
             { .version = 3,
+              .alias = "Cascadelake-Server-noTSX",
               .props = (PropValue[]) {
                   { "hle", "off" },
                   { "rtm", "off" },
+                  { "model-id", "Intel Xeon Processor (Cascadelake, no TSX)" },
                   { /* end of list */ }
               },
             },
@@ -2692,9 +2700,11 @@ static X86CPUDefinition builtin_x86_defs[] = {
             { .version = 1 },
             {
                 .version = 2,
+                .alias = "Icelake-Client-noTSX",
                 .props = (PropValue[]) {
                     { "hle", "off" },
                     { "rtm", "off" },
+                    { "model-id", "Intel Core Processor (Icelake, no TSX)" },
                     { /* end of list */ }
                 },
             },
@@ -2762,9 +2772,11 @@ static X86CPUDefinition builtin_x86_defs[] = {
             { .version = 1 },
             {
                 .version = 2,
+                .alias = "Icelake-Server-noTSX",
                 .props = (PropValue[]) {
                     { "hle", "off" },
                     { "rtm", "off" },
+                    { "model-id", "Intel Xeon Processor (Icelake, no TSX)" },
                     { /* end of list */ }
                 },
             },
