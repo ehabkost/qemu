@@ -87,6 +87,7 @@
 { 'include': 'machine-target.json' }
 { 'include': 'replay.json' }
 { 'include': 'yank.json' }
+{ 'include': 'smbios.json' }
 { 'include': 'misc.json' }
 { 'include': 'misc-target.json' }
 { 'include': 'audio.json' }
