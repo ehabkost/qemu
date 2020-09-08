@@ -40,6 +40,7 @@ qapi_all_modules = [
   'qom',
   'replay',
   'run-state',
+  'smbios',
   'sockets',
   'trace',
   'transaction',
