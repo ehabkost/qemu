@@ -12,6 +12,7 @@
 #include "hw/acpi/acpi_dev_interface.h"
 #include "hw/hotplug.h"
 #include "qom/object.h"
+#include "hw/firmware/smbios.h"
 
 #define HPET_INTCAP "hpet-intcap"
 
@@ -39,6 +40,7 @@ typedef struct PCMachineState {
     /* Configuration options: */
     uint64_t max_ram_below_4g;
     OnOffAuto vmport;
+    SmbiosEntryPointType smbios_ep;
 
     bool acpi_build_enabled;
     bool smbus_enabled;
@@ -67,6 +69,8 @@ typedef struct PCMachineState {
 #define PC_MACHINE_MAX_FW_SIZE      "max-fw-size"
 #define PC_MACHINE_OEM_ID           "oem-id"
 #define PC_MACHINE_OEM_TABLE_ID     "oem-table-id"
+#define PC_MACHINE_SMBIOS_EP        "smbios-ep"
+
 /**
  * PCMachineClass:
  *
