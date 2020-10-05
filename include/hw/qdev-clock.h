@@ -22,7 +22,7 @@
  * @name: the name of the clock (can't be NULL).
  * @callback: optional callback to be called on update or NULL.
  * @opaque: argument for the callback
- * @returns: a pointer to the newly added clock
+ * @return: a pointer to the newly added clock
  *
  * Add an input clock to device @dev as a clock named @name.
  * This adds a child<> property.
@@ -35,7 +35,7 @@ Clock *qdev_init_clock_in(DeviceState *dev, const char *name,
  * qdev_init_clock_out:
  * @dev: the device to add an output clock to
  * @name: the name of the clock (can't be NULL).
- * @returns: a pointer to the newly added clock
+ * @return: a pointer to the newly added clock
  *
  * Add an output clock to device @dev as a clock named @name.
  * This adds a child<> property.
@@ -46,7 +46,7 @@ Clock *qdev_init_clock_out(DeviceState *dev, const char *name);
  * qdev_get_clock_in:
  * @dev: the device which has the clock
  * @name: the name of the clock (can't be NULL).
- * @returns: a pointer to the clock
+ * @return: a pointer to the clock
  *
  * Get the input clock @name from @dev or NULL if does not exist.
  */
@@ -56,7 +56,7 @@ Clock *qdev_get_clock_in(DeviceState *dev, const char *name);
  * qdev_get_clock_out:
  * @dev: the device which has the clock
  * @name: the name of the clock (can't be NULL).
- * @returns: a pointer to the clock
+ * @return: a pointer to the clock
  *
  * Get the output clock @name from @dev or NULL if does not exist.
  */
@@ -81,7 +81,7 @@ void qdev_connect_clock_in(DeviceState *dev, const char *name, Clock *source);
  * @name: the name of the clock in @dev (can't be NULL)
  * @alias_dev: the device to add the clock
  * @alias_name: the name of the clock in @container
- * @returns: a pointer to the clock
+ * @return: a pointer to the clock
  *
  * Add a clock @alias_name in @alias_dev which is an alias of the clock @name
  * in @dev. The direction _in_ or _out_ will the same as the original.
@@ -100,9 +100,9 @@ Clock *qdev_alias_clock(DeviceState *dev, const char *name,
 void qdev_finalize_clocklist(DeviceState *dev);
 
 /**
- * ClockPortInitElem:
+ * struct ClockPortInitElem:
  * @name: name of the clock (can't be NULL)
- * @output: indicates whether the clock is input or output
+ * @is_output: indicates whether the clock is input or output
  * @callback: for inputs, optional callback to be called on clock's update
  * with device as opaque
  * @offset: optional offset to store the ClockIn or ClockOut pointer in device
