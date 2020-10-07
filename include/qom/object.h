@@ -153,6 +153,9 @@ struct ObjectClass
     ObjectUnparent *unparent;
 
     GHashTable *properties;
+
+    /* see object_class_freeze_instance_properties() */
+    bool instance_properties_frozen;
 };
 
 /**
@@ -1882,6 +1885,21 @@ void object_property_set_description(Object *obj, const char *name,
                                      const char *description);
 void object_class_property_set_description(ObjectClass *klass, const char *name,
                                            const char *description);
+
+/**
+ * object_class_freeze_instance_properties:
+ * @oc: the object class to have instance properties frozen
+ *
+ * Prevent all subtypes of @oc from having writeable instance
+ * properties.  If @oc is an interface type, this also affects all
+ * classes implementing the interface.
+ *
+ * This can be used by QOM types that have all QOM properties
+ * exposed to the external world (e.g. #TYPE_USER_CREATABLE) to
+ * ensure all user-writable properties are introspectable at the
+ * class level.
+ */
+void object_class_freeze_instance_properties(ObjectClass *oc);
 
 /**
  * object_child_foreach:
