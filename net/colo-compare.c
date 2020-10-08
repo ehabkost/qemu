@@ -31,6 +31,8 @@
 #include "migration/colo.h"
 #include "migration/migration.h"
 #include "util.h"
+#include "qom/field-property.h"
+#include "qom/property-types.h"
 
 #include "block/aio-wait.h"
 #include "qemu/coroutine.h"
@@ -1000,82 +1002,6 @@ static void colo_compare_iothread(CompareState *s)
     s->event_bh = aio_bh_new(ctx, colo_compare_handle_event, s);
 }
 
-static char *compare_get_pri_indev(Object *obj, Error **errp)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    return g_strdup(s->pri_indev);
-}
-
-static void compare_set_pri_indev(Object *obj, const char *value, Error **errp)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    g_free(s->pri_indev);
-    s->pri_indev = g_strdup(value);
-}
-
-static char *compare_get_sec_indev(Object *obj, Error **errp)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    return g_strdup(s->sec_indev);
-}
-
-static void compare_set_sec_indev(Object *obj, const char *value, Error **errp)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    g_free(s->sec_indev);
-    s->sec_indev = g_strdup(value);
-}
-
-static char *compare_get_outdev(Object *obj, Error **errp)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    return g_strdup(s->outdev);
-}
-
-static void compare_set_outdev(Object *obj, const char *value, Error **errp)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    g_free(s->outdev);
-    s->outdev = g_strdup(value);
-}
-
-static bool compare_get_vnet_hdr(Object *obj, Error **errp)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    return s->vnet_hdr;
-}
-
-static void compare_set_vnet_hdr(Object *obj,
-                                 bool value,
-                                 Error **errp)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    s->vnet_hdr = value;
-}
-
-static char *compare_get_notify_dev(Object *obj, Error **errp)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    return g_strdup(s->notify_dev);
-}
-
-static void compare_set_notify_dev(Object *obj, const char *value, Error **errp)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    g_free(s->notify_dev);
-    s->notify_dev = g_strdup(value);
-}
-
 static void compare_get_timeout(Object *obj, Visitor *v,
                                 const char *name, void *opaque,
                                 Error **errp)
@@ -1376,41 +1302,39 @@ static void colo_compare_class_init(ObjectClass *oc, void *data)
     UserCreatableClass *ucc = USER_CREATABLE_CLASS(oc);
 
     ucc->complete = colo_compare_complete;
-}
 
-static void colo_compare_init(Object *obj)
-{
-    CompareState *s = COLO_COMPARE(obj);
-
-    object_property_add_str(obj, "primary_in",
-                            compare_get_pri_indev, compare_set_pri_indev);
-    object_property_add_str(obj, "secondary_in",
-                            compare_get_sec_indev, compare_set_sec_indev);
-    object_property_add_str(obj, "outdev",
-                            compare_get_outdev, compare_set_outdev);
-    object_property_add_link(obj, "iothread", TYPE_IOTHREAD,
-                            (Object **)&s->iothread,
-                            object_property_allow_set_link,
-                            OBJ_PROP_LINK_STRONG);
+    object_class_property_add_field(oc, "primary_in",
+        PROP_STRING(CompareState, pri_indev),
+        prop_allow_set_always);
+    object_class_property_add_field(oc, "secondary_in",
+        PROP_STRING(CompareState, sec_indev),
+        prop_allow_set_always);
+    object_class_property_add_field(oc, "outdev",
+        PROP_STRING(CompareState, outdev),
+        prop_allow_set_always);
+    object_class_property_add_field(oc, "iothread",
+        PROP_LINK(CompareState, iothread, TYPE_IOTHREAD, IOThread *),
+        prop_allow_set_always);
     /* This parameter just for Xen COLO */
-    object_property_add_str(obj, "notify_dev",
-                            compare_get_notify_dev, compare_set_notify_dev);
+    object_class_property_add_field(oc, "notify_dev",
+        PROP_STRING(CompareState, notify_dev),
+        prop_allow_set_always);
 
-    object_property_add(obj, "compare_timeout", "uint32",
-                        compare_get_timeout,
-                        compare_set_timeout, NULL, NULL);
+    object_class_property_add(oc, "compare_timeout", "uint32",
+                              compare_get_timeout,
+                              compare_set_timeout, NULL, NULL);
 
-    object_property_add(obj, "expired_scan_cycle", "uint32",
-                        compare_get_expired_scan_cycle,
-                        compare_set_expired_scan_cycle, NULL, NULL);
+    object_class_property_add(oc, "expired_scan_cycle", "uint32",
+                              compare_get_expired_scan_cycle,
+                              compare_set_expired_scan_cycle, NULL, NULL);
 
-    object_property_add(obj, "max_queue_size", "uint32",
-                        get_max_queue_size,
-                        set_max_queue_size, NULL, NULL);
+    object_class_property_add(oc, "max_queue_size", "uint32",
+                              get_max_queue_size,
+                              set_max_queue_size, NULL, NULL);
 
-    s->vnet_hdr = false;
-    object_property_add_bool(obj, "vnet_hdr_support", compare_get_vnet_hdr,
-                             compare_set_vnet_hdr);
+    object_class_property_add_field(oc, "vnet_hdr_support",
+        PROP_BOOL(CompareState, vnet_hdr, false),
+        prop_allow_set_always);
 }
 
 static void colo_compare_finalize(Object *obj)
@@ -1466,11 +1390,6 @@ static void colo_compare_finalize(Object *obj)
     }
 
     object_unref(OBJECT(s->iothread));
-
-    g_free(s->pri_indev);
-    g_free(s->sec_indev);
-    g_free(s->outdev);
-    g_free(s->notify_dev);
 }
 
 static void __attribute__((__constructor__)) colo_compare_init_globals(void)
@@ -1483,7 +1402,6 @@ static const TypeInfo colo_compare_info = {
     .name = TYPE_COLO_COMPARE,
     .parent = TYPE_OBJECT,
     .instance_size = sizeof(CompareState),
-    .instance_init = colo_compare_init,
     .instance_finalize = colo_compare_finalize,
     .class_size = sizeof(CompareClass),
     .class_init = colo_compare_class_init,
