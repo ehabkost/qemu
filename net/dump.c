@@ -223,11 +223,6 @@ static void filter_dump_instance_init(Object *obj)
     NetFilterDumpState *nfds = FILTER_DUMP(obj);
 
     nfds->maxlen = 65536;
-
-    object_property_add(obj, "maxlen", "uint32", filter_dump_get_maxlen,
-                        filter_dump_set_maxlen, NULL, NULL);
-    object_property_add_str(obj, "file", file_dump_get_filename,
-                            file_dump_set_filename);
 }
 
 static void filter_dump_instance_finalize(Object *obj)
@@ -240,6 +235,11 @@ static void filter_dump_instance_finalize(Object *obj)
 static void filter_dump_class_init(ObjectClass *oc, void *data)
 {
     NetFilterClass *nfc = NETFILTER_CLASS(oc);
+
+    object_class_property_add(oc, "maxlen", "uint32", filter_dump_get_maxlen,
+                              filter_dump_set_maxlen, NULL, NULL);
+    object_class_property_add_str(oc, "file", file_dump_get_filename,
+                                  file_dump_set_filename);
 
     nfc->setup = filter_dump_setup;
     nfc->cleanup = filter_dump_cleanup;
