@@ -29,6 +29,7 @@
 #include "trace.h"
 #include "migration/blocker.h"
 #include "qom/object.h"
+#include "qom/static-property.h"
 
 #define TYPE_SEV_GUEST "sev-guest"
 OBJECT_DECLARE_SIMPLE_TYPE(SevGuestState, SEV_GUEST)
@@ -232,70 +233,26 @@ sev_guest_finalize(Object *obj)
 {
 }
 
-static char *
-sev_guest_get_session_file(Object *obj, Error **errp)
-{
-    SevGuestState *s = SEV_GUEST(obj);
-
-    return s->session_file ? g_strdup(s->session_file) : NULL;
-}
-
-static void
-sev_guest_set_session_file(Object *obj, const char *value, Error **errp)
-{
-    SevGuestState *s = SEV_GUEST(obj);
-
-    s->session_file = g_strdup(value);
-}
-
-static char *
-sev_guest_get_dh_cert_file(Object *obj, Error **errp)
-{
-    SevGuestState *s = SEV_GUEST(obj);
-
-    return g_strdup(s->dh_cert_file);
-}
-
-static void
-sev_guest_set_dh_cert_file(Object *obj, const char *value, Error **errp)
-{
-    SevGuestState *s = SEV_GUEST(obj);
-
-    s->dh_cert_file = g_strdup(value);
-}
-
-static char *
-sev_guest_get_sev_device(Object *obj, Error **errp)
-{
-    SevGuestState *sev = SEV_GUEST(obj);
-
-    return g_strdup(sev->sev_device);
-}
-
-static void
-sev_guest_set_sev_device(Object *obj, const char *value, Error **errp)
-{
-    SevGuestState *sev = SEV_GUEST(obj);
-
-    sev->sev_device = g_strdup(value);
-}
+static Property sev_props[] = {
+    DEFINE_PROP_STRING("sev-device", SevGuestState, sev_device),
+    DEFINE_PROP_STRING("dh-cert-file", SevGuestState, dh_cert_file),
+    DEFINE_PROP_STRING("session-file", SevGuestState, session_file),
+    DEFINE_PROP_UINT32("policy", SevGuestState, policy, DEFAULT_GUEST_POLICY),
+    DEFINE_PROP_UINT32("handle", SevGuestState, handle, 0),
+    DEFINE_PROP_UINT32("cbitpos", SevGuestState, cbitpos, 0),
+    DEFINE_PROP_UINT32("reduced-phys-bits", SevGuestState, reduced_phys_bits, 0),
+    DEFINE_PROP_END_OF_LIST(),
+};
 
 static void
 sev_guest_class_init(ObjectClass *oc, void *data)
 {
-    object_class_property_add_str(oc, "sev-device",
-                                  sev_guest_get_sev_device,
-                                  sev_guest_set_sev_device);
+    object_class_add_static_props(oc, sev_props, NULL);
+
     object_class_property_set_description(oc, "sev-device",
             "SEV device to use");
-    object_class_property_add_str(oc, "dh-cert-file",
-                                  sev_guest_get_dh_cert_file,
-                                  sev_guest_set_dh_cert_file);
     object_class_property_set_description(oc, "dh-cert-file",
             "guest owners DH certificate (encoded with base64)");
-    object_class_property_add_str(oc, "session-file",
-                                  sev_guest_get_session_file,
-                                  sev_guest_set_session_file);
     object_class_property_set_description(oc, "session-file",
             "guest owners session parameters (encoded with base64)");
 }
@@ -306,16 +263,6 @@ sev_guest_instance_init(Object *obj)
     SevGuestState *sev = SEV_GUEST(obj);
 
     sev->sev_device = g_strdup(DEFAULT_SEV_DEVICE);
-    sev->policy = DEFAULT_GUEST_POLICY;
-    object_property_add_uint32_ptr(obj, "policy", &sev->policy,
-                                   OBJ_PROP_FLAG_READWRITE);
-    object_property_add_uint32_ptr(obj, "handle", &sev->handle,
-                                   OBJ_PROP_FLAG_READWRITE);
-    object_property_add_uint32_ptr(obj, "cbitpos", &sev->cbitpos,
-                                   OBJ_PROP_FLAG_READWRITE);
-    object_property_add_uint32_ptr(obj, "reduced-phys-bits",
-                                   &sev->reduced_phys_bits,
-                                   OBJ_PROP_FLAG_READWRITE);
 }
 
 /* sev guest info */
@@ -678,6 +625,7 @@ sev_vm_state_change(void *opaque, int running, RunState state)
         }
     }
 }
+
 
 void *
 sev_guest_init(const char *id)
