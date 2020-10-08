@@ -2449,6 +2449,32 @@ static char *object_get_type(Object *obj, Error **errp)
     return g_strdup(object_get_typename(obj));
 }
 
+static ObjectProperty *
+object_property_add_ptr(Object *obj, const char *name,
+                        const char *type,
+                        ObjectPropertyAccessor accessor,
+                        ObjectPropertyFlags flags,
+                        void *ptr)
+{
+    return object_property_add(obj, name, type,
+                               (flags & OBJ_PROP_FLAG_READ) ? accessor : NULL,
+                               (flags & OBJ_PROP_FLAG_WRITE) ? accessor : NULL,
+                               NULL, ptr);
+}
+
+static ObjectProperty *
+object_class_property_add_ptr(ObjectClass *oc, const char *name,
+                               const char *type,
+                               ObjectPropertyAccessor accessor,
+                               ObjectPropertyFlags flags,
+                               void *ptr)
+{
+    return object_class_property_add(oc, name, type,
+                                     (flags & OBJ_PROP_FLAG_READ) ? accessor : NULL,
+                                     (flags & OBJ_PROP_FLAG_WRITE) ? accessor : NULL,
+                                     NULL, ptr);
+}
+
 static void property_visit_uint8_ptr(Object *obj, Visitor *v, const char *name,
                                      void *opaque, Error **errp)
 {
@@ -2482,19 +2508,9 @@ object_property_add_uint8_ptr(Object *obj, const char *name,
                               uint8_t *v,
                               ObjectPropertyFlags flags)
 {
-    ObjectPropertyAccessor *getter = NULL;
-    ObjectPropertyAccessor *setter = NULL;
-
-    if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_visit_uint8_ptr;
-    }
-
-    if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_visit_uint8_ptr;
-    }
-
-    return object_property_add(obj, name, "uint8",
-                               getter, setter, NULL, (void *)v);
+    return object_property_add_ptr(obj, name, "uint8",
+                                   property_visit_uint8_ptr,
+                                   flags, (void *)v);
 }
 
 ObjectProperty *
@@ -2502,19 +2518,9 @@ object_class_property_add_uint8_ptr(ObjectClass *klass, const char *name,
                                     const uint8_t *v,
                                     ObjectPropertyFlags flags)
 {
-    ObjectPropertyAccessor *getter = NULL;
-    ObjectPropertyAccessor *setter = NULL;
-
-    if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_visit_uint8_ptr;
-    }
-
-    if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_visit_uint8_ptr;
-    }
-
-    return object_class_property_add(klass, name, "uint8",
-                                     getter, setter, NULL, (void *)v);
+    return object_class_property_add_ptr(klass, name, "uint8",
+                                         property_visit_uint8_ptr,
+                                         flags, (void *)v);
 }
 
 ObjectProperty *
@@ -2522,19 +2528,9 @@ object_property_add_uint16_ptr(Object *obj, const char *name,
                                uint16_t *v,
                                ObjectPropertyFlags flags)
 {
-    ObjectPropertyAccessor *getter = NULL;
-    ObjectPropertyAccessor *setter = NULL;
-
-    if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_visit_uint16_ptr;
-    }
-
-    if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_visit_uint16_ptr;
-    }
-
-    return object_property_add(obj, name, "uint16",
-                               getter, setter, NULL, (void *)v);
+    return object_property_add_ptr(obj, name, "uint16",
+                                   property_visit_uint16_ptr,
+                                   flags, (void *)v);
 }
 
 ObjectProperty *
@@ -2542,19 +2538,9 @@ object_class_property_add_uint16_ptr(ObjectClass *klass, const char *name,
                                      const uint16_t *v,
                                      ObjectPropertyFlags flags)
 {
-    ObjectPropertyAccessor *getter = NULL;
-    ObjectPropertyAccessor *setter = NULL;
-
-    if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_visit_uint16_ptr;
-    }
-
-    if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_visit_uint16_ptr;
-    }
-
-    return object_class_property_add(klass, name, "uint16",
-                                     getter, setter, NULL, (void *)v);
+    return object_class_property_add_ptr(klass, name, "uint16",
+                                         property_visit_uint16_ptr,
+                                         flags, (void *)v);
 }
 
 ObjectProperty *
@@ -2562,19 +2548,9 @@ object_property_add_uint32_ptr(Object *obj, const char *name,
                                uint32_t *v,
                                ObjectPropertyFlags flags)
 {
-    ObjectPropertyAccessor *getter = NULL;
-    ObjectPropertyAccessor *setter = NULL;
-
-    if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_visit_uint32_ptr;
-    }
-
-    if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_visit_uint32_ptr;
-    }
-
-    return object_property_add(obj, name, "uint32",
-                               getter, setter, NULL, (void *)v);
+    return object_property_add_ptr(obj, name, "uint32",
+                                   property_visit_uint32_ptr,
+                                   flags, (void *)v);
 }
 
 ObjectProperty *
@@ -2582,19 +2558,9 @@ object_class_property_add_uint32_ptr(ObjectClass *klass, const char *name,
                                      const uint32_t *v,
                                      ObjectPropertyFlags flags)
 {
-    ObjectPropertyAccessor *getter = NULL;
-    ObjectPropertyAccessor *setter = NULL;
-
-    if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_visit_uint32_ptr;
-    }
-
-    if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_visit_uint32_ptr;
-    }
-
-    return object_class_property_add(klass, name, "uint32",
-                                     getter, setter, NULL, (void *)v);
+    return object_class_property_add_ptr(klass, name, "uint32",
+                                         property_visit_uint32_ptr,
+                                         flags, (void *)v);
 }
 
 ObjectProperty *
@@ -2602,19 +2568,9 @@ object_property_add_uint64_ptr(Object *obj, const char *name,
                                uint64_t *v,
                                ObjectPropertyFlags flags)
 {
-    ObjectPropertyAccessor *getter = NULL;
-    ObjectPropertyAccessor *setter = NULL;
-
-    if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_visit_uint64_ptr;
-    }
-
-    if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_visit_uint64_ptr;
-    }
-
-    return object_property_add(obj, name, "uint64",
-                               getter, setter, NULL, (void *)v);
+    return object_property_add_ptr(obj, name, "uint64",
+                                   property_visit_uint64_ptr,
+                                   flags, (void *)v);
 }
 
 ObjectProperty *
@@ -2622,19 +2578,9 @@ object_class_property_add_uint64_ptr(ObjectClass *klass, const char *name,
                                      const uint64_t *v,
                                      ObjectPropertyFlags flags)
 {
-    ObjectPropertyAccessor *getter = NULL;
-    ObjectPropertyAccessor *setter = NULL;
-
-    if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_visit_uint64_ptr;
-    }
-
-    if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_visit_uint64_ptr;
-    }
-
-    return object_class_property_add(klass, name, "uint64",
-                                     getter, setter, NULL, (void *)v);
+    return object_class_property_add_ptr(klass, name, "uint64",
+                                         property_visit_uint64_ptr,
+                                         flags, (void *)v);
 }
 
 typedef struct {
