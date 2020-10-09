@@ -103,13 +103,6 @@ static int dummy_get_av(Object *obj,
     return dobj->av;
 }
 
-static void dummy_init(Object *obj)
-{
-    object_property_add_bool(obj, "bv",
-                             dummy_get_bv,
-                             dummy_set_bv);
-}
-
 static Property dummy_props[] = {
     DEFINE_PROP_STRING("sv", DummyObject, sv),
     DEFINE_PROP_END_OF_LIST(),
@@ -130,9 +123,43 @@ static const TypeInfo dummy_info = {
     .name          = TYPE_DUMMY,
     .parent        = TYPE_OBJECT,
     .instance_size = sizeof(DummyObject),
-    .instance_init = dummy_init,
     .class_size = sizeof(DummyObjectClass),
     .class_init = dummy_class_init,
+};
+
+static void dummy_with_instance_props_init(Object *obj)
+{
+    object_property_add_bool(obj, "bv",
+                             dummy_get_bv,
+                             dummy_set_bv);
+}
+
+/* Subclass of TYPE_DUMMY, but with a instance-level "bv" property */
+#define TYPE_DUMMY_WITH_INSTANCE_PROPS "qemu-dummy-with-intance-props"
+
+static const TypeInfo dummy_with_instance_props_info = {
+    .name          = TYPE_DUMMY_WITH_INSTANCE_PROPS,
+    .parent        = TYPE_DUMMY,
+    .instance_init = dummy_with_instance_props_init,
+};
+
+static void dummy_user_creatable_class_init(ObjectClass *cls, void *data)
+{
+    object_class_property_add_bool(cls, "bv",
+                                   dummy_get_bv,
+                                   dummy_set_bv);
+}
+
+/*
+ * Subclass of TYPE_DUMMY, but user-creatable and with a class-level
+ * "bv" property
+ */
+#define TYPE_DUMMY_USER_CREATABLE      "qemu-dummy-user-creatable"
+
+static const TypeInfo dummy_user_creatable_info = {
+    .name          = TYPE_DUMMY_USER_CREATABLE,
+    .parent        = TYPE_DUMMY,
+    .class_init    = dummy_user_creatable_class_init,
     .interfaces = (InterfaceInfo[]) {
         { TYPE_USER_CREATABLE },
         { }
@@ -310,7 +337,7 @@ static void test_dummy_createv(void)
     Error *err = NULL;
     Object *parent = object_get_objects_root();
     DummyObject *dobj = DUMMY_OBJECT(
-        object_new_with_props(TYPE_DUMMY,
+        object_new_with_props(TYPE_DUMMY_WITH_INSTANCE_PROPS,
                               parent,
                               "dummy0",
                               &err,
@@ -339,7 +366,7 @@ static Object *new_helper(Error **errp,
     Object *obj;
 
     va_start(vargs, parent);
-    obj = object_new_with_propv(TYPE_DUMMY,
+    obj = object_new_with_propv(TYPE_DUMMY_WITH_INSTANCE_PROPS,
                                 parent,
                                 "dummy0",
                                 errp,
@@ -376,7 +403,7 @@ static void test_dummy_createcmdl(void)
     QemuOpts *opts;
     DummyObject *dobj;
     Error *err = NULL;
-    const char *params = TYPE_DUMMY \
+    const char *params = TYPE_DUMMY_USER_CREATABLE \
                          ",id=dev0," \
                          "bv=yes,sv=Hiss hiss hiss,av=platypus";
 
@@ -416,7 +443,7 @@ static void test_dummy_badenum(void)
     Error *err = NULL;
     Object *parent = object_get_objects_root();
     Object *dobj =
-        object_new_with_props(TYPE_DUMMY,
+        object_new_with_props(TYPE_DUMMY_WITH_INSTANCE_PROPS,
                               parent,
                               "dummy0",
                               &err,
@@ -508,7 +535,7 @@ static void test_dummy_iterator(void)
         "bv"};                  /* instance property */
     Object *parent = object_get_objects_root();
     DummyObject *dobj = DUMMY_OBJECT(
-        object_new_with_props(TYPE_DUMMY,
+        object_new_with_props(TYPE_DUMMY_WITH_INSTANCE_PROPS,
                               parent,
                               "dummy0",
                               &error_abort,
@@ -527,7 +554,7 @@ static void test_dummy_class_iterator(void)
 {
     const char *expected[] = { "type", "av", "sv" };
     ObjectPropertyIterator iter;
-    ObjectClass *klass = object_class_by_name(TYPE_DUMMY);
+    ObjectClass *klass = object_class_by_name(TYPE_DUMMY_WITH_INSTANCE_PROPS);
 
     object_class_property_iter_init(&iter, klass);
     test_dummy_prop_iterator(&iter, expected, ARRAY_SIZE(expected));
@@ -593,6 +620,8 @@ int main(int argc, char **argv)
 
     module_call_init(MODULE_INIT_QOM);
     type_register_static(&dummy_info);
+    type_register_static(&dummy_with_instance_props_info);
+    type_register_static(&dummy_user_creatable_info);
     type_register_static(&dummy_dev_info);
     type_register_static(&dummy_bus_info);
     type_register_static(&dummy_backend_info);
