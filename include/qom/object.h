@@ -1742,7 +1742,7 @@ typedef enum {
  * Returns: The newly added property on success, or %NULL on failure.
  */
 ObjectProperty *object_property_add_uint8_ptr(Object *obj, const char *name,
-                                              const uint8_t *v,
+                                              uint8_t *v,
                                               ObjectPropertyFlags flags);
 
 ObjectProperty *object_class_property_add_uint8_ptr(ObjectClass *klass,
@@ -1763,7 +1763,7 @@ ObjectProperty *object_class_property_add_uint8_ptr(ObjectClass *klass,
  * Returns: The newly added property on success, or %NULL on failure.
  */
 ObjectProperty *object_property_add_uint16_ptr(Object *obj, const char *name,
-                                    const uint16_t *v,
+                                    uint16_t *v,
                                     ObjectPropertyFlags flags);
 
 ObjectProperty *object_class_property_add_uint16_ptr(ObjectClass *klass,
@@ -1784,7 +1784,7 @@ ObjectProperty *object_class_property_add_uint16_ptr(ObjectClass *klass,
  * Returns: The newly added property on success, or %NULL on failure.
  */
 ObjectProperty *object_property_add_uint32_ptr(Object *obj, const char *name,
-                                    const uint32_t *v,
+                                    uint32_t *v,
                                     ObjectPropertyFlags flags);
 
 ObjectProperty *object_class_property_add_uint32_ptr(ObjectClass *klass,
@@ -1805,7 +1805,7 @@ ObjectProperty *object_class_property_add_uint32_ptr(ObjectClass *klass,
  * Returns: The newly added property on success, or %NULL on failure.
  */
 ObjectProperty *object_property_add_uint64_ptr(Object *obj, const char *name,
-                                    const uint64_t *v,
+                                    uint64_t *v,
                                     ObjectPropertyFlags flags);
 
 ObjectProperty *object_class_property_add_uint64_ptr(ObjectClass *klass,
