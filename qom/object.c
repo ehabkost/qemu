@@ -2449,6 +2449,23 @@ static char *object_get_type(Object *obj, Error **errp)
     return g_strdup(object_get_typename(obj));
 }
 
+typedef struct {
+    /* Pointer to property value */
+    void *ptr;
+} PointerProperty;
+
+static void *pointer_property_get_ptr(Object *obj, PointerProperty *prop)
+{
+    return prop->ptr;
+}
+
+static void
+object_ptr_property_release(Object *obj, const char *name, void *opaque)
+{
+    PointerProperty *prop = opaque;
+    g_free(prop);
+}
+
 static ObjectProperty *
 object_property_add_ptr(Object *obj, const char *name,
                         const char *type,
@@ -2456,10 +2473,12 @@ object_property_add_ptr(Object *obj, const char *name,
                         ObjectPropertyFlags flags,
                         void *ptr)
 {
+    PointerProperty *prop = g_new0(PointerProperty, 1);
+    prop->ptr = ptr;
     return object_property_add(obj, name, type,
                                (flags & OBJ_PROP_FLAG_READ) ? accessor : NULL,
                                (flags & OBJ_PROP_FLAG_WRITE) ? accessor : NULL,
-                               NULL, ptr);
+                               object_ptr_property_release, prop);
 }
 
 static ObjectProperty *
@@ -2469,37 +2488,43 @@ object_class_property_add_ptr(ObjectClass *oc, const char *name,
                                ObjectPropertyFlags flags,
                                void *ptr)
 {
+    PointerProperty *prop = g_new0(PointerProperty, 1);
+    prop->ptr = ptr;
     return object_class_property_add(oc, name, type,
                                      (flags & OBJ_PROP_FLAG_READ) ? accessor : NULL,
                                      (flags & OBJ_PROP_FLAG_WRITE) ? accessor : NULL,
-                                     NULL, ptr);
+                                     NULL, prop);
 }
 
 static void property_visit_uint8_ptr(Object *obj, Visitor *v, const char *name,
                                      void *opaque, Error **errp)
 {
-    uint8_t *ptr = opaque;
+    PointerProperty *prop = opaque;
+    uint8_t *ptr = pointer_property_get_ptr(obj, prop);
     visit_type_uint8(v, name, ptr, errp);
 }
 
 static void property_visit_uint16_ptr(Object *obj, Visitor *v, const char *name,
                                       void *opaque, Error **errp)
 {
-    uint16_t *ptr = opaque;
+    PointerProperty *prop = opaque;
+    uint16_t *ptr = pointer_property_get_ptr(obj, prop);
     visit_type_uint16(v, name, ptr, errp);
 }
 
 static void property_visit_uint32_ptr(Object *obj, Visitor *v, const char *name,
                                       void *opaque, Error **errp)
 {
-    uint32_t *ptr = opaque;
+    PointerProperty *prop = opaque;
+    uint32_t *ptr = pointer_property_get_ptr(obj, prop);
     visit_type_uint32(v, name, ptr, errp);
 }
 
 static void property_visit_uint64_ptr(Object *obj, Visitor *v, const char *name,
                                       void *opaque, Error **errp)
 {
-    uint64_t *ptr = opaque;
+    PointerProperty *prop = opaque;
+    uint64_t *ptr = pointer_property_get_ptr(obj, prop);
     visit_type_uint64(v, name, ptr, errp);
 }
 
