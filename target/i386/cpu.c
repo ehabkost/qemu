@@ -4176,6 +4176,7 @@ static X86CPUVersion x86_cpu_model_resolve_version(const X86CPUModel *model,
     return v;
 }
 
+#ifndef CONFIG_USER_ONLY
 /* Resolve CPU model alias to actual CPU model name */
 static char *x86_cpu_model_resolve_alias(const X86CPUModel *model,
                                          X86CPUVersion default_version)
@@ -4191,6 +4192,7 @@ static char *x86_cpu_model_resolve_alias(const X86CPUModel *model,
     }
     return x86_cpu_versioned_model_name(model->cpudef, version);
 }
+#endif
 
 void x86_cpu_change_kvm_default(const char *prop, const char *value)
 {
@@ -4840,6 +4842,7 @@ static void x86_cpu_get_unavailable_features(Object *obj, Visitor *v,
     visit_type_strList(v, "unavailable-features", &result, errp);
 }
 
+#ifndef CONFIG_USER_ONLY
 /* Check for missing features that may prevent the CPU class from
  * running using the current machine and accelerator.
  */
@@ -4878,6 +4881,7 @@ static void x86_cpu_class_check_missing_features(X86CPUClass *xcc,
 
     object_unref(OBJECT(xc));
 }
+#endif
 
 /* Print all cpuid feature names in featureset
  */
@@ -4987,6 +4991,7 @@ void x86_cpu_list(void)
     g_list_free(names);
 }
 
+#ifndef CONFIG_USER_ONLY
 static void x86_cpu_definition_entry(gpointer data, gpointer user_data)
 {
     ObjectClass *oc = data;
@@ -5032,6 +5037,7 @@ CpuDefinitionInfoList *qmp_query_cpu_definitions(Error **errp)
     g_slist_free(list);
     return cpu_list;
 }
+#endif
 
 static uint64_t x86_cpu_get_supported_feature_word(FeatureWord w,
                                                    bool migratable_only)
