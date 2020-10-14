@@ -181,6 +181,43 @@ jobs:
             - perl
 
 
+    # Check we can build docs with multiple Sphinx versions.
+    # We need --sphinx-build=sphinx-build to ensure we use the
+    # sphinx-build binary installed by pip.
+
+    # 1.6.1 is the oldest Sphinx version we support
+    - name: "docs (Sphinx 1.6.1)"
+      env:
+        - CONFIG="--enable-docs --sphinx-build=sphinx-build"
+      install:
+        - pip install -q sphinx==1.6.1
+      script:
+        - make -j${JOBS} sphinxdocs
+    - name: "docs (Sphinx 1.x)"
+      env:
+        - CONFIG="--enable-docs --sphinx-build=sphinx-build"
+      install:
+        # install latest 1.x version
+        - pip install -q 'sphinx>=1.0,<2.0'
+      script:
+        - make -j${JOBS} sphinxdocs
+    - name: "docs (Sphinx 2.0.0)"
+      env:
+        - CONFIG="--enable-docs --sphinx-build=sphinx-build"
+      install:
+        - pip install -q sphinx==2.0.0
+      script:
+        - make -j${JOBS} sphinxdocs
+    - name: "docs (Sphinx 2.x)"
+      env:
+        - CONFIG="--enable-docs --sphinx-build=sphinx-build"
+      install:
+        # install latest 2.x version
+        - pip install -q 'sphinx>=2.0,<3.0'
+      script:
+        - make -j${JOBS} sphinxdocs
+
+
     # Test with Clang for compile portability (Travis uses clang-5.0)
     - name: "Clang (user)"
       env:
