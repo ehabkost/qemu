@@ -80,7 +80,6 @@ env:
     - CCACHE_MAXSIZE=1G
     - G_MESSAGES_DEBUG=error
 
-
 git:
   # we want to do this ourselves
   submodules: false
@@ -91,7 +90,10 @@ before_install:
   - export JOBS=$(($(getconf _NPROCESSORS_ONLN) + 1))
   - echo "=== Using ${JOBS} simultaneous jobs ==="
 
-# Configure step - may be overridden
+install:
+  - 'if [ -n "${PIP_INSTALL}" ];then pip install -q $PIP_INSTALL;fi'
+
+  # Configure step - may be overridden
 before_script:
   - mkdir -p ${BUILD_DIR} && cd ${BUILD_DIR}
   - ${SRC_DIR}/configure ${BASE_CONFIG} ${CONFIG} || { cat config.log && exit 1; }
@@ -186,17 +188,13 @@ jobs:
     - name: "docs (Sphinx 1.6.1)"
       env:
         - CONFIG="--disable-user --disable-tools --disable-system --enable-docs --sphinx-build=sphinx-build"
-        - SPHINX_VERSION=1.6.1
+        - PIP_INSTALL="$PIP_INSTALL sphinx==1.6.1"
         - TEST_CMD=""
-      install:
-        - pip install -q sphinx==$SPHINX_VERSION
     - name: "docs (Sphinx 2.4.4)"
       env:
         - CONFIG="--disable-user --disable-tools --disable-system --enable-docs --sphinx-build=sphinx-build"
-        - SPHINX_VERSION=2.4.4
+        - PIP_INSTALL="$PIP_INSTALL sphinx==2.4.4"
         - TEST_CMD=""
-      install:
-        - pip install -q sphinx==$SPHINX_VERSION
 
 
     # Test with Clang for compile portability (Travis uses clang-5.0)
