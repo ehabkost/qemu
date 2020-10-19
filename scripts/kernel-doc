@@ -1375,9 +1375,9 @@ sub create_parameterlist($$$$) {
     my $type;
     my $param;
 
-    # temporarily replace commas inside function pointer definition
-    while ($args =~ /(\([^\),]+),/) {
-	$args =~ s/(\([^\),]+),/$1#/g;
+    # temporarily replace commas inside macros or function pointer definition
+    while ($args =~ /(\([^\),]*),/) {
+	$args =~ s/(\([^\),]*),/$1#/g;
     }
 
     foreach my $arg (split($splitter, $args)) {
@@ -1422,6 +1422,7 @@ sub create_parameterlist($$$$) {
 
 	    unshift(@args, pop @first_arg);
 	    $type = join " ", @first_arg;
+	    $type =~ tr/#/,/;
 
 	    foreach $param (@args) {
 		if ($param =~ m/^(\*+)\s*(.*)/) {
