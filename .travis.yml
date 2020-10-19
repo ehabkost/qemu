@@ -166,18 +166,17 @@ jobs:
         - TEST_CMD="make check-unit -j${JOBS} V=1"
 
 
-    # Check we can build docs and tools (out of tree)
-    - name: "tools and docs (bionic)"
+    # Check we can build tools (out of tree)
+    - name: "tools (bionic)"
       dist: bionic
       env:
         - BUILD_DIR="out-of-tree/build/dir" SRC_DIR="../../.."
-        - BASE_CONFIG="--enable-tools --enable-docs"
+        - BASE_CONFIG="--enable-tools --disable-docs"
         - CONFIG="--target-list=x86_64-softmmu,aarch64-linux-user"
         - CACHE_NAME="${TRAVIS_BRANCH}-linux-gcc-default"
       addons:
         apt:
           packages:
-            - python3-sphinx
             - perl
 
 
