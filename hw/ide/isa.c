@@ -84,12 +84,9 @@ static void isa_ide_realizefn(DeviceState *dev, Error **errp)
 DeviceState *isa_ide_init(ISABus *bus, int iobase, int iobase2, int isairq,
                         DriveInfo *hd0, DriveInfo *hd1)
 {
-    DeviceState *dev;
-    ISADevice *isadev;
     ISAIDEState *s;
+    DeviceState *dev = qdev_new(TYPE_ISA_IDE);
 
-    isadev = isa_new(TYPE_ISA_IDE);
-    dev = DEVICE(isadev);
     qdev_prop_set_uint32(dev, "iobase",  iobase);
     qdev_prop_set_uint32(dev, "iobase2", iobase2);
     qdev_prop_set_uint32(dev, "irq",     isairq);
