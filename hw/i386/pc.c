@@ -1180,7 +1180,7 @@ void pc_basic_device_init(struct PCMachineState *pcms,
             /* connect PIT to output control line of the HPET */
             qdev_connect_gpio_out(hpet, 0, qdev_get_gpio_in(DEVICE(pit), 0));
         }
-        pcspk_init(pcms->pcspk, isa_bus, pit);
+        pcspk_init(ISA_DEVICE(pcms->pcspk), isa_bus, pit);
     }
 
     i8257_dma_init(isa_bus, 0);
@@ -1599,7 +1599,7 @@ static void pc_machine_initfn(Object *obj)
 #endif
 
     pc_system_flash_create(pcms);
-    pcms->pcspk = isa_new(TYPE_PC_SPEAKER);
+    pcms->pcspk = PC_SPEAKER(isa_new(TYPE_PC_SPEAKER));
     object_property_add_alias(OBJECT(pcms), "pcspk-audiodev",
                               OBJECT(pcms->pcspk), "audiodev");
 }
