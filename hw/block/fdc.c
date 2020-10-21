@@ -896,8 +896,6 @@ struct FDCtrlSysBus {
     struct FDCtrl state;
 };
 
-OBJECT_DECLARE_SIMPLE_TYPE(FDCtrlISABus, ISA_FDC)
-
 struct FDCtrlISABus {
     ISADevice parent_obj;
 

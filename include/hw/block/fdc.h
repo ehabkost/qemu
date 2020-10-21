@@ -3,11 +3,13 @@
 
 #include "exec/hwaddr.h"
 #include "qapi/qapi-types-block.h"
+#include "qom/object.h"
 
 /* fdc.c */
 #define MAX_FD 2
 
 #define TYPE_ISA_FDC "isa-fdc"
+OBJECT_DECLARE_SIMPLE_TYPE(FDCtrlISABus, ISA_FDC)
 
 void isa_fdc_init_drives(ISADevice *fdc, DriveInfo **fds);
 void fdctrl_init_sysbus(qemu_irq irq, int dma_chann,
