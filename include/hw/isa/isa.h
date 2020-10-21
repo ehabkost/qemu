@@ -100,7 +100,7 @@ MemoryRegion *isa_address_space(ISADevice *dev);
 MemoryRegion *isa_address_space_io(ISADevice *dev);
 ISADevice *isa_new(const char *name);
 ISADevice *isa_try_new(const char *name);
-ISADevice *isa_create_simple(ISABus *bus, const char *name);
+DeviceState *isa_create_simple(ISABus *bus, const char *name);
 
 DeviceState *isa_vga_init(ISABus *bus);
 void isa_build_aml(ISABus *bus, Aml *scope);
