@@ -70,7 +70,7 @@ struct PICCommonState {
 };
 
 void pic_reset_common(PICCommonState *s);
-ISADevice *i8259_init_chip(const char *name, ISABus *bus, bool master);
+DeviceState *i8259_init_chip(const char *name, ISABus *bus, bool master);
 void pic_stat_update_irq(int irq, int level);
 bool pic_get_statistics(InterruptStatsProvider *obj,
                         uint64_t **irq_counts, unsigned int *nb_irqs);
