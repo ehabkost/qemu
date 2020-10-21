@@ -323,16 +323,11 @@ static USBDevice *usb_try_new(const char *name)
     return USB_DEVICE(qdev_try_new(name));
 }
 
-bool usb_realize_and_unref(USBDevice *dev, USBBus *bus, Error **errp)
-{
-    return qdev_realize_and_unref(&dev->qdev, &bus->qbus, errp);
-}
-
 USBDevice *usb_create_simple(USBBus *bus, const char *name)
 {
     USBDevice *dev = usb_new(name);
 
-    usb_realize_and_unref(dev, bus, &error_abort);
+    qdev_realize_and_unref(DEVICE(dev), BUS(bus), &error_abort);
     return dev;
 }
 
@@ -433,7 +428,7 @@ void usb_claim_port(USBDevice *dev, Error **errp)
             /* Create a new hub and chain it on */
             hub = usb_try_new("usb-hub");
             if (hub) {
-                usb_realize_and_unref(hub, bus, NULL);
+                qdev_realize_and_unref(DEVICE(hub), BUS(bus), NULL);
             }
         }
         if (bus->nfree == 0) {
@@ -704,7 +699,7 @@ USBDevice *usbdevice_create(const char *cmdline)
         error_report("Failed to create USB device '%s'", f->name);
         return NULL;
     }
-    if (!usb_realize_and_unref(dev, bus, &err)) {
+    if (!qdev_realize_and_unref(DEVICE(dev), BUS(bus), &err)) {
         error_reportf_err(err, "Failed to initialize USB device '%s': ",
                           f->name);
         object_unparent(OBJECT(dev));
