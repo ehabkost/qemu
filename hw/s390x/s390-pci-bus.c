@@ -890,19 +890,20 @@ static S390PCIBusDevice *s390_pci_device_new(S390pciState *s,
     }
 
     if (!object_property_set_str(OBJECT(dev), "target", target, &local_err)) {
-        object_unparent(OBJECT(dev));
-        error_propagate_prepend(errp, local_err,
-                                "zPCI device could not be created: ");
-        return NULL;
+        goto err;
     }
     if (!qdev_realize_and_unref(dev, BUS(s->bus), &local_err)) {
-        object_unparent(OBJECT(dev));
-        error_propagate_prepend(errp, local_err,
-                                "zPCI device could not be created: ");
-        return NULL;
+        goto err;
     }
 
     return S390_PCI_DEVICE(dev);
+err:
+    if (dev) {
+        object_unparent(OBJECT(dev));
+    }
+    error_propagate_prepend(errp, local_err,
+                            "zPCI device could not be created: ");
+    return NULL;
 }
 
 static bool s390_pci_alloc_idx(S390pciState *s, S390PCIBusDevice *pbdev)
