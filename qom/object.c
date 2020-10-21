@@ -2452,8 +2452,8 @@ static char *object_get_type(Object *obj, Error **errp)
 static void property_get_uint8_ptr(Object *obj, Visitor *v, const char *name,
                                    void *opaque, Error **errp)
 {
-    uint8_t value = *(uint8_t *)opaque;
-    visit_type_uint8(v, name, &value, errp);
+    uint8_t *ptr = opaque;
+    visit_type_uint8(v, name, ptr, errp);
 }
 
 static void property_set_uint8_ptr(Object *obj, Visitor *v, const char *name,
@@ -2472,8 +2472,8 @@ static void property_set_uint8_ptr(Object *obj, Visitor *v, const char *name,
 static void property_get_uint16_ptr(Object *obj, Visitor *v, const char *name,
                                     void *opaque, Error **errp)
 {
-    uint16_t value = *(uint16_t *)opaque;
-    visit_type_uint16(v, name, &value, errp);
+    uint16_t *ptr = opaque;
+    visit_type_uint16(v, name, ptr, errp);
 }
 
 static void property_set_uint16_ptr(Object *obj, Visitor *v, const char *name,
@@ -2492,8 +2492,8 @@ static void property_set_uint16_ptr(Object *obj, Visitor *v, const char *name,
 static void property_get_uint32_ptr(Object *obj, Visitor *v, const char *name,
                                     void *opaque, Error **errp)
 {
-    uint32_t value = *(uint32_t *)opaque;
-    visit_type_uint32(v, name, &value, errp);
+    uint32_t *ptr = opaque;
+    visit_type_uint32(v, name, ptr, errp);
 }
 
 static void property_set_uint32_ptr(Object *obj, Visitor *v, const char *name,
@@ -2512,8 +2512,8 @@ static void property_set_uint32_ptr(Object *obj, Visitor *v, const char *name,
 static void property_get_uint64_ptr(Object *obj, Visitor *v, const char *name,
                                     void *opaque, Error **errp)
 {
-    uint64_t value = *(uint64_t *)opaque;
-    visit_type_uint64(v, name, &value, errp);
+    uint64_t *ptr = opaque;
+    visit_type_uint64(v, name, ptr, errp);
 }
 
 static void property_set_uint64_ptr(Object *obj, Visitor *v, const char *name,
