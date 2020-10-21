@@ -701,7 +701,7 @@ static void pnv_ipmi_bt_init(ISABus *bus, IPMIBmc *bmc, uint32_t irq)
 
     object_property_set_link(OBJECT(dev), "bmc", OBJECT(bmc), &error_fatal);
     object_property_set_int(OBJECT(dev), "irq", irq, &error_fatal);
-    isa_realize_and_unref(dev, bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(dev), BUS(bus), &error_fatal);
 }
 
 static void pnv_chip_power10_pic_print_info(PnvChip *chip, Monitor *mon)

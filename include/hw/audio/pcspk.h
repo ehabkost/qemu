@@ -34,7 +34,7 @@
 static inline void pcspk_init(ISADevice *isadev, ISABus *bus, ISADevice *pit)
 {
     object_property_set_link(OBJECT(isadev), "pit", OBJECT(pit), NULL);
-    isa_realize_and_unref(isadev, bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(isadev), BUS(bus), &error_fatal);
 }
 
 #endif /* HW_PCSPK_H */

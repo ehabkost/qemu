@@ -31,7 +31,7 @@ static inline ISADevice *isa_ne2000_init(ISABus *bus, int base, int irq,
         qdev_prop_set_uint32(dev, "iobase", base);
         qdev_prop_set_uint32(dev, "irq",    irq);
         qdev_set_nic_properties(dev, nd);
-        isa_realize_and_unref(d, bus, &error_fatal);
+        qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
     }
     return d;
 }

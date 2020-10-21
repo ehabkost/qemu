@@ -64,7 +64,7 @@ static void isa_superio_realize(DeviceState *dev, Error **errp)
             }
             qdev_prop_set_chr(d, "chardev", chr);
             object_property_add_child(OBJECT(dev), name, OBJECT(isa));
-            isa_realize_and_unref(isa, bus, &error_fatal);
+            qdev_realize_and_unref(DEVICE(isa), BUS(bus), &error_fatal);
             sio->parallel[i] = isa;
             trace_superio_create_parallel(i,
                                           k->parallel.get_iobase ?
@@ -103,7 +103,7 @@ static void isa_superio_realize(DeviceState *dev, Error **errp)
             }
             qdev_prop_set_chr(d, "chardev", chr);
             object_property_add_child(OBJECT(dev), name, OBJECT(isa));
-            isa_realize_and_unref(isa, bus, &error_fatal);
+            qdev_realize_and_unref(DEVICE(isa), BUS(bus), &error_fatal);
             sio->serial[i] = isa;
             trace_superio_create_serial(i,
                                         k->serial.get_iobase ?
@@ -129,7 +129,7 @@ static void isa_superio_realize(DeviceState *dev, Error **errp)
             fd[i] = drive_get(IF_FLOPPY, 0, i);
         }
         object_property_add_child(OBJECT(sio), "isa-fdc", OBJECT(isa));
-        isa_realize_and_unref(isa, bus, &error_fatal);
+        qdev_realize_and_unref(DEVICE(isa), BUS(bus), &error_fatal);
         isa_fdc_init_drives(isa, fd);
         sio->floppy = isa;
         trace_superio_create_floppy(0,
@@ -142,7 +142,7 @@ static void isa_superio_realize(DeviceState *dev, Error **errp)
     /* Keyboard, mouse */
     isa = isa_new(TYPE_I8042);
     object_property_add_child(OBJECT(sio), TYPE_I8042, OBJECT(isa));
-    isa_realize_and_unref(isa, bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(isa), BUS(bus), &error_fatal);
     sio->kbc = isa;
 
     /* IDE */
@@ -159,7 +159,7 @@ static void isa_superio_realize(DeviceState *dev, Error **errp)
             qdev_prop_set_uint32(d, "irq", k->ide.get_irq(sio, 0));
         }
         object_property_add_child(OBJECT(sio), "isa-ide", OBJECT(isa));
-        isa_realize_and_unref(isa, bus, &error_fatal);
+        qdev_realize_and_unref(DEVICE(isa), BUS(bus), &error_fatal);
         sio->ide = isa;
         trace_superio_create_ide(0,
                                  k->ide.get_iobase ?
