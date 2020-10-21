@@ -2459,14 +2459,8 @@ static void property_get_uint8_ptr(Object *obj, Visitor *v, const char *name,
 static void property_set_uint8_ptr(Object *obj, Visitor *v, const char *name,
                                    void *opaque, Error **errp)
 {
-    uint8_t *field = opaque;
-    uint8_t value;
-
-    if (!visit_type_uint8(v, name, &value, errp)) {
-        return;
-    }
-
-    *field = value;
+    uint8_t *ptr = opaque;
+    visit_type_uint8(v, name, ptr, errp);
 }
 
 static void property_get_uint16_ptr(Object *obj, Visitor *v, const char *name,
@@ -2479,14 +2473,8 @@ static void property_get_uint16_ptr(Object *obj, Visitor *v, const char *name,
 static void property_set_uint16_ptr(Object *obj, Visitor *v, const char *name,
                                     void *opaque, Error **errp)
 {
-    uint16_t *field = opaque;
-    uint16_t value;
-
-    if (!visit_type_uint16(v, name, &value, errp)) {
-        return;
-    }
-
-    *field = value;
+    uint16_t *ptr = opaque;
+    visit_type_uint16(v, name, ptr, errp);
 }
 
 static void property_get_uint32_ptr(Object *obj, Visitor *v, const char *name,
@@ -2499,14 +2487,8 @@ static void property_get_uint32_ptr(Object *obj, Visitor *v, const char *name,
 static void property_set_uint32_ptr(Object *obj, Visitor *v, const char *name,
                                     void *opaque, Error **errp)
 {
-    uint32_t *field = opaque;
-    uint32_t value;
-
-    if (!visit_type_uint32(v, name, &value, errp)) {
-        return;
-    }
-
-    *field = value;
+    uint32_t *ptr = opaque;
+    visit_type_uint32(v, name, ptr, errp);
 }
 
 static void property_get_uint64_ptr(Object *obj, Visitor *v, const char *name,
@@ -2519,14 +2501,8 @@ static void property_get_uint64_ptr(Object *obj, Visitor *v, const char *name,
 static void property_set_uint64_ptr(Object *obj, Visitor *v, const char *name,
                                     void *opaque, Error **errp)
 {
-    uint64_t *field = opaque;
-    uint64_t value;
-
-    if (!visit_type_uint64(v, name, &value, errp)) {
-        return;
-    }
-
-    *field = value;
+    uint64_t *ptr = opaque;
+    visit_type_uint64(v, name, ptr, errp);
 }
 
 ObjectProperty *
