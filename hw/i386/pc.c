@@ -1076,8 +1076,8 @@ static void pc_superio_init(ISABus *isa_bus, bool create_fdctrl, bool no_vmport)
     int i;
     DriveInfo *fd[MAX_FD];
     qemu_irq *a20_line;
-    ISADevice *fdc, *i8042, *port92;
-    DeviceState *vmmouse;
+    ISADevice *fdc;
+    DeviceState *vmmouse, *i8042, *port92;
 
     serial_hds_isa_init(isa_bus, 0, MAX_ISA_SERIAL_PORTS);
     parallel_hds_isa_init(isa_bus, MAX_PARALLEL_PORTS);
@@ -1110,8 +1110,7 @@ static void pc_superio_init(ISABus *isa_bus, bool create_fdctrl, bool no_vmport)
 
     a20_line = qemu_allocate_irqs(handle_a20_line_change, first_cpu, 2);
     i8042_setup_a20_line(I8042(i8042), a20_line[0]);
-    qdev_connect_gpio_out_named(DEVICE(port92),
-                                PORT92_A20_LINE, 0, a20_line[1]);
+    qdev_connect_gpio_out_named(port92, PORT92_A20_LINE, 0, a20_line[1]);
     g_free(a20_line);
 }
 
