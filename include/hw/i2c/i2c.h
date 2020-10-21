@@ -80,6 +80,12 @@ uint8_t i2c_recv(I2CBus *bus);
  * @name: a device type name
  * @addr: I2C address of the slave when put on a bus
  *
+ * This function is useful for setting properties on the device
+ * before realizing it using qdev_realize_and_unref(). If you
+ * don't need to set properties then i2c_slave_create_simple() is
+ * probably better (as it does the create, init and realize in
+ * one step).
+ *
  * This only initializes the device state structure and allows
  * properties to be set. Type @name must exist. The device still
  * needs to be realized. See qdev-core.h.
