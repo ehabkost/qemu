@@ -260,7 +260,7 @@ static void pc_init1(MachineState *machine,
 
         ide_drive_get(hd, ARRAY_SIZE(hd));
         for (i = 0; i < MAX_IDE_BUS; i++) {
-            ISADevice *dev;
+            DeviceState *dev;
             char busname[] = "ide.0";
             dev = isa_ide_init(isa_bus, ide_iobase[i], ide_iobase2[i],
                                ide_irq[i],
@@ -270,7 +270,7 @@ static void pc_init1(MachineState *machine,
              * second one.
              */
             busname[4] = '0' + i;
-            idebus[i] = qdev_get_child_bus(DEVICE(dev), busname);
+            idebus[i] = qdev_get_child_bus(dev, busname);
         }
         pc_cmos_init(pcms, idebus[0], idebus[1], rtc_state);
     }

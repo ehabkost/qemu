@@ -5,8 +5,8 @@
 #include "exec/memory.h"
 
 /* ide-isa.c */
-ISADevice *isa_ide_init(ISABus *bus, int iobase, int iobase2, int isairq,
-                        DriveInfo *hd0, DriveInfo *hd1);
+DeviceState *isa_ide_init(ISABus *bus, int iobase, int iobase2, int isairq,
+                          DriveInfo *hd0, DriveInfo *hd1);
 
 /* ide-pci.c */
 int pci_piix3_xen_ide_unplug(DeviceState *dev, bool aux);
