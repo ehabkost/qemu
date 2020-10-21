@@ -30,6 +30,7 @@
 #include "qapi/error.h"
 
 #define TYPE_PC_SPEAKER "isa-pcspk"
+OBJECT_DECLARE_SIMPLE_TYPE(PCSpkState, PC_SPEAKER)
 
 static inline void pcspk_init(ISADevice *isadev, ISABus *bus, ISADevice *pit)
 {
