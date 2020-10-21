@@ -1077,7 +1077,8 @@ static void pc_superio_init(ISABus *isa_bus, bool create_fdctrl, bool no_vmport)
     int i;
     DriveInfo *fd[MAX_FD];
     qemu_irq *a20_line;
-    ISADevice *fdc, *i8042, *port92, *vmmouse;
+    ISADevice *fdc, *i8042, *port92;
+    DeviceState *vmmouse;
 
     serial_hds_isa_init(isa_bus, 0, MAX_ISA_SERIAL_PORTS);
     parallel_hds_isa_init(isa_bus, MAX_PARALLEL_PORTS);
@@ -1097,14 +1098,14 @@ static void pc_superio_init(ISABus *isa_bus, bool create_fdctrl, bool no_vmport)
     i8042 = isa_create_simple(isa_bus, "i8042");
     if (!no_vmport) {
         isa_create_simple(isa_bus, TYPE_VMPORT);
-        vmmouse = isa_try_new("vmmouse");
+        vmmouse = qdev_try_new("vmmouse", NULL);
     } else {
         vmmouse = NULL;
     }
     if (vmmouse) {
         object_property_set_link(OBJECT(vmmouse), "i8042", OBJECT(i8042),
                                  &error_abort);
-        qdev_realize_and_unref(DEVICE(vmmouse), BUS(isa_bus), &error_fatal);
+        qdev_realize_and_unref(vmmouse, BUS(isa_bus), &error_fatal);
     }
     port92 = isa_create_simple(isa_bus, TYPE_PORT92);
 

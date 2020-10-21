@@ -18,11 +18,8 @@
 
 static void parallel_init(ISABus *bus, int index, Chardev *chr)
 {
-    DeviceState *dev;
-    ISADevice *isadev;
+    DeviceState *dev = qdev_new("isa-parallel");
 
-    isadev = isa_new("isa-parallel");
-    dev = DEVICE(isadev);
     qdev_prop_set_uint32(dev, "index", index);
     qdev_prop_set_chr(dev, "chardev", chr);
     qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
