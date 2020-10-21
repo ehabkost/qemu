@@ -167,11 +167,9 @@ ISADevice *isa_try_new(const char *name)
 
 DeviceState *isa_create_simple(ISABus *bus, const char *name)
 {
-    ISADevice *dev;
-
-    dev = isa_new(name);
-    qdev_realize_and_unref(DEVICE(dev), BUS(bus), &error_fatal);
-    return DEVICE(dev);
+    DeviceState *dev = qdev_new(name);
+    qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
+    return dev;
 }
 
 DeviceState *isa_vga_init(ISABus *bus)
