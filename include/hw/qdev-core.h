@@ -401,6 +401,19 @@ bool qdev_realize(DeviceState *dev, BusState *bus, Error **errp);
  */
 bool qdev_realize_and_unref(DeviceState *dev, BusState *bus, Error **errp);
 /**
+ * Create and realize a device on the heap
+ * @bus: bus to plug the device into
+ * @name: device type name
+ * @errp: pointer to error object
+ *
+ * A wrapper for qdev_new() followed by qdev_realize_and_unref().
+ * Useful when no additional properties need to be set on the
+ * device before realize.  The same caveats mentioned in
+ * the documentation for qdev_realize_and_unref() apply to this
+ * function.
+ */
+DeviceState *qdev_create_simple(BusState *bus, const char *name, Error **errp);
+/**
  * qdev_unrealize: Unrealize a device
  * @dev: device to unrealize
  *

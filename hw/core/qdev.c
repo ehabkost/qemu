@@ -408,6 +408,13 @@ bool qdev_realize_and_unref(DeviceState *dev, BusState *bus, Error **errp)
     return ret;
 }
 
+DeviceState *qdev_create_simple(BusState *bus, const char *name, Error **errp)
+{
+    DeviceState *dev = qdev_new(name);
+    qdev_realize_and_unref(dev, bus, errp);
+    return dev;
+}
+
 void qdev_unrealize(DeviceState *dev)
 {
     object_property_set_bool(OBJECT(dev), "realized", false, &error_abort);
