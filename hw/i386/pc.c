@@ -1045,8 +1045,7 @@ DeviceState *pc_vga_init(ISABus *isa_bus, PCIBus *pci_bus)
         PCIDevice *pcidev = pci_vga_init(pci_bus);
         dev = pcidev ? &pcidev->qdev : NULL;
     } else if (isa_bus) {
-        ISADevice *isadev = isa_vga_init(isa_bus);
-        dev = isadev ? DEVICE(isadev) : NULL;
+        dev = isa_vga_init(isa_bus);
     }
     rom_reset_order_override();
     return dev;

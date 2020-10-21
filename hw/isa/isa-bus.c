@@ -174,16 +174,16 @@ ISADevice *isa_create_simple(ISABus *bus, const char *name)
     return dev;
 }
 
-ISADevice *isa_vga_init(ISABus *bus)
+DeviceState *isa_vga_init(ISABus *bus)
 {
     switch (vga_interface_type) {
     case VGA_CIRRUS:
-        return isa_create_simple(bus, "isa-cirrus-vga");
+        return DEVICE(isa_create_simple(bus, "isa-cirrus-vga"));
     case VGA_QXL:
         error_report("%s: qxl: no PCI bus", __func__);
         return NULL;
     case VGA_STD:
-        return isa_create_simple(bus, "isa-vga");
+        return DEVICE(isa_create_simple(bus, "isa-vga"));
     case VGA_VMWARE:
         error_report("%s: vmware_vga: no PCI bus", __func__);
         return NULL;

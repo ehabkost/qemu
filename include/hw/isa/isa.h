@@ -102,7 +102,7 @@ ISADevice *isa_new(const char *name);
 ISADevice *isa_try_new(const char *name);
 ISADevice *isa_create_simple(ISABus *bus, const char *name);
 
-ISADevice *isa_vga_init(ISABus *bus);
+DeviceState *isa_vga_init(ISABus *bus);
 void isa_build_aml(ISABus *bus, Aml *scope);
 
 /**
