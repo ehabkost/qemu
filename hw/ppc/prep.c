@@ -296,13 +296,13 @@ static void ibm_40p_init(MachineState *machine)
     isa_dev = isa_new("rs6000-mc");
     dev = DEVICE(isa_dev);
     qdev_prop_set_uint32(dev, "ram-size", machine->ram_size);
-    isa_realize_and_unref(isa_dev, isa_bus, &error_fatal);
+    qdev_realize_and_unref(dev, BUS(isa_bus), &error_fatal);
 
     /* RTC */
     isa_dev = isa_new(TYPE_MC146818_RTC);
     dev = DEVICE(isa_dev);
     qdev_prop_set_int32(dev, "base_year", 1900);
-    isa_realize_and_unref(isa_dev, isa_bus, &error_fatal);
+    qdev_realize_and_unref(dev, BUS(isa_bus), &error_fatal);
 
     /* initialize CMOS checksums */
     cmos_checksum = 0x6aa9;
@@ -317,18 +317,18 @@ static void ibm_40p_init(MachineState *machine)
         dev = DEVICE(isa_dev);
         qdev_prop_set_uint32(dev, "iobase", 0x830);
         qdev_prop_set_uint32(dev, "irq", 10);
-        isa_realize_and_unref(isa_dev, isa_bus, &error_fatal);
+        qdev_realize_and_unref(dev, BUS(isa_bus), &error_fatal);
 
         isa_dev = isa_new("pc87312");
         dev = DEVICE(isa_dev);
         qdev_prop_set_uint32(dev, "config", 12);
-        isa_realize_and_unref(isa_dev, isa_bus, &error_fatal);
+        qdev_realize_and_unref(dev, BUS(isa_bus), &error_fatal);
 
         isa_dev = isa_new("prep-systemio");
         dev = DEVICE(isa_dev);
         qdev_prop_set_uint32(dev, "ibm-planar-id", 0xfc);
         qdev_prop_set_uint32(dev, "equipment", 0xc0);
-        isa_realize_and_unref(isa_dev, isa_bus, &error_fatal);
+        qdev_realize_and_unref(dev, BUS(isa_bus), &error_fatal);
 
         dev = DEVICE(pci_create_simple(pci_bus, PCI_DEVFN(1, 0),
                                        "lsi53c810"));

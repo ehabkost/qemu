@@ -93,7 +93,7 @@ ISADevice *isa_ide_init(ISABus *bus, int iobase, int iobase2, int isairq,
     qdev_prop_set_uint32(dev, "iobase",  iobase);
     qdev_prop_set_uint32(dev, "iobase2", iobase2);
     qdev_prop_set_uint32(dev, "irq",     isairq);
-    isa_realize_and_unref(isadev, bus, &error_fatal);
+    qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
 
     s = ISA_IDE(dev);
     if (hd0) {

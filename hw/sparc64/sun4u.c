@@ -343,7 +343,7 @@ static void ebus_realize(PCIDevice *pci_dev, Error **errp)
     isa_dev = isa_new(TYPE_ISA_FDC);
     dev = DEVICE(isa_dev);
     qdev_prop_set_uint32(dev, "dma", -1);
-    isa_realize_and_unref(isa_dev, s->isa_bus, &error_fatal);
+    qdev_realize_and_unref(dev, BUS(s->isa_bus), &error_fatal);
     isa_fdc_init_drives(isa_dev, fd);
 
     /* Power */

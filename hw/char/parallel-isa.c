@@ -25,7 +25,7 @@ static void parallel_init(ISABus *bus, int index, Chardev *chr)
     dev = DEVICE(isadev);
     qdev_prop_set_uint32(dev, "index", index);
     qdev_prop_set_chr(dev, "chardev", chr);
-    isa_realize_and_unref(isadev, bus, &error_fatal);
+    qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
 }
 
 void parallel_hds_isa_init(ISABus *bus, int n)
