@@ -93,10 +93,7 @@ static const TypeInfo ssi_slave_info = {
 
 DeviceState *ssi_create_slave(SSIBus *bus, const char *name)
 {
-    DeviceState *dev = qdev_new(name);
-
-    qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
-    return dev;
+    return qdev_create_simple(BUS(bus), name, &error_fatal);
 }
 
 SSIBus *ssi_create_bus(DeviceState *parent, const char *name)
