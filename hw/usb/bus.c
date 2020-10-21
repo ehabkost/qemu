@@ -325,10 +325,7 @@ static USBDevice *usb_try_new(const char *name)
 
 USBDevice *usb_create_simple(USBBus *bus, const char *name)
 {
-    USBDevice *dev = usb_new(name);
-
-    qdev_realize_and_unref(DEVICE(dev), BUS(bus), &error_abort);
-    return dev;
+    return USB_DEVICE(qdev_create_simple(BUS(bus), name, &error_abort));
 }
 
 static void usb_fill_port(USBPort *port, void *opaque, int index,
