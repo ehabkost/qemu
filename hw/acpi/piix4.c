@@ -535,7 +535,7 @@ I2CBus *piix4_pm_init(PCIBus *bus, int devfn, uint32_t smb_io_base,
         s->use_acpi_hotplug_bridge = false;
     }
 
-    pci_realize_and_unref(pci_dev, bus, &error_fatal);
+    qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
 
     return s->smb.smbus;
 }

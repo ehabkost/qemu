@@ -275,7 +275,7 @@ void vt82c686b_ac97_init(PCIBus *bus, int devfn)
     PCIDevice *dev;
 
     dev = pci_new(devfn, TYPE_VT82C686B_AC97_DEVICE);
-    pci_realize_and_unref(dev, bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(dev), BUS(bus), &error_fatal);
 }
 
 static void via_ac97_class_init(ObjectClass *klass, void *data)
@@ -319,7 +319,7 @@ void vt82c686b_mc97_init(PCIBus *bus, int devfn)
     PCIDevice *dev;
 
     dev = pci_new(devfn, TYPE_VT82C686B_MC97_DEVICE);
-    pci_realize_and_unref(dev, bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(dev), BUS(bus), &error_fatal);
 }
 
 static void via_mc97_class_init(ObjectClass *klass, void *data)
@@ -391,7 +391,7 @@ I2CBus *vt82c686b_pm_init(PCIBus *bus, int devfn, uint32_t smb_io_base,
 
     s = VT82C686B_PM_DEVICE(dev);
 
-    pci_realize_and_unref(dev, bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(dev), BUS(bus), &error_fatal);
 
     return s->smb.smbus;
 }

@@ -615,7 +615,7 @@ static void sun4uv_init(MemoryRegion *address_space_mem,
     ebus = pci_new_multifunction(PCI_DEVFN(1, 0), true, TYPE_EBUS);
     qdev_prop_set_uint64(DEVICE(ebus), "console-serial-base",
                          hwdef->console_serial_base);
-    pci_realize_and_unref(ebus, pci_busA, &error_fatal);
+    qdev_realize_and_unref(DEVICE(ebus), BUS(pci_busA), &error_fatal);
 
     /* Wire up "well-known" ISA IRQs to PBM legacy obio IRQs */
     qdev_connect_gpio_out_named(DEVICE(ebus), "isa-irq", 7,
@@ -663,7 +663,7 @@ static void sun4uv_init(MemoryRegion *address_space_mem,
 
         dev = &pci_dev->qdev;
         qdev_set_nic_properties(dev, nd);
-        pci_realize_and_unref(pci_dev, bus, &error_fatal);
+        qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
     }
 
     /* If we don't have an onboard NIC, grab a default MAC address so that
@@ -674,7 +674,7 @@ static void sun4uv_init(MemoryRegion *address_space_mem,
 
     pci_dev = pci_new(PCI_DEVFN(3, 0), "cmd646-ide");
     qdev_prop_set_uint32(&pci_dev->qdev, "secondary", 1);
-    pci_realize_and_unref(pci_dev, pci_busA, &error_fatal);
+    qdev_realize_and_unref(DEVICE(pci_dev), BUS(pci_busA), &error_fatal);
     pci_ide_create_devs(pci_dev);
 
     /* Map NVRAM into I/O (ebus) space */

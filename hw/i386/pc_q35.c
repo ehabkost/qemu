@@ -99,7 +99,7 @@ static int ehci_create_ich9_with_companions(PCIBus *bus, int slot)
     }
 
     ehci = pci_new_multifunction(PCI_DEVFN(slot, 7), true, name);
-    pci_realize_and_unref(ehci, bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(ehci), BUS(bus), &error_fatal);
     usbbus = QLIST_FIRST(&ehci->qdev.child_bus);
 
     for (i = 0; i < 3; i++) {
@@ -107,7 +107,7 @@ static int ehci_create_ich9_with_companions(PCIBus *bus, int slot)
                                      comp[i].name);
         qdev_prop_set_string(&uhci->qdev, "masterbus", usbbus->name);
         qdev_prop_set_uint32(&uhci->qdev, "firstport", comp[i].port);
-        pci_realize_and_unref(uhci, bus, &error_fatal);
+        qdev_realize_and_unref(DEVICE(uhci), BUS(bus), &error_fatal);
     }
     return 0;
 }

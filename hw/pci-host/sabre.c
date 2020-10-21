@@ -392,13 +392,13 @@ static void sabre_realize(DeviceState *dev, Error **errp)
                                     TYPE_SIMBA_PCI_BRIDGE);
     s->bridgeB = PCI_BRIDGE(pci_dev);
     pci_bridge_map_irq(s->bridgeB, "pciB", pci_simbaB_map_irq);
-    pci_realize_and_unref(pci_dev, phb->bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(pci_dev), BUS(phb->bus), &error_fatal);
 
     pci_dev = pci_new_multifunction(PCI_DEVFN(1, 1), true,
                                     TYPE_SIMBA_PCI_BRIDGE);
     s->bridgeA = PCI_BRIDGE(pci_dev);
     pci_bridge_map_irq(s->bridgeA, "pciA", pci_simbaA_map_irq);
-    pci_realize_and_unref(pci_dev, phb->bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(pci_dev), BUS(phb->bus), &error_fatal);
 }
 
 static void sabre_init(Object *obj)

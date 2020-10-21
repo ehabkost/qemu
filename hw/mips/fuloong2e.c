@@ -371,7 +371,7 @@ static void mips_fuloong2e_init(MachineState *machine)
         dev = DEVICE(pci_dev);
         qdev_prop_set_uint32(dev, "vgamem_mb", 16);
         qdev_prop_set_uint16(dev, "x-device-id", 0x5159);
-        pci_realize_and_unref(pci_dev, pci_bus, &error_fatal);
+        qdev_realize_and_unref(dev, BUS(pci_bus), &error_fatal);
     }
 
     /* Populate SPD eeprom data */

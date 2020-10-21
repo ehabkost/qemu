@@ -400,7 +400,7 @@ static void ppc_core99_init(MachineState *machine)
     qdev_prop_set_chr(DEVICE(escc), "chrA", serial_hd(0));
     qdev_prop_set_chr(DEVICE(escc), "chrB", serial_hd(1));
 
-    pci_realize_and_unref(macio, pci_bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(macio), BUS(pci_bus), &error_fatal);
 
     /* We only emulate 2 out of 3 IDE controllers for now */
     ide_drive_get(hd, ARRAY_SIZE(hd));
