@@ -162,7 +162,7 @@ ISADevice *isa_new(const char *name)
 
 ISADevice *isa_try_new(const char *name)
 {
-    return ISA_DEVICE(qdev_try_new(name));
+    return ISA_DEVICE(qdev_try_new(name, NULL));
 }
 
 ISADevice *isa_create_simple(ISABus *bus, const char *name)

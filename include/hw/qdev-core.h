@@ -352,11 +352,12 @@ DeviceState *qdev_new(const char *name);
 /**
  * qdev_try_new: Try to create a device on the heap
  * @name: device type to create
+ * @errp: pointer to error object
  *
  * This is like qdev_new(), except it returns %NULL when type @name
  * does not exist, rather than asserting.
  */
-DeviceState *qdev_try_new(const char *name);
+DeviceState *qdev_try_new(const char *name, Error **errp);
 /**
  * qdev_realize: Realize @dev.
  * @dev: device to realize

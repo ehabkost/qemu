@@ -1144,7 +1144,7 @@ void pc_basic_device_init(struct PCMachineState *pcms,
      */
     if (pcms->hpet_enabled && (!kvm_irqchip_in_kernel() ||
                                kvm_has_pit_state2())) {
-        hpet = qdev_try_new(TYPE_HPET);
+        hpet = qdev_try_new(TYPE_HPET, NULL);
         if (!hpet) {
             error_report("couldn't create HPET device");
             exit(1);

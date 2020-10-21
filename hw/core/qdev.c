@@ -154,9 +154,10 @@ DeviceState *qdev_new(const char *name)
     return DEVICE(object_new(name));
 }
 
-DeviceState *qdev_try_new(const char *name)
+DeviceState *qdev_try_new(const char *name, Error **errp)
 {
     if (!module_object_class_by_name(name)) {
+        error_setg(errp, "unavailable device type: %s", name);
         return NULL;
     }
     return DEVICE(object_new(name));
