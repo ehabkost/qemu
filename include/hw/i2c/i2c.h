@@ -103,36 +103,6 @@ I2CSlave *i2c_slave_new(const char *name, uint8_t addr);
  */
 I2CSlave *i2c_slave_create_simple(I2CBus *bus, const char *name, uint8_t addr);
 
-/**
- * Realize and drop a reference an I2C slave device
- * @dev: I2C slave device to realize
- * @bus: I2C bus to put it on
- * @addr: I2C address of the slave on the bus
- * @errp: pointer to NULL initialized error object
- *
- * Returns: %true on success, %false on failure.
- *
- * Call 'realize' on @dev, put it on the specified @bus, and drop the
- * reference to it.
- *
- * This function is useful if you have created @dev via qdev_new(),
- * i2c_slave_new() or i2c_slave_try_new() (which take a reference to
- * the device it returns to you), so that you can set properties on it
- * before realizing it. If you don't need to set properties then
- * i2c_slave_create_simple() is probably better (as it does the create,
- * init and realize in one step).
- *
- * If you are embedding the I2C slave into another QOM device and
- * initialized it via some variant on object_initialize_child() then
- * do not use this function, because that family of functions arrange
- * for the only reference to the child device to be held by the parent
- * via the child<> property, and so the reference-count-drop done here
- * would be incorrect.  (Instead you would want i2c_slave_realize(),
- * which doesn't currently exist but would be trivial to create if we
- * had any code that wanted it.)
- */
-bool i2c_slave_realize_and_unref(I2CSlave *dev, I2CBus *bus, Error **errp);
-
 /* lm832x.c */
 void lm832x_key_event(DeviceState *dev, int key, int state);
 
