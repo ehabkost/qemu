@@ -1090,7 +1090,7 @@ static void pc_superio_init(ISABus *isa_bus, bool create_fdctrl, bool no_vmport)
         fdc = isa_new(TYPE_ISA_FDC);
         if (fdc) {
             qdev_realize_and_unref(DEVICE(fdc), BUS(isa_bus), &error_fatal);
-            isa_fdc_init_drives(fdc, fd);
+            isa_fdc_init_drives(ISA_FDC(fdc), fd);
         }
     }
 

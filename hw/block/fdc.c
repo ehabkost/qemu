@@ -2514,9 +2514,9 @@ static void fdctrl_init_drives(FloppyBus *bus, DriveInfo **fds)
     }
 }
 
-void isa_fdc_init_drives(ISADevice *fdc, DriveInfo **fds)
+void isa_fdc_init_drives(FDCtrlISABus *fdc, DriveInfo **fds)
 {
-    fdctrl_init_drives(&ISA_FDC(fdc)->state.bus, fds);
+    fdctrl_init_drives(&fdc->state.bus, fds);
 }
 
 static void fdctrl_connect_drives(FDCtrl *fdctrl, DeviceState *fdc_dev,

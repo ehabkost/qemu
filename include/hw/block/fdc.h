@@ -11,7 +11,7 @@
 #define TYPE_ISA_FDC "isa-fdc"
 OBJECT_DECLARE_SIMPLE_TYPE(FDCtrlISABus, ISA_FDC)
 
-void isa_fdc_init_drives(ISADevice *fdc, DriveInfo **fds);
+void isa_fdc_init_drives(FDCtrlISABus *fdc, DriveInfo **fds);
 void fdctrl_init_sysbus(qemu_irq irq, int dma_chann,
                         hwaddr mmio_base, DriveInfo **fds);
 void sun4m_fdctrl_init(qemu_irq irq, hwaddr io_base,
