@@ -91,16 +91,11 @@ static const TypeInfo ssi_slave_info = {
     .abstract = true,
 };
 
-bool ssi_realize_and_unref(DeviceState *dev, SSIBus *bus, Error **errp)
-{
-    return qdev_realize_and_unref(dev, &bus->parent_obj, errp);
-}
-
 DeviceState *ssi_create_slave(SSIBus *bus, const char *name)
 {
     DeviceState *dev = qdev_new(name);
 
-    ssi_realize_and_unref(dev, bus, &error_fatal);
+    qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
     return dev;
 }
 
