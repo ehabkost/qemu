@@ -90,7 +90,7 @@ static void pic_common_realize(DeviceState *dev, Error **errp)
     qdev_set_legacy_instance_id(dev, s->iobase, 1);
 }
 
-ISADevice *i8259_init_chip(const char *name, ISABus *bus, bool master)
+DeviceState *i8259_init_chip(const char *name, ISABus *bus, bool master)
 {
     DeviceState *dev;
     ISADevice *isadev;
@@ -103,7 +103,7 @@ ISADevice *i8259_init_chip(const char *name, ISABus *bus, bool master)
     qdev_prop_set_bit(dev, "master", master);
     qdev_realize_and_unref(dev, BUS(bus), &error_fatal);
 
-    return isadev;
+    return dev;
 }
 
 void pic_stat_update_irq(int irq, int level)
