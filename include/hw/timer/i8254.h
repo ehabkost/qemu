@@ -74,7 +74,7 @@ static inline ISADevice *kvm_pit_init(ISABus *bus, int base)
     return d;
 }
 
-void pit_set_gate(ISADevice *dev, int channel, int val);
+void pit_set_gate(PITCommonState *pit, int channel, int val);
 void pit_get_channel_info(PITCommonState *pit, int channel,
                           PITChannelInfo *info);
 
