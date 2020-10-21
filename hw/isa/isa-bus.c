@@ -170,13 +170,8 @@ ISADevice *isa_create_simple(ISABus *bus, const char *name)
     ISADevice *dev;
 
     dev = isa_new(name);
-    isa_realize_and_unref(dev, bus, &error_fatal);
+    qdev_realize_and_unref(DEVICE(dev), BUS(bus), &error_fatal);
     return dev;
-}
-
-bool isa_realize_and_unref(ISADevice *dev, ISABus *bus, Error **errp)
-{
-    return qdev_realize_and_unref(&dev->parent_obj, &bus->parent_obj, errp);
 }
 
 ISADevice *isa_vga_init(ISABus *bus)

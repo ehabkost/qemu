@@ -643,7 +643,7 @@ void i8257_dma_init(ISABus *bus, bool high_page_enable)
     qdev_prop_set_int32(d, "page-base", 0x80);
     qdev_prop_set_int32(d, "pageh-base", high_page_enable ? 0x480 : -1);
     qdev_prop_set_int32(d, "dshift", 0);
-    isa_realize_and_unref(isa1, bus, &error_fatal);
+    qdev_realize_and_unref(d, BUS(bus), &error_fatal);
 
     isa2 = isa_new(TYPE_I8257);
     d = DEVICE(isa2);
@@ -651,7 +651,7 @@ void i8257_dma_init(ISABus *bus, bool high_page_enable)
     qdev_prop_set_int32(d, "page-base", 0x88);
     qdev_prop_set_int32(d, "pageh-base", high_page_enable ? 0x488 : -1);
     qdev_prop_set_int32(d, "dshift", 1);
-    isa_realize_and_unref(isa2, bus, &error_fatal);
+    qdev_realize_and_unref(d, BUS(bus), &error_fatal);
 
     isa_bus_dma(bus, ISADMA(isa1), ISADMA(isa2));
 }

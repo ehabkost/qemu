@@ -1089,7 +1089,7 @@ static void pc_superio_init(ISABus *isa_bus, bool create_fdctrl, bool no_vmport)
     if (create_fdctrl) {
         fdc = isa_new(TYPE_ISA_FDC);
         if (fdc) {
-            isa_realize_and_unref(fdc, isa_bus, &error_fatal);
+            qdev_realize_and_unref(DEVICE(fdc), BUS(isa_bus), &error_fatal);
             isa_fdc_init_drives(fdc, fd);
         }
     }
@@ -1104,7 +1104,7 @@ static void pc_superio_init(ISABus *isa_bus, bool create_fdctrl, bool no_vmport)
     if (vmmouse) {
         object_property_set_link(OBJECT(vmmouse), "i8042", OBJECT(i8042),
                                  &error_abort);
-        isa_realize_and_unref(vmmouse, isa_bus, &error_fatal);
+        qdev_realize_and_unref(DEVICE(vmmouse), BUS(isa_bus), &error_fatal);
     }
     port92 = isa_create_simple(isa_bus, TYPE_PORT92);
 
