@@ -81,7 +81,7 @@ static void isa_ide_realizefn(DeviceState *dev, Error **errp)
     ide_register_restart_cb(&s->bus);
 }
 
-ISADevice *isa_ide_init(ISABus *bus, int iobase, int iobase2, int isairq,
+DeviceState *isa_ide_init(ISABus *bus, int iobase, int iobase2, int isairq,
                         DriveInfo *hd0, DriveInfo *hd1)
 {
     DeviceState *dev;
@@ -102,7 +102,7 @@ ISADevice *isa_ide_init(ISABus *bus, int iobase, int iobase2, int isairq,
     if (hd1) {
         ide_create_drive(&s->bus, 1, hd1);
     }
-    return isadev;
+    return dev;
 }
 
 static Property isa_ide_properties[] = {
