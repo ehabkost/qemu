@@ -344,7 +344,7 @@ static void ebus_realize(PCIDevice *pci_dev, Error **errp)
     dev = DEVICE(isa_dev);
     qdev_prop_set_uint32(dev, "dma", -1);
     qdev_realize_and_unref(dev, BUS(s->isa_bus), &error_fatal);
-    isa_fdc_init_drives(isa_dev, fd);
+    isa_fdc_init_drives(ISA_FDC(isa_dev), fd);
 
     /* Power */
     dev = qdev_new(TYPE_SUN4U_POWER);

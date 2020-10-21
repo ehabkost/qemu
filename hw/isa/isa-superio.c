@@ -130,7 +130,7 @@ static void isa_superio_realize(DeviceState *dev, Error **errp)
         }
         object_property_add_child(OBJECT(sio), "isa-fdc", OBJECT(isa));
         qdev_realize_and_unref(DEVICE(isa), BUS(bus), &error_fatal);
-        isa_fdc_init_drives(isa, fd);
+        isa_fdc_init_drives(ISA_FDC(isa), fd);
         sio->floppy = isa;
         trace_superio_create_floppy(0,
                                     k->floppy.get_iobase ?
