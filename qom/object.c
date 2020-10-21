@@ -2449,57 +2449,29 @@ static char *object_get_type(Object *obj, Error **errp)
     return g_strdup(object_get_typename(obj));
 }
 
-static void property_get_uint8_ptr(Object *obj, Visitor *v, const char *name,
-                                   void *opaque, Error **errp)
+static void property_visit_uint8_ptr(Object *obj, Visitor *v, const char *name,
+                                     void *opaque, Error **errp)
 {
     uint8_t *ptr = opaque;
     visit_type_uint8(v, name, ptr, errp);
 }
 
-static void property_set_uint8_ptr(Object *obj, Visitor *v, const char *name,
-                                   void *opaque, Error **errp)
-{
-    uint8_t *ptr = opaque;
-    visit_type_uint8(v, name, ptr, errp);
-}
-
-static void property_get_uint16_ptr(Object *obj, Visitor *v, const char *name,
-                                    void *opaque, Error **errp)
+static void property_visit_uint16_ptr(Object *obj, Visitor *v, const char *name,
+                                      void *opaque, Error **errp)
 {
     uint16_t *ptr = opaque;
     visit_type_uint16(v, name, ptr, errp);
 }
 
-static void property_set_uint16_ptr(Object *obj, Visitor *v, const char *name,
-                                    void *opaque, Error **errp)
-{
-    uint16_t *ptr = opaque;
-    visit_type_uint16(v, name, ptr, errp);
-}
-
-static void property_get_uint32_ptr(Object *obj, Visitor *v, const char *name,
-                                    void *opaque, Error **errp)
+static void property_visit_uint32_ptr(Object *obj, Visitor *v, const char *name,
+                                      void *opaque, Error **errp)
 {
     uint32_t *ptr = opaque;
     visit_type_uint32(v, name, ptr, errp);
 }
 
-static void property_set_uint32_ptr(Object *obj, Visitor *v, const char *name,
-                                    void *opaque, Error **errp)
-{
-    uint32_t *ptr = opaque;
-    visit_type_uint32(v, name, ptr, errp);
-}
-
-static void property_get_uint64_ptr(Object *obj, Visitor *v, const char *name,
-                                    void *opaque, Error **errp)
-{
-    uint64_t *ptr = opaque;
-    visit_type_uint64(v, name, ptr, errp);
-}
-
-static void property_set_uint64_ptr(Object *obj, Visitor *v, const char *name,
-                                    void *opaque, Error **errp)
+static void property_visit_uint64_ptr(Object *obj, Visitor *v, const char *name,
+                                      void *opaque, Error **errp)
 {
     uint64_t *ptr = opaque;
     visit_type_uint64(v, name, ptr, errp);
@@ -2514,11 +2486,11 @@ object_property_add_uint8_ptr(Object *obj, const char *name,
     ObjectPropertyAccessor *setter = NULL;
 
     if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_get_uint8_ptr;
+        getter = property_visit_uint8_ptr;
     }
 
     if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_set_uint8_ptr;
+        setter = property_visit_uint8_ptr;
     }
 
     return object_property_add(obj, name, "uint8",
@@ -2534,11 +2506,11 @@ object_class_property_add_uint8_ptr(ObjectClass *klass, const char *name,
     ObjectPropertyAccessor *setter = NULL;
 
     if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_get_uint8_ptr;
+        getter = property_visit_uint8_ptr;
     }
 
     if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_set_uint8_ptr;
+        setter = property_visit_uint8_ptr;
     }
 
     return object_class_property_add(klass, name, "uint8",
@@ -2554,11 +2526,11 @@ object_property_add_uint16_ptr(Object *obj, const char *name,
     ObjectPropertyAccessor *setter = NULL;
 
     if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_get_uint16_ptr;
+        getter = property_visit_uint16_ptr;
     }
 
     if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_set_uint16_ptr;
+        setter = property_visit_uint16_ptr;
     }
 
     return object_property_add(obj, name, "uint16",
@@ -2574,11 +2546,11 @@ object_class_property_add_uint16_ptr(ObjectClass *klass, const char *name,
     ObjectPropertyAccessor *setter = NULL;
 
     if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_get_uint16_ptr;
+        getter = property_visit_uint16_ptr;
     }
 
     if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_set_uint16_ptr;
+        setter = property_visit_uint16_ptr;
     }
 
     return object_class_property_add(klass, name, "uint16",
@@ -2594,11 +2566,11 @@ object_property_add_uint32_ptr(Object *obj, const char *name,
     ObjectPropertyAccessor *setter = NULL;
 
     if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_get_uint32_ptr;
+        getter = property_visit_uint32_ptr;
     }
 
     if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_set_uint32_ptr;
+        setter = property_visit_uint32_ptr;
     }
 
     return object_property_add(obj, name, "uint32",
@@ -2614,11 +2586,11 @@ object_class_property_add_uint32_ptr(ObjectClass *klass, const char *name,
     ObjectPropertyAccessor *setter = NULL;
 
     if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_get_uint32_ptr;
+        getter = property_visit_uint32_ptr;
     }
 
     if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_set_uint32_ptr;
+        setter = property_visit_uint32_ptr;
     }
 
     return object_class_property_add(klass, name, "uint32",
@@ -2634,11 +2606,11 @@ object_property_add_uint64_ptr(Object *obj, const char *name,
     ObjectPropertyAccessor *setter = NULL;
 
     if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_get_uint64_ptr;
+        getter = property_visit_uint64_ptr;
     }
 
     if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_set_uint64_ptr;
+        setter = property_visit_uint64_ptr;
     }
 
     return object_property_add(obj, name, "uint64",
@@ -2654,11 +2626,11 @@ object_class_property_add_uint64_ptr(ObjectClass *klass, const char *name,
     ObjectPropertyAccessor *setter = NULL;
 
     if ((flags & OBJ_PROP_FLAG_READ) == OBJ_PROP_FLAG_READ) {
-        getter = property_get_uint64_ptr;
+        getter = property_visit_uint64_ptr;
     }
 
     if ((flags & OBJ_PROP_FLAG_WRITE) == OBJ_PROP_FLAG_WRITE) {
-        setter = property_set_uint64_ptr;
+        setter = property_visit_uint64_ptr;
     }
 
     return object_class_property_add(klass, name, "uint64",
