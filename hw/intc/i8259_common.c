@@ -92,11 +92,8 @@ static void pic_common_realize(DeviceState *dev, Error **errp)
 
 DeviceState *i8259_init_chip(const char *name, ISABus *bus, bool master)
 {
-    DeviceState *dev;
-    ISADevice *isadev;
+    DeviceState *dev = qdev_new(name);
 
-    isadev = isa_new(name);
-    dev = DEVICE(isadev);
     qdev_prop_set_uint32(dev, "iobase", master ? 0x20 : 0xa0);
     qdev_prop_set_uint32(dev, "elcr_addr", master ? 0x4d0 : 0x4d1);
     qdev_prop_set_uint8(dev, "elcr_mask", master ? 0xf8 : 0xde);
