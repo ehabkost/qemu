@@ -45,15 +45,13 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 #define DEFINE_PROP(_name, _state, _field, _prop, _type) { \
         .name      = (_name),                                    \
         .info      = &(_prop),                                   \
-        .offset    = offsetof(_state, _field)                    \
-            + type_check(_type, typeof_field(_state, _field)),   \
+        .offset    = typed_offsetof(_state, _field, _type),      \
         }
 
 #define DEFINE_PROP_SIGNED(_name, _state, _field, _defval, _prop, _type) { \
         .name      = (_name),                                           \
         .info      = &(_prop),                                          \
-        .offset    = offsetof(_state, _field)                           \
-            + type_check(_type,typeof_field(_state, _field)),           \
+        .offset    = typed_offsetof(_state, _field, _type),             \
         .set_default = true,                                            \
         .defval.i  = (_type)_defval,                                    \
         }
@@ -61,16 +59,14 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 #define DEFINE_PROP_SIGNED_NODEFAULT(_name, _state, _field, _prop, _type) { \
         .name      = (_name),                                           \
         .info      = &(_prop),                                          \
-        .offset    = offsetof(_state, _field)                           \
-            + type_check(_type, typeof_field(_state, _field)),          \
+        .offset    = typed_offsetof(_state, _field, _type),             \
         }
 
 #define DEFINE_PROP_BIT(_name, _state, _field, _bit, _defval) {  \
         .name      = (_name),                                    \
         .info      = &(qdev_prop_bit),                           \
         .bitnr    = (_bit),                                      \
-        .offset    = offsetof(_state, _field)                    \
-            + type_check(uint32_t,typeof_field(_state, _field)), \
+        .offset    = typed_offsetof(_state, _field, uint32_t),   \
         .set_default = true,                                     \
         .defval.u  = (bool)_defval,                              \
         }
@@ -78,8 +74,7 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 #define DEFINE_PROP_UNSIGNED(_name, _state, _field, _defval, _prop, _type) { \
         .name      = (_name),                                           \
         .info      = &(_prop),                                          \
-        .offset    = offsetof(_state, _field)                           \
-            + type_check(_type, typeof_field(_state, _field)),          \
+        .offset    = typed_offsetof(_state, _field, _type),             \
         .set_default = true,                                            \
         .defval.u  = (_type)_defval,                                    \
         }
@@ -87,16 +82,14 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 #define DEFINE_PROP_UNSIGNED_NODEFAULT(_name, _state, _field, _prop, _type) { \
         .name      = (_name),                                           \
         .info      = &(_prop),                                          \
-        .offset    = offsetof(_state, _field)                           \
-            + type_check(_type, typeof_field(_state, _field)),          \
+        .offset    = typed_offsetof(_state, _field, _type),             \
         }
 
 #define DEFINE_PROP_BIT64(_name, _state, _field, _bit, _defval) {       \
         .name      = (_name),                                           \
         .info      = &(qdev_prop_bit64),                                \
         .bitnr    = (_bit),                                             \
-        .offset    = offsetof(_state, _field)                           \
-            + type_check(uint64_t, typeof_field(_state, _field)),       \
+        .offset    = typed_offsetof(_state, _field, uint64_t),          \
         .set_default = true,                                            \
         .defval.u  = (bool)_defval,                                     \
         }
@@ -104,8 +97,7 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 #define DEFINE_PROP_BOOL(_name, _state, _field, _defval) {       \
         .name      = (_name),                                    \
         .info      = &(qdev_prop_bool),                          \
-        .offset    = offsetof(_state, _field)                    \
-            + type_check(bool, typeof_field(_state, _field)),    \
+        .offset    = typed_offsetof(_state, _field, bool),       \
         .set_default = true,                                     \
         .defval.u    = (bool)_defval,                            \
         }
@@ -142,8 +134,7 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
         .info = &(qdev_prop_arraylen),                                  \
         .set_default = true,                                            \
         .defval.u = 0,                                                  \
-        .offset = offsetof(_state, _field)                              \
-            + type_check(uint32_t, typeof_field(_state, _field)),       \
+        .offset = typed_offsetof(_state, _field, uint32_t),             \
         .arrayinfo = &(_arrayprop),                                     \
         .arrayfieldsize = sizeof(_arraytype),                           \
         .arrayoffset = offsetof(_state, _arrayfield),                   \
@@ -152,8 +143,7 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 #define DEFINE_PROP_LINK(_name, _state, _field, _type, _ptr_type) {     \
         .name = (_name),                                                \
         .info = &(qdev_prop_link),                                      \
-        .offset = offsetof(_state, _field)                              \
-            + type_check(_ptr_type, typeof_field(_state, _field)),      \
+        .offset = typed_offsetof(_state, _field, _ptr_type),            \
         .link_type  = _type,                                            \
         }
 
@@ -220,8 +210,7 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 #define DEFINE_PROP_UUID(_name, _state, _field) {                  \
         .name      = (_name),                                      \
         .info      = &qdev_prop_uuid,                              \
-        .offset    = offsetof(_state, _field)                      \
-            + type_check(QemuUUID, typeof_field(_state, _field)),  \
+        .offset    = typed_offsetof(_state, _field, QemuUUID),     \
         .set_default = true,                                       \
         }
 #define DEFINE_PROP_AUDIODEV(_n, _s, _f) \
@@ -230,8 +219,7 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 #define DEFINE_PROP_UUID_NODEFAULT(_name, _state, _field) {        \
         .name      = (_name),                                      \
         .info      = &qdev_prop_uuid,                              \
-        .offset    = offsetof(_state, _field)                      \
-            + type_check(QemuUUID, typeof_field(_state, _field)),  \
+        .offset    = typed_offsetof(_state, _field, QemuUUID),     \
         }
 
 #define DEFINE_PROP_END_OF_LIST()               \
