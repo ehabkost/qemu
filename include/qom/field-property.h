@@ -28,6 +28,8 @@ struct Property {
     const char   *qdev_prop_name;
     const PropertyInfo *info;
     ptrdiff_t    offset;
+    /** @size: size (in bytes) of field being modified at offset */
+    size_t       size;
     uint8_t      bitnr;
     /**
      * @set_default: true if the default value should be set from @defval,
