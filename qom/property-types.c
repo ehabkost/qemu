@@ -143,50 +143,12 @@ const PropertyInfo prop_info_bit64 = {
 
 /* --- bool --- */
 
-static void get_bool(Object *obj, Visitor *v, const char *name, void *opaque,
-                     Error **errp)
-{
-    Property *prop = opaque;
-    bool *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_bool(v, name, ptr, errp);
-}
-
-static void set_bool(Object *obj, Visitor *v, const char *name, void *opaque,
-                     Error **errp)
-{
-    Property *prop = opaque;
-    bool *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_bool(v, name, ptr, errp);
-}
-
 const PropertyInfo prop_info_bool = {
-    .name  = "bool",
-    .get   = get_bool,
-    .set   = set_bool,
+    .qapi_type = &qapi_bool,
     .set_default_value = set_default_value_bool,
 };
 
 /* --- 8bit integer --- */
-
-static void get_uint8(Object *obj, Visitor *v, const char *name, void *opaque,
-                      Error **errp)
-{
-    Property *prop = opaque;
-    uint8_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_uint8(v, name, ptr, errp);
-}
-
-static void set_uint8(Object *obj, Visitor *v, const char *name, void *opaque,
-                      Error **errp)
-{
-    Property *prop = opaque;
-    uint8_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_uint8(v, name, ptr, errp);
-}
 
 void object_propinfo_set_default_value_int(ObjectProperty *op,
                                          const Property *prop)
@@ -201,51 +163,20 @@ void object_propinfo_set_default_value_uint(ObjectProperty *op,
 }
 
 const PropertyInfo prop_info_uint8 = {
-    .name  = "uint8",
-    .get   = get_uint8,
-    .set   = set_uint8,
+    .qapi_type = &qapi_uint8,
     .set_default_value = object_propinfo_set_default_value_uint,
 };
 
 /* --- 16bit integer --- */
 
-static void get_uint16(Object *obj, Visitor *v, const char *name,
-                       void *opaque, Error **errp)
-{
-    Property *prop = opaque;
-    uint16_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_uint16(v, name, ptr, errp);
-}
-
-static void set_uint16(Object *obj, Visitor *v, const char *name,
-                       void *opaque, Error **errp)
-{
-    Property *prop = opaque;
-    uint16_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_uint16(v, name, ptr, errp);
-}
-
 const PropertyInfo prop_info_uint16 = {
-    .name  = "uint16",
-    .get   = get_uint16,
-    .set   = set_uint16,
+    .qapi_type = &qapi_uint16,
     .set_default_value = object_propinfo_set_default_value_uint,
 };
 
 /* --- 32bit integer --- */
 
 static void get_uint32(Object *obj, Visitor *v, const char *name,
-                       void *opaque, Error **errp)
-{
-    Property *prop = opaque;
-    uint32_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_uint32(v, name, ptr, errp);
-}
-
-static void set_uint32(Object *obj, Visitor *v, const char *name,
                        void *opaque, Error **errp)
 {
     Property *prop = opaque;
@@ -263,78 +194,25 @@ void object_propinfo_get_int32(Object *obj, Visitor *v, const char *name,
     visit_type_int32(v, name, ptr, errp);
 }
 
-static void set_int32(Object *obj, Visitor *v, const char *name, void *opaque,
-                      Error **errp)
-{
-    Property *prop = opaque;
-    int32_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_int32(v, name, ptr, errp);
-}
-
 const PropertyInfo prop_info_uint32 = {
-    .name  = "uint32",
-    .get   = get_uint32,
-    .set   = set_uint32,
+    .qapi_type = &qapi_uint32,
     .set_default_value = object_propinfo_set_default_value_uint,
 };
 
 const PropertyInfo prop_info_int32 = {
-    .name  = "int32",
-    .get   = object_propinfo_get_int32,
-    .set   = set_int32,
+    .qapi_type = &qapi_int32,
     .set_default_value = object_propinfo_set_default_value_int,
 };
 
 /* --- 64bit integer --- */
 
-static void get_uint64(Object *obj, Visitor *v, const char *name,
-                       void *opaque, Error **errp)
-{
-    Property *prop = opaque;
-    uint64_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_uint64(v, name, ptr, errp);
-}
-
-static void set_uint64(Object *obj, Visitor *v, const char *name,
-                       void *opaque, Error **errp)
-{
-    Property *prop = opaque;
-    uint64_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_uint64(v, name, ptr, errp);
-}
-
-static void get_int64(Object *obj, Visitor *v, const char *name,
-                      void *opaque, Error **errp)
-{
-    Property *prop = opaque;
-    int64_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_int64(v, name, ptr, errp);
-}
-
-static void set_int64(Object *obj, Visitor *v, const char *name,
-                      void *opaque, Error **errp)
-{
-    Property *prop = opaque;
-    int64_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_int64(v, name, ptr, errp);
-}
-
 const PropertyInfo prop_info_uint64 = {
-    .name  = "uint64",
-    .get   = get_uint64,
-    .set   = set_uint64,
+    .qapi_type = &qapi_uint64,
     .set_default_value = object_propinfo_set_default_value_uint,
 };
 
 const PropertyInfo prop_info_int64 = {
-    .name  = "int64",
-    .get   = get_int64,
-    .set   = set_int64,
+    .qapi_type = &qapi_int64,
     .set_default_value = object_propinfo_set_default_value_int,
 };
 
@@ -605,28 +483,8 @@ const PropertyInfo prop_info_arraylen = {
 
 /* --- 64bit unsigned int 'size' type --- */
 
-static void get_size(Object *obj, Visitor *v, const char *name, void *opaque,
-                     Error **errp)
-{
-    Property *prop = opaque;
-    uint64_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_size(v, name, ptr, errp);
-}
-
-static void set_size(Object *obj, Visitor *v, const char *name, void *opaque,
-                     Error **errp)
-{
-    Property *prop = opaque;
-    uint64_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_size(v, name, ptr, errp);
-}
-
 const PropertyInfo prop_info_size = {
-    .name  = "size",
-    .get = get_size,
-    .set = set_size,
+    .qapi_type = &qapi_size,
     .set_default_value = object_propinfo_set_default_value_uint,
 };
 
