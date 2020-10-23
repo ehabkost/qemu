@@ -18,6 +18,8 @@ struct Property {
     const char   *name;
     const PropertyInfo *info;
     ptrdiff_t    offset;
+    /** size (in bytes) of field at offset */
+    size_t       size;
     uint8_t      bitnr;
     /**
      *  @set_default: true if the default value should be set
@@ -110,6 +112,7 @@ extern const PropertyInfo prop_info_link;
         .info      = &(_prop),                                   \
         .offset    = offsetof(_state, _field)                    \
             + type_check(_type, typeof_field(_state, _field)),   \
+        .size      = sizeof(typeof_field(_state, _field)),       \
         __VA_ARGS__                                              \
         }
 
