@@ -518,6 +518,7 @@ static ArrayElementProperty *array_element_new(Object *obj,
      * being inside the device struct.
      */
     arrayprop->prop.offset = eltptr - (void *)obj;
+    arrayprop->prop.size = array_len_prop->arrayfieldsize;
     assert(object_static_prop_ptr(obj, &arrayprop->prop) == eltptr);
     return arrayprop;
 }
