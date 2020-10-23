@@ -872,11 +872,6 @@ static void set_size(Object *obj, Visitor *v, const char *name, void *opaque,
     Property *prop = opaque;
     uint64_t *ptr = qdev_get_prop_ptr(dev, prop);
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     visit_type_size(v, name, ptr, errp);
 }
 
@@ -884,6 +879,7 @@ const PropertyInfo qdev_prop_size = {
     .name  = "size",
     .get = get_size,
     .set = set_size,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_uint,
 };
 
