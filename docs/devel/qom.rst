@@ -394,3 +394,8 @@ Property Types Reference
 ------------------------
 
 .. kernel-doc:: include/qom/property-types.h
+
+QAPI Glue API Reference
+-----------------------
+
+.. kernel-doc:: include/qom/qom-qapi.h
