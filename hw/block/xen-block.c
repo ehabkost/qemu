@@ -402,11 +402,6 @@ static void xen_block_set_vdev(Object *obj, Visitor *v, const char *name,
     char *str, *p;
     const char *end;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
@@ -519,6 +514,7 @@ const PropertyInfo xen_block_prop_vdev = {
     .description = "Virtual Disk specifier: d*p*/xvd*/hd*/sd*",
     .get = xen_block_get_vdev,
     .set = xen_block_set_vdev,
+    .read_only_after_realize = true,
 };
 
 static Property xen_block_props[] = {
