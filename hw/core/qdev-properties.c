@@ -669,6 +669,7 @@ static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
          * being inside the device struct.
          */
         arrayprop->prop.offset = eltptr - (void *)dev;
+        arrayprop->prop.size = prop->arrayfieldsize;
         assert(qdev_get_prop_ptr(dev, &arrayprop->prop) == eltptr);
         object_property_add(obj, propname,
                             arrayprop->prop.info->name,

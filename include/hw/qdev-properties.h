@@ -47,6 +47,7 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
         .info      = &(_prop),                                   \
         .offset    = offsetof(_state, _field)                    \
             + type_check(_type, typeof_field(_state, _field)),   \
+        .size      = sizeof(typeof_field(_state, _field)),       \
         __VA_ARGS__                                              \
         }
 

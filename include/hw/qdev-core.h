@@ -286,7 +286,10 @@ struct BusState {
 struct Property {
     const char   *name;
     const PropertyInfo *info;
+    /** offset of field inside instance struct */
     ptrdiff_t    offset;
+    /** size (in bytes) of field at offset */
+    size_t       size;
     uint8_t      bitnr;
     bool         set_default;
     union {
