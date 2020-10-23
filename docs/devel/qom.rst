@@ -379,3 +379,9 @@ API Reference
 -------------
 
 .. kernel-doc:: include/qom/object.h
+
+
+QAPI Glue API Reference
+-----------------------
+
+.. kernel-doc:: include/qom/qom-qapi.h
