@@ -38,6 +38,20 @@ void qdev_prop_allow_set_link_before_realize(const Object *obj,
     }
 }
 
+static void qdev_property_get(Object *obj, Visitor *v, const char *name,
+                              void *opaque, Error **errp)
+{
+    Property *prop = opaque;
+    return prop->info->get(obj, v, name, opaque, errp);
+}
+
+static void qdev_property_set(Object *obj, Visitor *v, const char *name,
+                              void *opaque, Error **errp)
+{
+    Property *prop = opaque;
+    return prop->info->set(obj, v, name, opaque, errp);
+}
+
 void *qdev_get_prop_ptr(DeviceState *dev, Property *prop)
 {
     void *ptr = dev;
@@ -700,8 +714,8 @@ static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
         assert(qdev_get_prop_ptr(dev, &arrayprop->prop) == eltptr);
         object_property_add(obj, propname,
                             arrayprop->prop.info->name,
-                            arrayprop->prop.info->get,
-                            arrayprop->prop.info->set,
+                            qdev_property_get,
+                            qdev_property_set,
                             array_element_release,
                             arrayprop);
     }
@@ -943,7 +957,7 @@ void qdev_property_add_static(DeviceState *dev, Property *prop)
     assert(!prop->info->create);
 
     op = object_property_add(obj, prop->name, prop->info->name,
-                             prop->info->get, prop->info->set,
+                             qdev_property_get, qdev_property_set,
                              prop->info->release,
                              prop);
 
@@ -969,7 +983,7 @@ static void qdev_class_add_property(DeviceClass *klass, Property *prop)
 
         op = object_class_property_add(oc,
                                        prop->name, prop->info->name,
-                                       prop->info->get, prop->info->set,
+                                       qdev_property_get, qdev_property_set,
                                        prop->info->release,
                                        prop);
         if (prop->set_default) {
