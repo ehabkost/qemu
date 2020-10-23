@@ -49,6 +49,13 @@ static void qdev_property_set(Object *obj, Visitor *v, const char *name,
                               void *opaque, Error **errp)
 {
     Property *prop = opaque;
+    DeviceState *dev = DEVICE(obj);
+
+    if (prop->info->read_only_after_realize && dev->realized) {
+        qdev_prop_set_after_realize(dev, name, errp);
+        return;
+    }
+
     return prop->info->set(obj, v, name, opaque, errp);
 }
 
