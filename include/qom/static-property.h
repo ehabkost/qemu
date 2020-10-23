@@ -5,6 +5,7 @@
 #define QOM_STATIC_PROPERTY_H
 
 #include "qom/object.h"
+#include "qom/qom-qapi.h"
 #include "qapi/util.h"
 
 /**
@@ -46,6 +47,12 @@ struct Property {
 };
 
 struct PropertyInfo {
+    /*
+     * If @qapi_type is set, @name, @get, and @set are all optional,
+     * and the QOM type name and visitor will be used when they are not
+     * set.
+     */
+    const QAPITypeInfo *qapi_type;
     const char *name;
     const char *description;
     const QEnumLookup *enum_table;
