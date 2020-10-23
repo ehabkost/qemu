@@ -7,6 +7,7 @@
 #include "qom/field-property.h"
 #include "qapi/qmp/qlit.h"
 
+extern const PropertyInfo prop_info_simple;
 extern const PropertyInfo prop_info_bit;
 extern const PropertyInfo prop_info_bit64;
 extern const PropertyInfo prop_info_bool;
@@ -34,6 +35,12 @@ extern const PropertyInfo prop_info_link;
         .defval = QLIT_QNULL,                                    \
         __VA_ARGS__                                              \
         }
+
+#define DEFINE_PROP_QAPI(_name, _state, _field, _prop, _qapi_type, ...) \
+    DEFINE_PROP(_name, _state, _field, _prop,                           \
+                QOM_QAPI_C_TYPE(_qapi_type),                            \
+                .qapi_type = &_qapi_type,                               \
+                __VA_ARGS__)
 
 #define DEFINE_PROP_SIGNED(_name, _state, _field, _defval, _prop, _type, ...) \
     DEFINE_PROP(_name, _state, _field, _prop, _type,                     \

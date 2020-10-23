@@ -5,6 +5,7 @@
 #define QOM_FIELD_PROPERTY_H
 
 #include "qom/object.h"
+#include "qom/qom-qapi.h"
 #include "qapi/util.h"
 #include "qapi/qmp/qlit.h"
 
@@ -25,6 +26,14 @@ struct Property {
      * assume it will contain the actual property name.
      */
     const char   *name_template;
+    /**
+     * @qapi_type: QAPI type of property
+     *
+     * If @qapi_type is not NULL, @info.name, @info.get, and
+     * @info.set are optional, and the QOM type name and visitor
+     * will be used.
+     */
+    const QAPITypeInfo *qapi_type;
     const PropertyInfo *info;
     /** @offset: offset of field in object instance struct */
     ptrdiff_t    offset;

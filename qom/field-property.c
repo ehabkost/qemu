@@ -13,11 +13,29 @@ void *object_field_prop_ptr(Object *obj, Property *prop, size_t expected_size)
     return ptr;
 }
 
+static bool field_prop_call_qapi_visitor(Object *obj, Property *prop,
+                                          Visitor *v, const char *name,
+                                          Error **errp)
+{
+    void *ptr = object_field_prop_ptr(obj, prop,
+                                      prop->qapi_type->size);
+
+    return qom_qapi_visit(prop->qapi_type,
+                          v, name, ptr, prop->size, errp);
+}
+
 static void field_prop_get(Object *obj, Visitor *v, const char *name,
                            void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    return prop->info->get(obj, v, name, opaque, errp);
+    if (prop->info->get) {
+        return prop->info->get(obj, v, name, opaque, errp);
+    }
+    if (prop->qapi_type) {
+        field_prop_call_qapi_visitor(obj, prop, v, name, errp);
+        return;
+    }
+    g_assert_not_reached();
 }
 
 /**
@@ -27,7 +45,11 @@ static void field_prop_get(Object *obj, Visitor *v, const char *name,
  */
 static ObjectPropertyAccessor *field_prop_getter(const Property *prop)
 {
-    return prop->info->get ? field_prop_get : NULL;
+    if (prop->info->get || prop->qapi_type) {
+        return field_prop_get;
+    } else {
+        return NULL;
+    }
 }
 
 static void field_prop_set(Object *obj, Visitor *v, const char *name,
@@ -35,7 +57,14 @@ static void field_prop_set(Object *obj, Visitor *v, const char *name,
 {
     Property *prop = opaque;
 
-    return prop->info->set(obj, v, name, opaque, errp);
+    if (prop->info->set) {
+        return prop->info->set(obj, v, name, opaque, errp);
+    }
+    if (prop->qapi_type) {
+        field_prop_call_qapi_visitor(obj, prop, v, name, errp);
+        return;
+    }
+    g_assert_not_reached();
 }
 
 /**
@@ -45,7 +74,11 @@ static void field_prop_set(Object *obj, Visitor *v, const char *name,
  */
 static ObjectPropertyAccessor *field_prop_setter(const Property *prop)
 {
-    return prop->info->set ? field_prop_set : NULL;
+    if (prop->info->set || prop->qapi_type) {
+        return field_prop_set;
+    } else {
+        return NULL;
+    }
 }
 
 /**
@@ -53,7 +86,13 @@ static ObjectPropertyAccessor *field_prop_setter(const Property *prop)
  */
 static const char *field_prop_type_name(const Property *prop)
 {
-    return prop->info->name;
+    if (prop->info->name) {
+        return prop->info->name;
+    }
+    if (prop->qapi_type) {
+        return qom_qapi_type_name(prop->qapi_type);
+    }
+    g_assert_not_reached();
 }
 
 static void field_prop_release(Object *obj, const char *name, void *opaque)
@@ -101,7 +140,7 @@ object_property_add_field(Object *obj, const char *name,
     ObjectProperty *op;
 
     assert(allow_set);
-    assert(!prop->info->create);
+    assert(!prop->info || !prop->info->create);
 
     op = object_property_add(obj, name,
                              field_prop_type_name(prop),
