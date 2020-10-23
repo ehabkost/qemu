@@ -52,11 +52,6 @@ static void set_tpm(Object *obj, Visitor *v, const char *name, void *opaque,
     TPMBackend *s, **be = qdev_get_prop_ptr(dev, prop);
     char *str;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
@@ -87,6 +82,7 @@ const PropertyInfo qdev_prop_tpm = {
     .description = "ID of a tpm to use as a backend",
     .get   = get_tpm,
     .set   = set_tpm,
+    .read_only_after_realize = true,
     .release = release_tpm,
 };
 
