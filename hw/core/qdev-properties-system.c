@@ -93,11 +93,6 @@ static void set_drive_helper(Object *obj, Visitor *v, const char *name,
     bool blk_created = false;
     int ret;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
@@ -202,6 +197,7 @@ const PropertyInfo qdev_prop_drive = {
     .description = "Node name or ID of a block device to use as a backend",
     .get   = get_drive,
     .set   = set_drive,
+    .read_only_after_realize = true,
     .release = release_drive,
 };
 
@@ -210,6 +206,7 @@ const PropertyInfo qdev_prop_drive_iothread = {
     .description = "Node name or ID of a block device to use as a backend",
     .get   = get_drive,
     .set   = set_drive_iothread,
+    .read_only_after_realize = true,
     .release = release_drive,
 };
 
@@ -235,11 +232,6 @@ static void set_chr(Object *obj, Visitor *v, const char *name, void *opaque,
     CharBackend *be = qdev_get_prop_ptr(dev, prop);
     Chardev *s;
     char *str;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_str(v, name, &str, errp)) {
         return;
@@ -284,6 +276,7 @@ const PropertyInfo qdev_prop_chr = {
     .description = "ID of a chardev to use as a backend",
     .get   = get_chr,
     .set   = set_chr,
+    .read_only_after_realize = true,
     .release = release_chr,
 };
 
@@ -319,11 +312,6 @@ static void set_mac(Object *obj, Visitor *v, const char *name, void *opaque,
     int i, pos;
     char *str;
     const char *p;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_str(v, name, &str, errp)) {
         return;
@@ -365,6 +353,7 @@ const PropertyInfo qdev_prop_macaddr = {
     .description = "Ethernet 6-byte MAC Address, example: 52:54:00:12:34:56",
     .get   = get_mac,
     .set   = set_mac,
+    .read_only_after_realize = true,
 };
 
 void qdev_prop_set_macaddr(DeviceState *dev, const char *name,
@@ -400,11 +389,6 @@ static void set_netdev(Object *obj, Visitor *v, const char *name,
     NetClientState *peers[MAX_QUEUE_NUM];
     int queues, err = 0, i = 0;
     char *str;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_str(v, name, &str, errp)) {
         return;
@@ -454,6 +438,7 @@ const PropertyInfo qdev_prop_netdev = {
     .description = "ID of a netdev to use as a backend",
     .get   = get_netdev,
     .set   = set_netdev,
+    .read_only_after_realize = true,
 };
 
 
@@ -480,11 +465,6 @@ static void set_audiodev(Object *obj, Visitor *v, const char* name,
     int err = 0;
     char *str;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
@@ -508,6 +488,7 @@ const PropertyInfo qdev_prop_audiodev = {
     /* release done on shutdown */
     .get = get_audiodev,
     .set = set_audiodev,
+    .read_only_after_realize = true,
 };
 
 bool qdev_prop_set_drive_err(DeviceState *dev, const char *name,
@@ -587,11 +568,6 @@ static void set_blocksize(Object *obj, Visitor *v, const char *name,
     uint64_t value;
     Error *local_err = NULL;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_size(v, name, &value, errp)) {
         return;
     }
@@ -609,6 +585,7 @@ const PropertyInfo qdev_prop_blocksize = {
                    " and " MAX_BLOCK_SIZE_STR,
     .get   = qdev_propinfo_get_size32,
     .set   = set_blocksize,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_uint,
 };
 
@@ -704,11 +681,6 @@ static void set_reserved_region(Object *obj, Visitor *v, const char *name,
     char *str;
     int ret;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     visit_type_str(v, name, &str, &local_err);
     if (local_err) {
         error_propagate(errp, local_err);
@@ -754,6 +726,7 @@ const PropertyInfo qdev_prop_reserved_region = {
     .description = "Reserved Region, example: 0xFEE00000:0xFEEFFFFF:0",
     .get   = get_reserved_region,
     .set   = set_reserved_region,
+    .read_only_after_realize = true,
 };
 
 /* --- pci address --- */
@@ -769,11 +742,6 @@ static void set_pci_devfn(Object *obj, Visitor *v, const char *name,
     int32_t value, *ptr = qdev_get_prop_ptr(dev, prop);
     unsigned int slot, fn, n;
     char *str;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_str(v, name, &str, NULL)) {
         if (!visit_type_int32(v, name, &value, errp)) {
@@ -824,6 +792,7 @@ const PropertyInfo qdev_prop_pci_devfn = {
     .print = print_pci_devfn,
     .get   = qdev_propinfo_get_int32,
     .set   = set_pci_devfn,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_int,
 };
 
@@ -867,11 +836,6 @@ static void set_pci_host_devaddr(Object *obj, Visitor *v, const char *name,
     unsigned long val;
     unsigned long dom = 0, bus = 0;
     unsigned int slot = 0, func = 0;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_str(v, name, &str, errp)) {
         return;
@@ -936,6 +900,7 @@ const PropertyInfo qdev_prop_pci_host_devaddr = {
                    "the host device, example: 04:10.0",
     .get = get_pci_host_devaddr,
     .set = set_pci_host_devaddr,
+    .read_only_after_realize = true,
 };
 
 /* --- OffAutoPCIBAR off/auto/bar0/bar1/bar2/bar3/bar4/bar5 --- */
@@ -989,11 +954,6 @@ static void set_prop_pcielinkspeed(Object *obj, Visitor *v, const char *name,
     PCIExpLinkSpeed *p = qdev_get_prop_ptr(dev, prop);
     int speed;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_enum(v, prop->name, &speed, prop->info->enum_table,
                          errp)) {
         return;
@@ -1024,6 +984,7 @@ const PropertyInfo qdev_prop_pcie_link_speed = {
     .enum_table = &PCIELinkSpeed_lookup,
     .get = get_prop_pcielinkspeed,
     .set = set_prop_pcielinkspeed,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -1075,11 +1036,6 @@ static void set_prop_pcielinkwidth(Object *obj, Visitor *v, const char *name,
     PCIExpLinkWidth *p = qdev_get_prop_ptr(dev, prop);
     int width;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_enum(v, prop->name, &width, prop->info->enum_table,
                          errp)) {
         return;
@@ -1119,5 +1075,6 @@ const PropertyInfo qdev_prop_pcie_link_width = {
     .enum_table = &PCIELinkWidth_lookup,
     .get = get_prop_pcielinkwidth,
     .set = set_prop_pcielinkwidth,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
