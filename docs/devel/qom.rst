@@ -385,3 +385,8 @@ Static Property API Reference
 -----------------------------
 
 .. kernel-doc:: include/qom/static-property.h
+
+QAPI Glue API Reference
+-----------------------
+
+.. kernel-doc:: include/qom/qom-qapi.h

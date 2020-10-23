@@ -6,6 +6,7 @@ qom_ss.add(files(
   'qom-qobject.c',
   'static-property.c',
   'property-types.c',
+  'qom-qapi.c',
 ))
 
 qmp_ss.add(files('qom-qmp-cmds.c'))
