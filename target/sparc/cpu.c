@@ -803,6 +803,11 @@ static void sparc_set_nwindows(Object *obj, Visitor *v, const char *name,
     SPARCCPU *cpu = SPARC_CPU(obj);
     int64_t value;
 
+    if (dev->realized) {
+        qdev_prop_set_after_realize(dev, name, errp);
+        return;
+    }
+
     if (!visit_type_int(v, name, &value, errp)) {
         return;
     }
