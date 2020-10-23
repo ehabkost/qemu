@@ -20,8 +20,6 @@ void object_propinfo_set_default_value_int(ObjectProperty *op,
 void object_propinfo_set_default_value_uint(ObjectProperty *op,
                                             const Property *prop);
 
-void object_propinfo_get_int32(Object *obj, Visitor *v, const char *name,
-                               void *opaque, Error **errp);
 void object_propinfo_get_size32(Object *obj, Visitor *v, const char *name,
                                 void *opaque, Error **errp);
 
