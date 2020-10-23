@@ -2380,11 +2380,6 @@ static void set_css_devid(Object *obj, Visitor *v, const char *name,
     int num, n1, n2;
     unsigned int cssid, ssid, devid;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
@@ -2415,6 +2410,7 @@ const PropertyInfo css_devid_propinfo = {
                    "subsystem, example: fe.1.23ab",
     .get = get_css_devid,
     .set = set_css_devid,
+    .read_only_after_realize = true,
 };
 
 const PropertyInfo css_devid_ro_propinfo = {
