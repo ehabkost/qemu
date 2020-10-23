@@ -572,6 +572,7 @@ const PropertyInfo qdev_prop_losttickpolicy = {
     .enum_table  = &LostTickPolicy_lookup,
     .get   = qdev_propinfo_get_enum,
     .set   = qdev_propinfo_set_enum,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -622,6 +623,7 @@ const PropertyInfo qdev_prop_blockdev_on_error = {
     .enum_table = &BlockdevOnError_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -636,6 +638,7 @@ const PropertyInfo qdev_prop_bios_chs_trans = {
     .enum_table = &BiosAtaTranslation_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -648,6 +651,7 @@ const PropertyInfo qdev_prop_fdc_drive_type = {
     .enum_table = &FloppyDriveType_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -660,6 +664,7 @@ const PropertyInfo qdev_prop_multifd_compression = {
     .enum_table = &MultiFDCompression_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -941,6 +946,7 @@ const PropertyInfo qdev_prop_off_auto_pcibar = {
     .enum_table = &OffAutoPCIBAR_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 

@@ -83,11 +83,6 @@ void qdev_propinfo_set_enum(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     int *ptr = qdev_get_prop_ptr(dev, prop);
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     visit_type_enum(v, prop->name, ptr, prop->info->enum_table, errp);
 }
 
@@ -102,6 +97,7 @@ const PropertyInfo qdev_prop_enum = {
     .name  = "enum",
     .get   = qdev_propinfo_get_enum,
     .set   = qdev_propinfo_set_enum,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -526,6 +522,7 @@ const PropertyInfo qdev_prop_on_off_auto = {
     .enum_table = &OnOffAuto_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
+    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
