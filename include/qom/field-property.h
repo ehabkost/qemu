@@ -25,7 +25,10 @@ struct Property {
      */
     const char   *name_template;
     const PropertyInfo *info;
+    /** @offset: offset of field in object instance struct */
     ptrdiff_t    offset;
+    /** @size: size of field in object instance struct */
+    size_t       size;
     uint8_t      bitnr;
     /**
      * @set_default: true if the default value should be set from @defval,
