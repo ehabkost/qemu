@@ -1503,11 +1503,6 @@ static void set_nv_gpudirect_clique_id(Object *obj, Visitor *v,
     Property *prop = opaque;
     uint8_t value, *ptr = qdev_get_prop_ptr(dev, prop);
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_uint8(v, name, &value, errp)) {
         return;
     }
@@ -1525,6 +1520,7 @@ const PropertyInfo qdev_prop_nv_gpudirect_clique = {
     .description = "NVIDIA GPUDirect Clique ID (0 - 15)",
     .get = get_nv_gpudirect_clique_id,
     .set = set_nv_gpudirect_clique_id,
+    .read_only_after_realize = true,
 };
 
 static int vfio_add_nv_gpudirect_cap(VFIOPCIDevice *vdev, Error **errp)
