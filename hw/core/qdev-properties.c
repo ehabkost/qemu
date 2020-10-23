@@ -66,6 +66,13 @@ static void qdev_property_set(Object *obj, Visitor *v, const char *name,
                               void *opaque, Error **errp)
 {
     Property *prop = opaque;
+    DeviceState *dev = DEVICE(obj);
+
+    if (dev->realized) {
+        qdev_prop_set_after_realize(dev, name, errp);
+        return;
+    }
+
     return prop->info->set(obj, v, name, opaque, errp);
 }
 
@@ -95,11 +102,6 @@ void qdev_propinfo_set_enum(Object *obj, Visitor *v, const char *name,
     DeviceState *dev = DEVICE(obj);
     Property *prop = opaque;
     int *ptr = qdev_get_prop_ptr(dev, prop);
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     visit_type_enum(v, prop->name, ptr, prop->info->enum_table, errp);
 }
@@ -154,11 +156,6 @@ static void prop_set_bit(Object *obj, Visitor *v, const char *name,
     DeviceState *dev = DEVICE(obj);
     Property *prop = opaque;
     bool value;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_bool(v, name, &value, errp)) {
         return;
@@ -216,11 +213,6 @@ static void prop_set_bit64(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     bool value;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_bool(v, name, &value, errp)) {
         return;
     }
@@ -254,11 +246,6 @@ static void set_bool(Object *obj, Visitor *v, const char *name, void *opaque,
     Property *prop = opaque;
     bool *ptr = qdev_get_prop_ptr(dev, prop);
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     visit_type_bool(v, name, ptr, errp);
 }
 
@@ -287,11 +274,6 @@ static void set_uint8(Object *obj, Visitor *v, const char *name, void *opaque,
     DeviceState *dev = DEVICE(obj);
     Property *prop = opaque;
     uint8_t *ptr = qdev_get_prop_ptr(dev, prop);
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     visit_type_uint8(v, name, ptr, errp);
 }
@@ -334,11 +316,6 @@ static void set_uint16(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     uint16_t *ptr = qdev_get_prop_ptr(dev, prop);
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     visit_type_uint16(v, name, ptr, errp);
 }
 
@@ -368,11 +345,6 @@ static void set_uint32(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     uint32_t *ptr = qdev_get_prop_ptr(dev, prop);
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     visit_type_uint32(v, name, ptr, errp);
 }
 
@@ -392,11 +364,6 @@ static void set_int32(Object *obj, Visitor *v, const char *name, void *opaque,
     DeviceState *dev = DEVICE(obj);
     Property *prop = opaque;
     int32_t *ptr = qdev_get_prop_ptr(dev, prop);
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     visit_type_int32(v, name, ptr, errp);
 }
@@ -434,11 +401,6 @@ static void set_uint64(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     uint64_t *ptr = qdev_get_prop_ptr(dev, prop);
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     visit_type_uint64(v, name, ptr, errp);
 }
 
@@ -458,11 +420,6 @@ static void set_int64(Object *obj, Visitor *v, const char *name,
     DeviceState *dev = DEVICE(obj);
     Property *prop = opaque;
     int64_t *ptr = qdev_get_prop_ptr(dev, prop);
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     visit_type_int64(v, name, ptr, errp);
 }
@@ -512,11 +469,6 @@ static void set_string(Object *obj, Visitor *v, const char *name,
     char **ptr = qdev_get_prop_ptr(dev, prop);
     char *str;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
@@ -562,11 +514,6 @@ static void set_size32(Object *obj, Visitor *v, const char *name, void *opaque,
     Property *prop = opaque;
     uint32_t *ptr = qdev_get_prop_ptr(dev, prop);
     uint64_t value;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_size(v, name, &value, errp)) {
         return;
@@ -615,11 +562,6 @@ static void set_uuid(Object *obj, Visitor *v, const char *name, void *opaque,
     Property *prop = opaque;
     QemuUUID *uuid = qdev_get_prop_ptr(dev, prop);
     char *str;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_str(v, name, &str, errp)) {
         return;
@@ -691,10 +633,6 @@ static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
     const char *arrayname;
     int i;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
     if (*alenptr) {
         error_setg(errp, "array size property %s may not be set more than once",
                    name);
@@ -938,11 +876,6 @@ static void set_size(Object *obj, Visitor *v, const char *name, void *opaque,
     DeviceState *dev = DEVICE(obj);
     Property *prop = opaque;
     uint64_t *ptr = qdev_get_prop_ptr(dev, prop);
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     visit_type_size(v, name, ptr, errp);
 }

@@ -92,11 +92,6 @@ static void set_drive_helper(Object *obj, Visitor *v, const char *name,
     bool blk_created = false;
     int ret;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
@@ -235,11 +230,6 @@ static void set_chr(Object *obj, Visitor *v, const char *name, void *opaque,
     Chardev *s;
     char *str;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
@@ -319,11 +309,6 @@ static void set_mac(Object *obj, Visitor *v, const char *name, void *opaque,
     char *str;
     const char *p;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
@@ -400,11 +385,6 @@ static void set_netdev(Object *obj, Visitor *v, const char *name,
     int queues, err = 0, i = 0;
     char *str;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
@@ -478,11 +458,6 @@ static void set_audiodev(Object *obj, Visitor *v, const char* name,
     AudioState *state;
     int err = 0;
     char *str;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_str(v, name, &str, errp)) {
         return;
@@ -593,11 +568,6 @@ static void set_blocksize(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     uint32_t *ptr = qdev_get_prop_ptr(dev, prop);
     uint64_t value;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_size(v, name, &value, errp)) {
         return;
@@ -720,11 +690,6 @@ static void set_reserved_region(Object *obj, Visitor *v, const char *name,
     char *str;
     int ret;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     visit_type_str(v, name, &str, &local_err);
     if (local_err) {
         error_propagate(errp, local_err);
@@ -785,11 +750,6 @@ static void set_pci_devfn(Object *obj, Visitor *v, const char *name,
     int32_t value, *ptr = qdev_get_prop_ptr(dev, prop);
     unsigned int slot, fn, n;
     char *str;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_str(v, name, &str, NULL)) {
         if (!visit_type_int32(v, name, &value, errp)) {
@@ -883,11 +843,6 @@ static void set_pci_host_devaddr(Object *obj, Visitor *v, const char *name,
     unsigned long val;
     unsigned long dom = 0, bus = 0;
     unsigned int slot = 0, func = 0;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_str(v, name, &str, errp)) {
         return;
@@ -1004,11 +959,6 @@ static void set_prop_pcielinkspeed(Object *obj, Visitor *v, const char *name,
     PCIExpLinkSpeed *p = qdev_get_prop_ptr(dev, prop);
     int speed;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_enum(v, prop->name, &speed, prop->info->enum_table,
                          errp)) {
         return;
@@ -1089,11 +1039,6 @@ static void set_prop_pcielinkwidth(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     PCIExpLinkWidth *p = qdev_get_prop_ptr(dev, prop);
     int width;
-
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
 
     if (!visit_type_enum(v, prop->name, &width, prop->info->enum_table,
                          errp)) {

@@ -52,11 +52,6 @@ static void set_tpm(Object *obj, Visitor *v, const char *name, void *opaque,
     TPMBackend *s, **be = qdev_get_prop_ptr(dev, prop);
     char *str;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
