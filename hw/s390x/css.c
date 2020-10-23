@@ -2410,7 +2410,6 @@ const PropertyInfo css_devid_propinfo = {
                    "subsystem, example: fe.1.23ab",
     .get = get_css_devid,
     .set = set_css_devid,
-    .read_only_after_realize = true,
 };
 
 const PropertyInfo css_devid_ro_propinfo = {

@@ -1520,7 +1520,6 @@ const PropertyInfo qdev_prop_nv_gpudirect_clique = {
     .description = "NVIDIA GPUDirect Clique ID (0 - 15)",
     .get = get_nv_gpudirect_clique_id,
     .set = set_nv_gpudirect_clique_id,
-    .read_only_after_realize = true,
 };
 
 static int vfio_add_nv_gpudirect_cap(VFIOPCIDevice *vdev, Error **errp)

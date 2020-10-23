@@ -51,7 +51,7 @@ static void qdev_property_set(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     DeviceState *dev = DEVICE(obj);
 
-    if (prop->info->read_only_after_realize && dev->realized) {
+    if (dev->realized) {
         qdev_prop_set_after_realize(dev, name, errp);
         return;
     }
@@ -97,7 +97,6 @@ const PropertyInfo qdev_prop_enum = {
     .name  = "enum",
     .get   = qdev_propinfo_get_enum,
     .set   = qdev_propinfo_set_enum,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -154,7 +153,6 @@ const PropertyInfo qdev_prop_bit = {
     .description = "on/off",
     .get   = prop_get_bit,
     .set   = prop_set_bit,
-    .read_only_after_realize = true,
     .set_default_value = set_default_value_bool,
 };
 
@@ -206,7 +204,6 @@ const PropertyInfo qdev_prop_bit64 = {
     .description = "on/off",
     .get   = prop_get_bit64,
     .set   = prop_set_bit64,
-    .read_only_after_realize = true,
     .set_default_value = set_default_value_bool,
 };
 
@@ -236,7 +233,6 @@ const PropertyInfo qdev_prop_bool = {
     .name  = "bool",
     .get   = get_bool,
     .set   = set_bool,
-    .read_only_after_realize = true,
     .set_default_value = set_default_value_bool,
 };
 
@@ -278,7 +274,6 @@ const PropertyInfo qdev_prop_uint8 = {
     .name  = "uint8",
     .get   = get_uint8,
     .set   = set_uint8,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_uint,
 };
 
@@ -308,7 +303,6 @@ const PropertyInfo qdev_prop_uint16 = {
     .name  = "uint16",
     .get   = qdev_propinfo_get_uint16,
     .set   = set_uint16,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_uint,
 };
 
@@ -358,7 +352,6 @@ const PropertyInfo qdev_prop_uint32 = {
     .name  = "uint32",
     .get   = get_uint32,
     .set   = set_uint32,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_uint,
 };
 
@@ -366,7 +359,6 @@ const PropertyInfo qdev_prop_int32 = {
     .name  = "int32",
     .get   = qdev_propinfo_get_int32,
     .set   = set_int32,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_int,
 };
 
@@ -416,7 +408,6 @@ const PropertyInfo qdev_prop_uint64 = {
     .name  = "uint64",
     .get   = get_uint64,
     .set   = set_uint64,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_uint,
 };
 
@@ -424,7 +415,6 @@ const PropertyInfo qdev_prop_int64 = {
     .name  = "int64",
     .get   = get_int64,
     .set   = set_int64,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_int,
 };
 
@@ -471,7 +461,6 @@ const PropertyInfo qdev_prop_string = {
     .release = release_string,
     .get   = get_string,
     .set   = set_string,
-    .read_only_after_realize = true,
 };
 
 /* --- on/off/auto --- */
@@ -482,7 +471,6 @@ const PropertyInfo qdev_prop_on_off_auto = {
     .enum_table = &OnOffAuto_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -526,7 +514,6 @@ const PropertyInfo qdev_prop_size32 = {
     .name  = "size",
     .get = qdev_propinfo_get_size32,
     .set = set_size32,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_uint,
 };
 
@@ -579,7 +566,6 @@ const PropertyInfo qdev_prop_uuid = {
         "\" for random value (default)",
     .get   = get_uuid,
     .set   = set_uuid,
-    .read_only_after_realize = true,
     .set_default_value = set_default_uuid_auto,
 };
 
@@ -677,7 +663,6 @@ const PropertyInfo qdev_prop_arraylen = {
     .name = "uint32",
     .get = get_uint32,
     .set = set_prop_arraylen,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_uint,
 };
 
@@ -879,7 +864,6 @@ const PropertyInfo qdev_prop_size = {
     .name  = "size",
     .get = get_size,
     .set = set_size,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_uint,
 };
 

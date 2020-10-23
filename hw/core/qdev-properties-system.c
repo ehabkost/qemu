@@ -197,7 +197,6 @@ const PropertyInfo qdev_prop_drive = {
     .description = "Node name or ID of a block device to use as a backend",
     .get   = get_drive,
     .set   = set_drive,
-    .read_only_after_realize = true,
     .release = release_drive,
 };
 
@@ -206,7 +205,6 @@ const PropertyInfo qdev_prop_drive_iothread = {
     .description = "Node name or ID of a block device to use as a backend",
     .get   = get_drive,
     .set   = set_drive_iothread,
-    .read_only_after_realize = true,
     .release = release_drive,
 };
 
@@ -276,7 +274,6 @@ const PropertyInfo qdev_prop_chr = {
     .description = "ID of a chardev to use as a backend",
     .get   = get_chr,
     .set   = set_chr,
-    .read_only_after_realize = true,
     .release = release_chr,
 };
 
@@ -353,7 +350,6 @@ const PropertyInfo qdev_prop_macaddr = {
     .description = "Ethernet 6-byte MAC Address, example: 52:54:00:12:34:56",
     .get   = get_mac,
     .set   = set_mac,
-    .read_only_after_realize = true,
 };
 
 void qdev_prop_set_macaddr(DeviceState *dev, const char *name,
@@ -438,7 +434,6 @@ const PropertyInfo qdev_prop_netdev = {
     .description = "ID of a netdev to use as a backend",
     .get   = get_netdev,
     .set   = set_netdev,
-    .read_only_after_realize = true,
 };
 
 
@@ -488,7 +483,6 @@ const PropertyInfo qdev_prop_audiodev = {
     /* release done on shutdown */
     .get = get_audiodev,
     .set = set_audiodev,
-    .read_only_after_realize = true,
 };
 
 bool qdev_prop_set_drive_err(DeviceState *dev, const char *name,
@@ -553,7 +547,6 @@ const PropertyInfo qdev_prop_losttickpolicy = {
     .enum_table  = &LostTickPolicy_lookup,
     .get   = qdev_propinfo_get_enum,
     .set   = qdev_propinfo_set_enum,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -585,7 +578,6 @@ const PropertyInfo qdev_prop_blocksize = {
                    " and " MAX_BLOCK_SIZE_STR,
     .get   = qdev_propinfo_get_size32,
     .set   = set_blocksize,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_uint,
 };
 
@@ -600,7 +592,6 @@ const PropertyInfo qdev_prop_blockdev_on_error = {
     .enum_table = &BlockdevOnError_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -615,7 +606,6 @@ const PropertyInfo qdev_prop_bios_chs_trans = {
     .enum_table = &BiosAtaTranslation_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -628,7 +618,6 @@ const PropertyInfo qdev_prop_fdc_drive_type = {
     .enum_table = &FloppyDriveType_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -641,7 +630,6 @@ const PropertyInfo qdev_prop_multifd_compression = {
     .enum_table = &MultiFDCompression_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -726,7 +714,6 @@ const PropertyInfo qdev_prop_reserved_region = {
     .description = "Reserved Region, example: 0xFEE00000:0xFEEFFFFF:0",
     .get   = get_reserved_region,
     .set   = set_reserved_region,
-    .read_only_after_realize = true,
 };
 
 /* --- pci address --- */
@@ -792,7 +779,6 @@ const PropertyInfo qdev_prop_pci_devfn = {
     .print = print_pci_devfn,
     .get   = qdev_propinfo_get_int32,
     .set   = set_pci_devfn,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_int,
 };
 
@@ -900,7 +886,6 @@ const PropertyInfo qdev_prop_pci_host_devaddr = {
                    "the host device, example: 04:10.0",
     .get = get_pci_host_devaddr,
     .set = set_pci_host_devaddr,
-    .read_only_after_realize = true,
 };
 
 /* --- OffAutoPCIBAR off/auto/bar0/bar1/bar2/bar3/bar4/bar5 --- */
@@ -911,7 +896,6 @@ const PropertyInfo qdev_prop_off_auto_pcibar = {
     .enum_table = &OffAutoPCIBAR_lookup,
     .get = qdev_propinfo_get_enum,
     .set = qdev_propinfo_set_enum,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -984,7 +968,6 @@ const PropertyInfo qdev_prop_pcie_link_speed = {
     .enum_table = &PCIELinkSpeed_lookup,
     .get = get_prop_pcielinkspeed,
     .set = set_prop_pcielinkspeed,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };
 
@@ -1075,6 +1058,5 @@ const PropertyInfo qdev_prop_pcie_link_width = {
     .enum_table = &PCIELinkWidth_lookup,
     .get = get_prop_pcielinkwidth,
     .set = set_prop_pcielinkwidth,
-    .read_only_after_realize = true,
     .set_default_value = qdev_propinfo_set_default_value_enum,
 };

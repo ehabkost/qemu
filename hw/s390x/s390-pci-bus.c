@@ -1346,7 +1346,6 @@ static const PropertyInfo s390_pci_fid_propinfo = {
     .name = "zpci_fid",
     .get = s390_pci_get_fid,
     .set = s390_pci_set_fid,
-    .read_only_after_realize = true,
 };
 
 #define DEFINE_PROP_S390_PCI_FID(_n, _s, _f) \

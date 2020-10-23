@@ -82,7 +82,6 @@ const PropertyInfo qdev_prop_tpm = {
     .description = "ID of a tpm to use as a backend",
     .get   = get_tpm,
     .set   = set_tpm,
-    .read_only_after_realize = true,
     .release = release_tpm,
 };
 

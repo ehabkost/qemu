@@ -821,7 +821,6 @@ static PropertyInfo qdev_prop_nwindows = {
     .name  = "int",
     .get   = sparc_get_nwindows,
     .set   = sparc_set_nwindows,
-    .read_only_after_realize = true,
 };
 
 static Property sparc_cpu_properties[] = {

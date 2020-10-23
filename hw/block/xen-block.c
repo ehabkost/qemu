@@ -514,7 +514,6 @@ const PropertyInfo xen_block_prop_vdev = {
     .description = "Virtual Disk specifier: d*p*/xvd*/hd*/sd*",
     .get = xen_block_get_vdev,
     .set = xen_block_set_vdev,
-    .read_only_after_realize = true,
 };
 
 static Property xen_block_props[] = {
