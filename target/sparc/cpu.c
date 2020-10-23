@@ -803,11 +803,6 @@ static void sparc_set_nwindows(Object *obj, Visitor *v, const char *name,
     SPARCCPU *cpu = SPARC_CPU(obj);
     int64_t value;
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_int(v, name, &value, errp)) {
         return;
     }
@@ -826,6 +821,7 @@ static PropertyInfo qdev_prop_nwindows = {
     .name  = "int",
     .get   = sparc_get_nwindows,
     .set   = sparc_set_nwindows,
+    .read_only_after_realize = true,
 };
 
 static Property sparc_cpu_properties[] = {
