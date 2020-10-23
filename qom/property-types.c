@@ -176,15 +176,6 @@ const PropertyInfo prop_info_uint16 = {
 
 /* --- 32bit integer --- */
 
-static void get_uint32(Object *obj, Visitor *v, const char *name,
-                       void *opaque, Error **errp)
-{
-    Property *prop = opaque;
-    uint32_t *ptr = object_static_prop_ptr(obj, prop);
-
-    visit_type_uint32(v, name, ptr, errp);
-}
-
 void object_propinfo_get_int32(Object *obj, Visitor *v, const char *name,
                              void *opaque, Error **errp)
 {
@@ -475,8 +466,7 @@ static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
 }
 
 const PropertyInfo prop_info_arraylen = {
-    .name = "uint32",
-    .get = get_uint32,
+    .qapi_type = &qapi_uint32,
     .set = set_prop_arraylen,
     .set_default_value = object_propinfo_set_default_value_uint,
 };
