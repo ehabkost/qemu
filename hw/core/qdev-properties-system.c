@@ -755,10 +755,9 @@ static int print_pci_devfn(Object *obj, Property *prop, char *dest,
 }
 
 const PropertyInfo qdev_prop_pci_devfn = {
-    .name  = "int32",
+    .qapi_type = &qapi_int32,
     .description = "Slot and optional function number, example: 06.0 or 06",
     .print = print_pci_devfn,
-    .get   = object_propinfo_get_int32,
     .set   = set_pci_devfn,
     .set_default_value = object_propinfo_set_default_value_int,
 };
