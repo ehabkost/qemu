@@ -12,11 +12,28 @@ void *object_static_prop_ptr(Object *obj, Property *prop)
     return ptr;
 }
 
+static bool static_prop_call_qapi_visitor(Object *obj, Property *prop,
+                                          Visitor *v, const char *name,
+                                          Error **errp)
+{
+    void *ptr = object_static_prop_ptr(obj, prop);
+
+    return qom_qapi_visitor_call(prop->info->qapi_type,
+                                 v, name, ptr, prop->size, errp);
+}
+
 static void static_prop_get(Object *obj, Visitor *v, const char *name,
                             void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    return prop->info->get(obj, v, name, opaque, errp);
+    if (prop->info->get) {
+        return prop->info->get(obj, v, name, opaque, errp);
+    }
+    if (prop->info->qapi_type) {
+        static_prop_call_qapi_visitor(obj, prop, v, name, errp);
+        return;
+    }
+    g_assert_not_reached();
 }
 
 /**
@@ -26,7 +43,7 @@ static void static_prop_get(Object *obj, Visitor *v, const char *name,
  */
 static ObjectPropertyAccessor *static_prop_getter(const PropertyInfo *info)
 {
-    return info->get ? static_prop_get : NULL;
+    return (info->get || info->qapi_type) ? static_prop_get : NULL;
 }
 
 static void static_prop_set(Object *obj, Visitor *v, const char *name,
@@ -34,7 +51,14 @@ static void static_prop_set(Object *obj, Visitor *v, const char *name,
 {
     Property *prop = opaque;
 
-    return prop->info->set(obj, v, name, opaque, errp);
+    if (prop->info->set) {
+        return prop->info->set(obj, v, name, opaque, errp);
+    }
+    if (prop->info->qapi_type) {
+        static_prop_call_qapi_visitor(obj, prop, v, name, errp);
+        return;
+    }
+    g_assert_not_reached();
 }
 
 /**
@@ -44,7 +68,13 @@ static void static_prop_set(Object *obj, Visitor *v, const char *name,
  */
 static ObjectPropertyAccessor *static_prop_setter(const PropertyInfo *info)
 {
-    return info->set ? static_prop_set : NULL;
+    return (info->set || info->qapi_type) ? static_prop_set : NULL;
+}
+
+static const char *static_prop_type_name(const PropertyInfo *info)
+{
+    assert(info->name || info->qapi_type);
+    return info->name ? info->name : qom_qapi_type_name(info->qapi_type);
 }
 
 ObjectProperty *
@@ -55,7 +85,8 @@ object_property_add_static(Object *obj, Property *prop,
 
     assert(!prop->info->create);
 
-    op = object_property_add(obj, prop->name, prop->info->name,
+    op = object_property_add(obj, prop->name,
+                             static_prop_type_name(prop->info),
                              static_prop_getter(prop->info),
                              static_prop_setter(prop->info),
                              prop->info->release,
@@ -85,7 +116,8 @@ object_class_property_add_static(ObjectClass *oc, Property *prop,
         op = prop->info->create(oc, prop);
     } else {
         op = object_class_property_add(oc,
-                                       prop->name, prop->info->name,
+                                       prop->name,
+                                       static_prop_type_name(prop->info),
                                        static_prop_getter(prop->info),
                                        static_prop_setter(prop->info),
                                        prop->info->release,
