@@ -1336,11 +1336,6 @@ static void s390_pci_set_fid(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     uint32_t *ptr = qdev_get_prop_ptr(dev, prop);
 
-    if (dev->realized) {
-        qdev_prop_set_after_realize(dev, name, errp);
-        return;
-    }
-
     if (!visit_type_uint32(v, name, ptr, errp)) {
         return;
     }
@@ -1351,6 +1346,7 @@ static const PropertyInfo s390_pci_fid_propinfo = {
     .name = "zpci_fid",
     .get = s390_pci_get_fid,
     .set = s390_pci_set_fid,
+    .read_only_after_realize = true,
 };
 
 #define DEFINE_PROP_S390_PCI_FID(_n, _s, _f) \
