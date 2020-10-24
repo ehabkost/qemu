@@ -296,9 +296,19 @@ struct Property {
         int64_t i;
         uint64_t u;
     } defval;
-    int          arrayoffset;
-    const PropertyInfo *arrayinfo;
-    int          arrayfieldsize;
+    /*
+     * Property template for array pointer.
+     * This won't be registered as an actual property, but can be used
+     * to find the field offset for the array pointer and do type validation
+     * of the array pointer field.
+     */
+    Property *array_pointer_prop;
+    /*
+     * Property template for creating properties of array elements.
+     * This won't be registered as property as is, but will be used
+     * as template for creating the "array[...]" properties.
+     */
+    Property *array_element_template;
     const char   *link_type;
 };
 

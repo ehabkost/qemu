@@ -628,7 +628,9 @@ static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
     DeviceState *dev = DEVICE(obj);
     Property *prop = opaque;
     uint32_t *alenptr = qdev_get_prop_ptr(dev, prop);
-    void **arrayptr = (void *)dev + prop->arrayoffset;
+    Property *pointer_prop = prop->array_pointer_prop;
+    Property *elm_prop_template = prop->array_element_template;
+    void **arrayptr = qdev_get_prop_ptr(dev, pointer_prop);
     void *eltptr;
     const char *arrayname;
     int i;
@@ -655,13 +657,14 @@ static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
     /* Note that it is the responsibility of the individual device's deinit
      * to free the array proper.
      */
-    *arrayptr = eltptr = g_malloc0(*alenptr * prop->arrayfieldsize);
-    for (i = 0; i < *alenptr; i++, eltptr += prop->arrayfieldsize) {
+    *arrayptr = eltptr = g_malloc0(*alenptr * elm_prop_template->size);
+    for (i = 0; i < *alenptr; i++, eltptr += elm_prop_template->size) {
         char *propname = g_strdup_printf("%s[%d]", arrayname, i);
         ArrayElementProperty *arrayprop = g_new0(ArrayElementProperty, 1);
-        arrayprop->release = prop->arrayinfo->release;
+        arrayprop->release = elm_prop_template->info->release;
         arrayprop->propname = propname;
-        arrayprop->prop.info = prop->arrayinfo;
+        /* Use elm_prop_template as template, just changing the name and offset */
+        arrayprop->prop = *elm_prop_template;
         arrayprop->prop.name = propname;
         /* This ugly piece of pointer arithmetic sets up the offset so
          * that when the underlying get/set hooks call qdev_get_prop_ptr
@@ -669,7 +672,6 @@ static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
          * being inside the device struct.
          */
         arrayprop->prop.offset = eltptr - (void *)dev;
-        arrayprop->prop.size = prop->arrayfieldsize;
         assert(qdev_get_prop_ptr(dev, &arrayprop->prop) == eltptr);
         object_property_add(obj, propname,
                             arrayprop->prop.info->name,
@@ -685,6 +687,10 @@ const PropertyInfo qdev_prop_arraylen = {
     .get = get_uint32,
     .set = set_prop_arraylen,
     .set_default_value = qdev_propinfo_set_default_value_uint,
+};
+
+const PropertyInfo qdev_prop_array_pointer = {
+    .name = "array-pointer",
 };
 
 /* --- public helpers --- */

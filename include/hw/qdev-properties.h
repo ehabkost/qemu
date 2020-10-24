@@ -35,6 +35,7 @@ extern const PropertyInfo qdev_prop_size32;
 extern const PropertyInfo qdev_prop_blocksize;
 extern const PropertyInfo qdev_prop_pci_host_devaddr;
 extern const PropertyInfo qdev_prop_uuid;
+extern const PropertyInfo qdev_prop_array_pointer;
 extern const PropertyInfo qdev_prop_arraylen;
 extern const PropertyInfo qdev_prop_audiodev;
 extern const PropertyInfo qdev_prop_link;
@@ -116,9 +117,15 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
                     _state, _field, qdev_prop_arraylen, uint32_t, \
                     .set_default = true,                          \
                     .defval.u = 0,                                \
-                    .arrayinfo = &(_arrayprop),                   \
-                    .arrayfieldsize = sizeof(_arraytype),         \
-                    .arrayoffset = offsetof(_state, _arrayfield))
+                    .array_pointer_prop = &(Property)             \
+                        DEFINE_PROP(_name, _state, _arrayfield,   \
+                                    qdev_prop_array_pointer,      \
+                                    _arraytype *),                \
+                    .array_element_template = &(Property)         \
+                        DEFINE_PROP(_name "[]",                   \
+                                    struct { _arraytype elm[0]; },\
+                                    elm[0], _arrayprop,           \
+                                    _arraytype))
 
 #define DEFINE_PROP_LINK(_name, _state, _field, _type, _ptr_type)     \
         DEFINE_PROP(_name, _state, _field, qdev_prop_link, _ptr_type, \
