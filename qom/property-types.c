@@ -10,18 +10,18 @@ void object_propinfo_get_enum(Object *obj, Visitor *v, const char *name,
                             void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    int *ptr = object_static_prop_ptr(obj, prop);
+    int *pvalue = object_static_prop_ptr(obj, prop);
 
-    visit_type_enum(v, name, ptr, prop->info->enum_table, errp);
+    visit_type_enum(v, name, pvalue, prop->info->enum_table, errp);
 }
 
 void object_propinfo_set_enum(Object *obj, Visitor *v, const char *name,
                             void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    int *ptr = object_static_prop_ptr(obj, prop);
+    int *pvalue = object_static_prop_ptr(obj, prop);
 
-    visit_type_enum(v, name, ptr, prop->info->enum_table, errp);
+    visit_type_enum(v, name, pvalue, prop->info->enum_table, errp);
 }
 
 void object_propinfo_set_default_value_enum(ObjectProperty *op,
@@ -219,13 +219,13 @@ static void get_string(Object *obj, Visitor *v, const char *name,
                        void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    char **ptr = object_static_prop_ptr(obj, prop);
+    char **pstr = object_static_prop_ptr(obj, prop);
 
-    if (!*ptr) {
+    if (!*pstr) {
         char *str = (char *)"";
         visit_type_str(v, name, &str, errp);
     } else {
-        visit_type_str(v, name, ptr, errp);
+        visit_type_str(v, name, pstr, errp);
     }
 }
 
@@ -233,14 +233,14 @@ static void set_string(Object *obj, Visitor *v, const char *name,
                        void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    char **ptr = object_static_prop_ptr(obj, prop);
+    char **pstr = object_static_prop_ptr(obj, prop);
     char *str;
 
     if (!visit_type_str(v, name, &str, errp)) {
         return;
     }
-    g_free(*ptr);
-    *ptr = str;
+    g_free(*pstr);
+    *pstr = str;
 }
 
 const PropertyInfo prop_info_string = {
@@ -267,8 +267,8 @@ void object_propinfo_get_size32(Object *obj, Visitor *v, const char *name,
                               void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    uint32_t *ptr = object_static_prop_ptr(obj, prop);
-    uint64_t value = *ptr;
+    uint32_t *pvalue = object_static_prop_ptr(obj, prop);
+    uint64_t value = *pvalue;
 
     visit_type_size(v, name, &value, errp);
 }
@@ -277,7 +277,7 @@ static void set_size32(Object *obj, Visitor *v, const char *name, void *opaque,
                        Error **errp)
 {
     Property *prop = opaque;
-    uint32_t *ptr = object_static_prop_ptr(obj, prop);
+    uint32_t *pvalue = object_static_prop_ptr(obj, prop);
     uint64_t value;
 
     if (!visit_type_size(v, name, &value, errp)) {
@@ -292,7 +292,7 @@ static void set_size32(Object *obj, Visitor *v, const char *name, void *opaque,
         return;
     }
 
-    *ptr = value;
+    *pvalue = value;
 }
 
 const PropertyInfo prop_info_size32 = {

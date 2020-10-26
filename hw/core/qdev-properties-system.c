@@ -180,14 +180,14 @@ static void release_drive(Object *obj, const char *name, void *opaque)
 {
     DeviceState *dev = DEVICE(obj);
     Property *prop = opaque;
-    BlockBackend **ptr = object_static_prop_ptr(obj, prop);
+    BlockBackend **pblk = object_static_prop_ptr(obj, prop);
 
-    if (*ptr) {
-        AioContext *ctx = blk_get_aio_context(*ptr);
+    if (*pblk) {
+        AioContext *ctx = blk_get_aio_context(*pblk);
 
         aio_context_acquire(ctx);
-        blockdev_auto_del(*ptr);
-        blk_detach_dev(*ptr, dev);
+        blockdev_auto_del(*pblk);
+        blk_detach_dev(*pblk, dev);
         aio_context_release(ctx);
     }
 }
@@ -545,7 +545,7 @@ static void set_blocksize(Object *obj, Visitor *v, const char *name,
 {
     DeviceState *dev = DEVICE(obj);
     Property *prop = opaque;
-    uint32_t *ptr = object_static_prop_ptr(obj, prop);
+    uint32_t *pvalue = object_static_prop_ptr(obj, prop);
     uint64_t value;
     Error *local_err = NULL;
 
@@ -557,7 +557,7 @@ static void set_blocksize(Object *obj, Visitor *v, const char *name,
         error_propagate(errp, local_err);
         return;
     }
-    *ptr = value;
+    *pvalue = value;
 }
 
 const PropertyInfo qdev_prop_blocksize = {
@@ -711,7 +711,7 @@ static void set_pci_devfn(Object *obj, Visitor *v, const char *name,
                           void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    int32_t value, *ptr = object_static_prop_ptr(obj, prop);
+    int32_t value, *pvalue = object_static_prop_ptr(obj, prop);
     unsigned int slot, fn, n;
     char *str;
 
@@ -724,7 +724,7 @@ static void set_pci_devfn(Object *obj, Visitor *v, const char *name,
                        name ? name : "null", "pci_devfn");
             return;
         }
-        *ptr = value;
+        *pvalue = value;
         return;
     }
 
@@ -737,7 +737,7 @@ static void set_pci_devfn(Object *obj, Visitor *v, const char *name,
     if (str[n] != '\0' || fn > 7 || slot > 31) {
         goto invalid;
     }
-    *ptr = slot << 3 | fn;
+    *pvalue = slot << 3 | fn;
     g_free(str);
     return;
 
@@ -749,12 +749,12 @@ invalid:
 static int print_pci_devfn(Object *obj, Property *prop, char *dest,
                            size_t len)
 {
-    int32_t *ptr = object_static_prop_ptr(obj, prop);
+    int32_t *pvalue = object_static_prop_ptr(obj, prop);
 
-    if (*ptr == -1) {
+    if (*pvalue == -1) {
         return snprintf(dest, len, "<unset>");
     } else {
-        return snprintf(dest, len, "%02x.%x", *ptr >> 3, *ptr & 7);
+        return snprintf(dest, len, "%02x.%x", *pvalue >> 3, *pvalue & 7);
     }
 }
 
