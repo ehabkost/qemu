@@ -858,7 +858,7 @@ static void set_pci_host_devaddr(Object *obj, Visitor *v, const char *name,
     return;
 
 inval:
-    error_set_from_qdev_prop_error(errp, EINVAL, obj, prop, str);
+    error_setg(errp, "invalid host device address: '%s'", str);
     g_free(str);
 }
 
