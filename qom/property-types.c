@@ -198,6 +198,15 @@ const PropertyInfo prop_info_int64 = {
     .set_default_value = object_propinfo_set_default_value_int,
 };
 
+const PropertyInfo qdev_prop_array_pointer = {
+    .name = "array",
+    /*
+     * We don't register an actual property for array pointers, but
+     * we use the "array" property type to track the array pointer
+     * field.
+     */
+};
+
 /* --- string --- */
 
 static void release_string(Object *obj, const char *name, void *opaque)
@@ -421,7 +430,7 @@ static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
      */
     Property *prop = opaque;
     uint32_t *alenptr = object_static_prop_ptr(obj, prop);
-    void **arrayptr = (void *)obj + prop->arrayoffset;
+    void **arrayptr = object_static_prop_ptr(obj, prop->array_pointer);
     void *eltptr;
     const char *arrayname;
     int i;

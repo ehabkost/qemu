@@ -40,7 +40,13 @@ struct Property {
         int64_t i;
         uint64_t u;
     } defval;
-    int          arrayoffset;
+    /*
+     * Info about array pointer field (size, offset, etc).
+     * This won't necessarily become an actual QOM property,
+     * but will be used to track and type check the array pointer
+     * inside the struct.
+     */
+    Property *array_pointer;
     const PropertyInfo *arrayinfo;
     int          arrayfieldsize;
     const char   *link_type;
@@ -99,6 +105,7 @@ void *object_static_prop_ptr(Object *obj, Property *prop);
 extern const PropertyInfo prop_info_bit;
 extern const PropertyInfo prop_info_bit64;
 extern const PropertyInfo prop_info_bool;
+extern const PropertyInfo qdev_prop_array_pointer;
 extern const PropertyInfo prop_info_enum;
 extern const PropertyInfo prop_info_uint8;
 extern const PropertyInfo prop_info_uint16;
@@ -214,7 +221,10 @@ extern const PropertyInfo prop_info_link;
                 .defval.u = 0,                                 \
                 .arrayinfo = &(_arrayprop),                    \
                 .arrayfieldsize = sizeof(_arraytype),          \
-                .arrayoffset = offsetof(_state, _arrayfield))
+                .array_pointer = &(Property)                  \
+                        DEFINE_PROP(_name, _state, _arrayfield,   \
+                                    qdev_prop_array_pointer,      \
+                                    _arraytype *))
 
 /**
  * DEFINE_PROP_LINK: Define object link property
