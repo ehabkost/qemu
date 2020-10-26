@@ -1248,9 +1248,9 @@ static void s390_pci_get_fid(Object *obj, Visitor *v, const char *name,
                          void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    uint32_t *ptr = object_static_prop_ptr(obj, prop);
+    uint32_t *pvalue = object_static_prop_ptr(obj, prop);
 
-    visit_type_uint32(v, name, ptr, errp);
+    visit_type_uint32(v, name, pvalue, errp);
 }
 
 static void s390_pci_set_fid(Object *obj, Visitor *v, const char *name,
@@ -1258,9 +1258,9 @@ static void s390_pci_set_fid(Object *obj, Visitor *v, const char *name,
 {
     S390PCIBusDevice *zpci = S390_PCI_DEVICE(obj);
     Property *prop = opaque;
-    uint32_t *ptr = object_static_prop_ptr(obj, prop);
+    uint32_t *pvalue = object_static_prop_ptr(obj, prop);
 
-    if (!visit_type_uint32(v, name, ptr, errp)) {
+    if (!visit_type_uint32(v, name, pvalue, errp)) {
         return;
     }
     zpci->fid_defined = true;
