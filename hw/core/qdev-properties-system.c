@@ -61,14 +61,14 @@ static void get_drive(Object *obj, Visitor *v, const char *name, void *opaque,
                       Error **errp)
 {
     Property *prop = opaque;
-    void **ptr = object_static_prop_ptr(obj, prop);
+    BlockBackend **pblk = object_static_prop_ptr(obj, prop);
     const char *value;
     char *p;
 
-    if (*ptr) {
-        value = blk_name(*ptr);
+    if (*pblk) {
+        value = blk_name(*pblk);
         if (!*value) {
-            BlockDriverState *bs = blk_bs(*ptr);
+            BlockDriverState *bs = blk_bs(*pblk);
             if (bs) {
                 value = bdrv_get_node_name(bs);
             }
@@ -87,7 +87,7 @@ static void set_drive_helper(Object *obj, Visitor *v, const char *name,
 {
     DeviceState *dev = DEVICE(obj);
     Property *prop = opaque;
-    void **ptr = object_static_prop_ptr(obj, prop);
+    BlockBackend **pblk = object_static_prop_ptr(obj, prop);
     char *str;
     BlockBackend *blk;
     bool blk_created = false;
@@ -101,13 +101,13 @@ static void set_drive_helper(Object *obj, Visitor *v, const char *name,
      * TODO Should this really be an error?  If no, the old value
      * needs to be released before we store the new one.
      */
-    if (!check_prop_still_unset(obj, name, *ptr, str, errp)) {
+    if (!check_prop_still_unset(obj, name, *pblk, str, errp)) {
         return;
     }
 
     if (!*str) {
         g_free(str);
-        *ptr = NULL;
+        *pblk = NULL;
         return;
     }
 
@@ -153,7 +153,7 @@ static void set_drive_helper(Object *obj, Visitor *v, const char *name,
         goto fail;
     }
 
-    *ptr = blk;
+    *pblk = blk;
 
 fail:
     if (blk_created) {
