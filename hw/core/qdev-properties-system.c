@@ -729,7 +729,7 @@ static void set_pci_devfn(Object *obj, Visitor *v, const char *name,
     return;
 
 invalid:
-    error_set_from_qdev_prop_error(errp, EINVAL, obj, name, str);
+    error_setg(errp, "invalid PCI address");
     g_free(str);
 }
 
