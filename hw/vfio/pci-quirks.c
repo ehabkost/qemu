@@ -1489,9 +1489,9 @@ static void get_nv_gpudirect_clique_id(Object *obj, Visitor *v,
                                        Error **errp)
 {
     Property *prop = opaque;
-    uint8_t *ptr = object_static_prop_ptr(obj, prop);
+    uint8_t *pvalue = object_static_prop_ptr(obj, prop);
 
-    visit_type_uint8(v, name, ptr, errp);
+    visit_type_uint8(v, name, pvalue, errp);
 }
 
 static void set_nv_gpudirect_clique_id(Object *obj, Visitor *v,
@@ -1499,7 +1499,7 @@ static void set_nv_gpudirect_clique_id(Object *obj, Visitor *v,
                                        Error **errp)
 {
     Property *prop = opaque;
-    uint8_t value, *ptr = object_static_prop_ptr(obj, prop);
+    uint8_t value, *pvalue = object_static_prop_ptr(obj, prop);
 
     if (!visit_type_uint8(v, name, &value, errp)) {
         return;
@@ -1510,7 +1510,7 @@ static void set_nv_gpudirect_clique_id(Object *obj, Visitor *v,
         return;
     }
 
-    *ptr = value;
+    *pvalue = value;
 }
 
 const PropertyInfo qdev_prop_nv_gpudirect_clique = {
