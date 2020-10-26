@@ -12,7 +12,7 @@ void object_propinfo_get_enum(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     int *ptr = object_static_prop_ptr(obj, prop);
 
-    visit_type_enum(v, prop->name, ptr, prop->info->enum_table, errp);
+    visit_type_enum(v, name, ptr, prop->info->enum_table, errp);
 }
 
 void object_propinfo_set_enum(Object *obj, Visitor *v, const char *name,
@@ -21,7 +21,7 @@ void object_propinfo_set_enum(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
     int *ptr = object_static_prop_ptr(obj, prop);
 
-    visit_type_enum(v, prop->name, ptr, prop->info->enum_table, errp);
+    visit_type_enum(v, name, ptr, prop->info->enum_table, errp);
 }
 
 void object_propinfo_set_default_value_enum(ObjectProperty *op,
