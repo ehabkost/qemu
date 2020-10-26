@@ -369,7 +369,7 @@ static void set_netdev(Object *obj, Visitor *v, const char *name,
     NICPeers *peers_ptr = FIELD_PTR(obj, prop, NICPeers);
     NetClientState **ncs = peers_ptr->ncs;
     NetClientState *peers[MAX_QUEUE_NUM];
-    int queues, err = 0, i = 0;
+    int queues, i = 0;
     char *str;
 
     if (!visit_type_str(v, name, &str, errp)) {
@@ -380,7 +380,7 @@ static void set_netdev(Object *obj, Visitor *v, const char *name,
                                           NET_CLIENT_DRIVER_NIC,
                                           MAX_QUEUE_NUM);
     if (queues == 0) {
-        err = -ENOENT;
+        error_setg(errp, "netdev not found");
         goto out;
     }
 
@@ -392,7 +392,7 @@ static void set_netdev(Object *obj, Visitor *v, const char *name,
 
     for (i = 0; i < queues; i++) {
         if (peers[i]->peer) {
-            err = -EEXIST;
+            error_setg(errp, "netdev is in use");
             goto out;
         }
 
@@ -411,7 +411,6 @@ static void set_netdev(Object *obj, Visitor *v, const char *name,
     peers_ptr->queues = queues;
 
 out:
-    error_set_from_qdev_prop_error(errp, err, obj, name, str);
     g_free(str);
 }
 
