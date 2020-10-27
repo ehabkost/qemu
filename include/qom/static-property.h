@@ -52,6 +52,17 @@ struct Property {
     const char   *link_type;
 };
 
+/**
+ * PropertyAccessor: getter or setter of a Property
+ * @obj: object whose property is being accessed
+ * @v: visitor for accessor input or output
+ * @name: name of property being accessed
+ * @prop: additional information on property being accessed
+ * @errp: pointer to error information
+ */
+typedef void PropertyAccessor(Object *obj, Visitor *v, const char *name,
+                              Property *prop, Error **errp);
+
 struct PropertyInfo {
     /*
      * If @qapi_type is set, @name, @get, and @set are all optional,
@@ -65,8 +76,8 @@ struct PropertyInfo {
     int (*print)(Object *obj, Property *prop, char *dest, size_t len);
     void (*set_default_value)(ObjectProperty *op, const Property *prop);
     ObjectProperty *(*create)(ObjectClass *oc, Property *prop);
-    ObjectPropertyAccessor *get;
-    ObjectPropertyAccessor *set;
+    PropertyAccessor *get;
+    PropertyAccessor *set;
     ObjectPropertyRelease *release;
 };
 

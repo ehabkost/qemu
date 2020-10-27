@@ -27,7 +27,7 @@ static void static_prop_get(Object *obj, Visitor *v, const char *name,
 {
     Property *prop = opaque;
     if (prop->info->get) {
-        return prop->info->get(obj, v, name, opaque, errp);
+        return prop->info->get(obj, v, name, prop, errp);
     }
     if (prop->info->qapi_type) {
         static_prop_call_qapi_visitor(obj, prop, v, name, errp);
@@ -52,7 +52,7 @@ static void static_prop_set(Object *obj, Visitor *v, const char *name,
     Property *prop = opaque;
 
     if (prop->info->set) {
-        return prop->info->set(obj, v, name, opaque, errp);
+        return prop->info->set(obj, v, name, prop, errp);
     }
     if (prop->info->qapi_type) {
         static_prop_call_qapi_visitor(obj, prop, v, name, errp);

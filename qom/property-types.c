@@ -7,18 +7,16 @@
 #include "qemu/uuid.h"
 
 void object_propinfo_get_enum(Object *obj, Visitor *v, const char *name,
-                            void *opaque, Error **errp)
+                            Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     int *pvalue = object_static_prop_ptr(obj, prop);
 
     visit_type_enum(v, name, pvalue, prop->info->enum_table, errp);
 }
 
 void object_propinfo_set_enum(Object *obj, Visitor *v, const char *name,
-                            void *opaque, Error **errp)
+                            Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     int *pvalue = object_static_prop_ptr(obj, prop);
 
     visit_type_enum(v, name, pvalue, prop->info->enum_table, errp);
@@ -58,9 +56,8 @@ static void bit_prop_set(Object *obj, Property *props, bool val)
 }
 
 static void prop_get_bit(Object *obj, Visitor *v, const char *name,
-                         void *opaque, Error **errp)
+                         Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     uint32_t *p = object_static_prop_ptr(obj, prop);
     bool value = (*p & qdev_get_prop_mask(prop)) != 0;
 
@@ -68,9 +65,8 @@ static void prop_get_bit(Object *obj, Visitor *v, const char *name,
 }
 
 static void prop_set_bit(Object *obj, Visitor *v, const char *name,
-                         void *opaque, Error **errp)
+                         Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     bool value;
 
     if (!visit_type_bool(v, name, &value, errp)) {
@@ -112,9 +108,8 @@ static void bit64_prop_set(Object *obj, Property *props, bool val)
 }
 
 static void prop_get_bit64(Object *obj, Visitor *v, const char *name,
-                           void *opaque, Error **errp)
+                           Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     uint64_t *p = object_static_prop_ptr(obj, prop);
     bool value = (*p & qdev_get_prop_mask64(prop)) != 0;
 
@@ -122,9 +117,8 @@ static void prop_get_bit64(Object *obj, Visitor *v, const char *name,
 }
 
 static void prop_set_bit64(Object *obj, Visitor *v, const char *name,
-                           void *opaque, Error **errp)
+                           Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     bool value;
 
     if (!visit_type_bool(v, name, &value, errp)) {
@@ -216,9 +210,8 @@ static void release_string(Object *obj, const char *name, void *opaque)
 }
 
 static void get_string(Object *obj, Visitor *v, const char *name,
-                       void *opaque, Error **errp)
+                       Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     char **pstr = object_static_prop_ptr(obj, prop);
 
     if (!*pstr) {
@@ -230,9 +223,8 @@ static void get_string(Object *obj, Visitor *v, const char *name,
 }
 
 static void set_string(Object *obj, Visitor *v, const char *name,
-                       void *opaque, Error **errp)
+                       Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     char **pstr = object_static_prop_ptr(obj, prop);
     char *str;
 
@@ -264,19 +256,17 @@ const PropertyInfo prop_info_on_off_auto = {
 /* --- 32bit unsigned int 'size' type --- */
 
 void object_propinfo_get_size32(Object *obj, Visitor *v, const char *name,
-                              void *opaque, Error **errp)
+                              Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     uint32_t *pvalue = object_static_prop_ptr(obj, prop);
     uint64_t value = *pvalue;
 
     visit_type_size(v, name, &value, errp);
 }
 
-static void set_size32(Object *obj, Visitor *v, const char *name, void *opaque,
-                       Error **errp)
+static void set_size32(Object *obj, Visitor *v, const char *name,
+                       Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     uint32_t *pvalue = object_static_prop_ptr(obj, prop);
     uint64_t value;
 
@@ -304,10 +294,9 @@ const PropertyInfo prop_info_size32 = {
 
 /* --- UUID --- */
 
-static void get_uuid(Object *obj, Visitor *v, const char *name, void *opaque,
-                     Error **errp)
+static void get_uuid(Object *obj, Visitor *v, const char *name,
+                     Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     QemuUUID *uuid = object_static_prop_ptr(obj, prop);
     char buffer[UUID_FMT_LEN + 1];
     char *p = buffer;
@@ -319,10 +308,9 @@ static void get_uuid(Object *obj, Visitor *v, const char *name, void *opaque,
 
 #define UUID_VALUE_AUTO        "auto"
 
-static void set_uuid(Object *obj, Visitor *v, const char *name, void *opaque,
-                    Error **errp)
+static void set_uuid(Object *obj, Visitor *v, const char *name,
+                     Property *prop, Error **errp)
 {
-    Property *prop = opaque;
     QemuUUID *uuid = object_static_prop_ptr(obj, prop);
     char *str;
 
@@ -421,14 +409,13 @@ static void object_property_add_array_element(Object *obj,
 }
 
 static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
-                              void *opaque, Error **errp)
+                              Property *prop, Error **errp)
 {
     /* Setter for the property which defines the length of a
      * variable-sized property array. As well as actually setting the
      * array-length field in the device struct, we have to create the
      * array itself and dynamically add the corresponding properties.
      */
-    Property *prop = opaque;
     uint32_t *alenptr = object_static_prop_ptr(obj, prop);
     void **arrayptr = object_static_prop_ptr(obj, prop->array_pointer);
     void *eltptr;
