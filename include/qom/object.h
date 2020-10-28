@@ -1105,6 +1105,16 @@ void object_property_set_default_int(ObjectProperty *prop, int64_t value);
 void object_property_set_default_uint(ObjectProperty *prop, uint64_t value);
 
 /**
+ * object_property_set_to_default: Set property value to default
+ * @obj: object instance
+ * @prop: property to be set
+ *
+ * Set the property value to the default that was previously set
+ * using ``object_property_set_default*()``.
+ */
+void object_property_set_to_default(Object *obj, ObjectProperty *prop);
+
+/**
  * object_property_find:
  * @obj: the object
  * @name: the name of the property

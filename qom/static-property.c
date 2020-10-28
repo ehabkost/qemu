@@ -66,9 +66,7 @@ object_property_add_static(Object *obj, Property *prop,
 
     if (prop->set_default) {
         prop->info->set_default_value(op, prop);
-        if (op->init) {
-            op->init(obj, op);
-        }
+        object_property_set_to_default(obj, op);
     }
 
     op->allow_set = allow_set;

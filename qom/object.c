@@ -485,6 +485,13 @@ void object_apply_compat_props(Object *obj)
     }
 }
 
+void object_property_set_to_default(Object *obj, ObjectProperty *prop)
+{
+    if (prop->init) {
+        prop->init(obj, prop);
+    }
+}
+
 static void object_class_property_init_all(Object *obj)
 {
     ObjectPropertyIterator iter;
@@ -492,9 +499,7 @@ static void object_class_property_init_all(Object *obj)
 
     object_class_property_iter_init(&iter, object_get_class(obj));
     while ((prop = object_property_iter_next(&iter))) {
-        if (prop->init) {
-            prop->init(obj, prop);
-        }
+        object_property_set_to_default(obj, prop);
     }
 }
 
