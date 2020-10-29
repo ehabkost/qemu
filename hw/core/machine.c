@@ -27,6 +27,7 @@
 #include "hw/pci/pci.h"
 #include "hw/mem/nvdimm.h"
 #include "migration/vmstate.h"
+#include "qom/qom.h"
 
 GlobalProperty hw_compat_5_1[] = {
     { "vhost-scsi", "num_queues", "1"},
@@ -212,81 +213,6 @@ GlobalProperty hw_compat_2_1[] = {
 };
 const size_t hw_compat_2_1_len = G_N_ELEMENTS(hw_compat_2_1);
 
-static char *machine_get_kernel(Object *obj, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    return g_strdup(ms->kernel_filename);
-}
-
-static void machine_set_kernel(Object *obj, const char *value, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    g_free(ms->kernel_filename);
-    ms->kernel_filename = g_strdup(value);
-}
-
-static char *machine_get_initrd(Object *obj, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    return g_strdup(ms->initrd_filename);
-}
-
-static void machine_set_initrd(Object *obj, const char *value, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    g_free(ms->initrd_filename);
-    ms->initrd_filename = g_strdup(value);
-}
-
-static char *machine_get_append(Object *obj, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    return g_strdup(ms->kernel_cmdline);
-}
-
-static void machine_set_append(Object *obj, const char *value, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    g_free(ms->kernel_cmdline);
-    ms->kernel_cmdline = g_strdup(value);
-}
-
-static char *machine_get_dtb(Object *obj, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    return g_strdup(ms->dtb);
-}
-
-static void machine_set_dtb(Object *obj, const char *value, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    g_free(ms->dtb);
-    ms->dtb = g_strdup(value);
-}
-
-static char *machine_get_dumpdtb(Object *obj, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    return g_strdup(ms->dumpdtb);
-}
-
-static void machine_set_dumpdtb(Object *obj, const char *value, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    g_free(ms->dumpdtb);
-    ms->dumpdtb = g_strdup(value);
-}
-
 static void machine_get_phandle_start(Object *obj, Visitor *v,
                                       const char *name, void *opaque,
                                       Error **errp)
@@ -309,21 +235,6 @@ static void machine_set_phandle_start(Object *obj, Visitor *v,
     }
 
     ms->phandle_start = value;
-}
-
-static char *machine_get_dt_compatible(Object *obj, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    return g_strdup(ms->dt_compatible);
-}
-
-static void machine_set_dt_compatible(Object *obj, const char *value, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    g_free(ms->dt_compatible);
-    ms->dt_compatible = g_strdup(value);
 }
 
 static bool machine_get_dump_guest_core(Object *obj, Error **errp)
@@ -381,21 +292,6 @@ static void machine_set_graphics(Object *obj, bool value, Error **errp)
     MachineState *ms = MACHINE(obj);
 
     ms->enable_graphics = value;
-}
-
-static char *machine_get_firmware(Object *obj, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    return g_strdup(ms->firmware);
-}
-
-static void machine_set_firmware(Object *obj, const char *value, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    g_free(ms->firmware);
-    ms->firmware = g_strdup(value);
 }
 
 static void machine_set_suppress_vmdesc(Object *obj, bool value, Error **errp)
@@ -518,21 +414,6 @@ static void validate_sysbus_device(SysBusDevice *sbdev, void *opaque)
                      object_class_get_name(object_get_class(OBJECT(sbdev))));
         exit(1);
     }
-}
-
-static char *machine_get_memdev(Object *obj, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    return g_strdup(ms->ram_memdev_id);
-}
-
-static void machine_set_memdev(Object *obj, const char *value, Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-
-    g_free(ms->ram_memdev_id);
-    ms->ram_memdev_id = g_strdup(value);
 }
 
 
@@ -760,6 +641,27 @@ static void smp_parse(MachineState *ms, QemuOpts *opts)
     }
 }
 
+static Property machine_props[] = {
+    DEFINE_PROP_STRING("kernel", MachineState, kernel_filename,
+                       .description = "Linux kernel image file"),
+    DEFINE_PROP_STRING("initrd", MachineState, initrd_filename,
+                       .description = "Linux initial ramdisk file"),
+    DEFINE_PROP_STRING("append", MachineState, kernel_cmdline,
+                       .description = "Linux kernel command line"),
+    DEFINE_PROP_STRING("dtb", MachineState, dtb,
+                       .description = "Linux kernel device tree file"),
+    DEFINE_PROP_STRING("dumpdtb", MachineState, dumpdtb,
+                       .description = "Dump current dtb to a file and quit"),
+    DEFINE_PROP_STRING("dt-compatible", MachineState, dt_compatible,
+                       .description = "Overrides the \"compatible\" "
+                                      "property of the dt root node"),
+    DEFINE_PROP_STRING("firmware", MachineState, firmware,
+                       .description = "Firmware image"),
+    DEFINE_PROP_STRING("memory-backend", MachineState, ram_memdev_id,
+                       .description = "ID of memory backend object"),
+    DEFINE_PROP_END_OF_LIST(),
+};
+
 static void machine_class_init(ObjectClass *oc, void *data)
 {
     MachineClass *mc = MACHINE_CLASS(oc);
@@ -774,41 +676,17 @@ static void machine_class_init(ObjectClass *oc, void *data)
      */
     mc->numa_mem_align_shift = 23;
 
-    object_class_property_add_str(oc, "kernel",
-        machine_get_kernel, machine_set_kernel);
-    object_class_property_set_description(oc, "kernel",
-        "Linux kernel image file");
-
-    object_class_property_add_str(oc, "initrd",
-        machine_get_initrd, machine_set_initrd);
-    object_class_property_set_description(oc, "initrd",
-        "Linux initial ramdisk file");
-
-    object_class_property_add_str(oc, "append",
-        machine_get_append, machine_set_append);
-    object_class_property_set_description(oc, "append",
-        "Linux kernel command line");
-
-    object_class_property_add_str(oc, "dtb",
-        machine_get_dtb, machine_set_dtb);
-    object_class_property_set_description(oc, "dtb",
-        "Linux kernel device tree file");
-
-    object_class_property_add_str(oc, "dumpdtb",
-        machine_get_dumpdtb, machine_set_dumpdtb);
-    object_class_property_set_description(oc, "dumpdtb",
-        "Dump current dtb to a file and quit");
+    /*
+     * TODO: provide a allow_set callback and prevent properties
+     * from being set after machine was already initialized
+     */
+    object_class_add_field_properties(oc, machine_props, prop_allow_set_always);
 
     object_class_property_add(oc, "phandle-start", "int",
         machine_get_phandle_start, machine_set_phandle_start,
         NULL, NULL);
     object_class_property_set_description(oc, "phandle-start",
         "The first phandle ID we may generate dynamically");
-
-    object_class_property_add_str(oc, "dt-compatible",
-        machine_get_dt_compatible, machine_set_dt_compatible);
-    object_class_property_set_description(oc, "dt-compatible",
-        "Overrides the \"compatible\" property of the dt root node");
 
     object_class_property_add_bool(oc, "dump-guest-core",
         machine_get_dump_guest_core, machine_set_dump_guest_core);
@@ -830,11 +708,6 @@ static void machine_class_init(ObjectClass *oc, void *data)
     object_class_property_set_description(oc, "graphics",
         "Set on/off to enable/disable graphics emulation");
 
-    object_class_property_add_str(oc, "firmware",
-        machine_get_firmware, machine_set_firmware);
-    object_class_property_set_description(oc, "firmware",
-        "Firmware image");
-
     object_class_property_add_bool(oc, "suppress-vmdesc",
         machine_get_suppress_vmdesc, machine_set_suppress_vmdesc);
     object_class_property_set_description(oc, "suppress-vmdesc",
@@ -844,11 +717,6 @@ static void machine_class_init(ObjectClass *oc, void *data)
         machine_get_memory_encryption, machine_set_memory_encryption);
     object_class_property_set_description(oc, "memory-encryption",
         "Set memory encryption object to use");
-
-    object_class_property_add_str(oc, "memory-backend",
-                                  machine_get_memdev, machine_set_memdev);
-    object_class_property_set_description(oc, "memory-backend",
-                                          "ID of memory backend object");
 }
 
 static void machine_class_base_init(ObjectClass *oc, void *data)
@@ -920,13 +788,6 @@ static void machine_finalize(Object *obj)
 {
     MachineState *ms = MACHINE(obj);
 
-    g_free(ms->kernel_filename);
-    g_free(ms->initrd_filename);
-    g_free(ms->kernel_cmdline);
-    g_free(ms->dtb);
-    g_free(ms->dumpdtb);
-    g_free(ms->dt_compatible);
-    g_free(ms->firmware);
     g_free(ms->device_memory);
     g_free(ms->nvdimms_state);
     g_free(ms->numa_state);
