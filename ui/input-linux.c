@@ -18,6 +18,7 @@
 #include <sys/ioctl.h>
 #include "standard-headers/linux/input.h"
 #include "qom/object.h"
+#include "qom/static-property.h"
 
 static bool linux_is_button(unsigned int lnx)
 {
@@ -421,56 +422,6 @@ static void input_linux_instance_finalize(Object *obj)
         qemu_set_fd_handler(il->fd, NULL, NULL, NULL);
         close(il->fd);
     }
-    g_free(il->evdev);
-}
-
-static char *input_linux_get_evdev(Object *obj, Error **errp)
-{
-    InputLinux *il = INPUT_LINUX(obj);
-
-    return g_strdup(il->evdev);
-}
-
-static void input_linux_set_evdev(Object *obj, const char *value,
-                                  Error **errp)
-{
-    InputLinux *il = INPUT_LINUX(obj);
-
-    if (il->evdev) {
-        error_setg(errp, "evdev property already set");
-        return;
-    }
-    il->evdev = g_strdup(value);
-}
-
-static bool input_linux_get_grab_all(Object *obj, Error **errp)
-{
-    InputLinux *il = INPUT_LINUX(obj);
-
-    return il->grab_all;
-}
-
-static void input_linux_set_grab_all(Object *obj, bool value,
-                                   Error **errp)
-{
-    InputLinux *il = INPUT_LINUX(obj);
-
-    il->grab_all = value;
-}
-
-static bool input_linux_get_repeat(Object *obj, Error **errp)
-{
-    InputLinux *il = INPUT_LINUX(obj);
-
-    return il->repeat;
-}
-
-static void input_linux_set_repeat(Object *obj, bool value,
-                                   Error **errp)
-{
-    InputLinux *il = INPUT_LINUX(obj);
-
-    il->repeat = value;
 }
 
 static int input_linux_get_grab_toggle(Object *obj, Error **errp)
@@ -487,6 +438,12 @@ static void input_linux_set_grab_toggle(Object *obj, int value,
 
     il->grab_toggle = value;
 }
+static Property input_linux_props[] = {
+    DEFINE_PROP_STRING("evdev", InputLinux, evdev),
+    DEFINE_PROP_BOOL("grab_all", InputLinux, grab_all, false),
+    DEFINE_PROP_BOOL("repeat", InputLinux, repeat, false),
+    DEFINE_PROP_END_OF_LIST(),
+};
 
 static void input_linux_instance_init(Object *obj)
 {
@@ -498,15 +455,7 @@ static void input_linux_class_init(ObjectClass *oc, void *data)
 
     ucc->complete = input_linux_complete;
 
-    object_class_property_add_str(oc, "evdev",
-                                  input_linux_get_evdev,
-                                  input_linux_set_evdev);
-    object_class_property_add_bool(oc, "grab_all",
-                                   input_linux_get_grab_all,
-                                   input_linux_set_grab_all);
-    object_class_property_add_bool(oc, "repeat",
-                                   input_linux_get_repeat,
-                                   input_linux_set_repeat);
+    object_class_add_static_props(oc, input_linux_props, NULL);
     object_class_property_add_enum(oc, "grab-toggle", "GrabToggleKeys",
                                    &GrabToggleKeys_lookup,
                                    input_linux_get_grab_toggle,
