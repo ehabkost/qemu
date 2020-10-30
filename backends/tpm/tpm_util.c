@@ -55,8 +55,7 @@ static void set_tpm(Object *obj, Visitor *v, const char *name,
 
     s = qemu_find_tpm_be(str);
     if (s == NULL) {
-        error_setg(errp, "Property '%s.%s' can't find value '%s'",
-                   object_get_typename(obj), name, str);
+        error_setg(errp, "tpm backend not found");
     } else if (tpm_backend_init(s, TPM_IF(obj), errp) == 0) {
         *be = s; /* weak reference, avoid cyclic ref */
     }
