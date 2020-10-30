@@ -28,39 +28,47 @@
 #include "hw/qdev-properties.h"
 #include "sysemu/tpm_backend.h"
 #include "sysemu/tpm_util.h"
+#include "hw/tpm/tpm_prop.h"
 #include "trace.h"
+#include "qom/qom-qapi.h"
 
-/* tpm backend property */
+/* char* <-> TPMBackend* translation functions for visit_type_tpm_backend(): */
 
-static void get_tpm(Object *obj, Visitor *v, const char *name, void *opaque,
-                    Error **errp)
+static char *tpm_backend_to_str(TPMBackend *be, Error **errp)
 {
-    TPMBackend **be = object_static_prop_ptr(obj, opaque);
-    char *p;
-
-    p = g_strdup(*be ? (*be)->id : "");
-    visit_type_str(v, name, &p, errp);
-    g_free(p);
+    return g_strdup(be ? (be)->id : "");
 }
+
+static TPMBackend *str_to_tpm_backend(char *str, Error **errp)
+{
+    TPMBackend *be = qemu_find_tpm_be(str);
+    if (!be) {
+        error_setg(errp, "tpm backend not found");
+    }
+    g_free(str);
+    return be;
+}
+
+static DEFINE_VISIT_WRAPPER(visit_type_tpm_backend, TPMBackend *,
+                            visit_type_str, char *,
+                            tpm_backend_to_str, str_to_tpm_backend)
+
+DEFINE_QAPI_TYPE(qapi_tpm_backend, "TPMBackend", visit_type_tpm_backend);
 
 static void set_tpm(Object *obj, Visitor *v, const char *name, void *opaque,
                     Error **errp)
 {
     Property *prop = opaque;
-    TPMBackend *s, **be = object_static_prop_ptr(obj, prop);
-    char *str;
+    TPMBackend **be = object_static_prop_ptr(obj, prop);
+    TPMBackend *s = NULL;
 
-    if (!visit_type_str(v, name, &str, errp)) {
+    if (!visit_type_tpm_backend(v, name, &s, errp)) {
         return;
     }
 
-    s = qemu_find_tpm_be(str);
-    if (s == NULL) {
-        error_setg(errp, "tpm backend not found");
-    } else if (tpm_backend_init(s, TPM_IF(obj), errp) == 0) {
+    if (tpm_backend_init(s, TPM_IF(obj), errp) == 0) {
         *be = s; /* weak reference, avoid cyclic ref */
     }
-    g_free(str);
 }
 
 static void release_tpm(Object *obj, const char *name, void *opaque)
@@ -74,9 +82,8 @@ static void release_tpm(Object *obj, const char *name, void *opaque)
 }
 
 const PropertyInfo qdev_prop_tpm = {
-    .name  = "str",
+    .qapi_type = &qapi_tpm_backend,
     .description = "ID of a tpm to use as a backend",
-    .get   = get_tpm,
     .set   = set_tpm,
     .release = release_tpm,
 };

@@ -25,8 +25,9 @@
 #include "sysemu/tpm_backend.h"
 #include "hw/qdev-properties.h"
 
-extern const PropertyInfo qdev_prop_tpm;
+DECLARE_QAPI_TYPE(qapi_tpm_backend, TPMBackend *);
 
+extern const PropertyInfo qdev_prop_tpm;
 #define DEFINE_PROP_TPMBE(_n, _s, _f)                     \
     DEFINE_PROP(_n, _s, _f, qdev_prop_tpm, TPMBackend *)
 
