@@ -208,15 +208,45 @@ const PropertyInfo qdev_prop_drive_iothread = {
 
 /* --- character device --- */
 
+/* char* <-> Chardev* conversion functions */
+static char *chardev_to_str(Chardev *chr, Error **errp)
+{
+    return g_strdup(chr && chr->label ? chr->label : "");
+}
+
+/* Rules when parsing chardev id:
+ * - empty string is translated to NULL (not an error)
+ * - If chardev is not found, we will report an error
+ */
+static Chardev *str_to_chardev(char *str, Error **errp)
+{
+    Chardev *chr = NULL;
+
+    if (!*str) {
+        goto out;
+    }
+
+    chr = qemu_chr_find(str);
+    if (chr == NULL) {
+        error_setg(errp, "chardev not found");
+    }
+
+out:
+    g_free(str);
+    return chr;
+}
+
+static DEFINE_VISIT_WRAPPER(visit_type_chardev, Chardev *,
+                            visit_type_str, char *,
+                            chardev_to_str, str_to_chardev)
+
 static void get_chr(Object *obj, Visitor *v, const char *name, void *opaque,
                     Error **errp)
 {
-    CharBackend *be = object_static_prop_ptr(obj, opaque);
-    char *p;
+    Property *prop = opaque;
+    CharBackend *be = object_static_prop_ptr(obj, prop);
 
-    p = g_strdup(be->chr && be->chr->label ? be->chr->label : "");
-    visit_type_str(v, name, &p, errp);
-    g_free(p);
+    visit_type_chardev(v, name, &be->chr, errp);
 }
 
 static void set_chr(Object *obj, Visitor *v, const char *name, void *opaque,
@@ -224,12 +254,7 @@ static void set_chr(Object *obj, Visitor *v, const char *name, void *opaque,
 {
     Property *prop = opaque;
     CharBackend *be = object_static_prop_ptr(obj, prop);
-    Chardev *s;
-    char *str;
-
-    if (!visit_type_str(v, name, &str, errp)) {
-        return;
-    }
+    Chardev *chr = NULL;
 
     /*
      * TODO Should this really be an error?  If no, the old value
@@ -239,19 +264,15 @@ static void set_chr(Object *obj, Visitor *v, const char *name, void *opaque,
         return;
     }
 
-    if (!*str) {
-        g_free(str);
-        be->chr = NULL;
+    if (!visit_type_chardev(v, name, &chr, errp)) {
         return;
     }
 
-    s = qemu_chr_find(str);
-    if (s == NULL) {
-        error_setg(errp, "chardev not found");
-    } else {
-        qemu_chr_fe_init(be, s, errp);
+    if (!chr) {
+        return;
     }
-    g_free(str);
+
+    qemu_chr_fe_init(be, chr, errp);
 }
 
 static void release_chr(Object *obj, const char *name, void *opaque)
