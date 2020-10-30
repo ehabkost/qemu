@@ -34,7 +34,7 @@
 #include "util/block-helpers.h"
 
 static bool check_prop_still_unset(Object *obj, const char *name,
-                                   const void *old_val, const char *new_val,
+                                   const void *old_val,
                                    Error **errp)
 {
     const GlobalProperty *prop = qdev_find_global_prop(obj, name);
@@ -44,12 +44,11 @@ static bool check_prop_still_unset(Object *obj, const char *name,
     }
 
     if (prop) {
-        error_setg(errp, "-global %s.%s=... conflicts with %s=%s",
-                   prop->driver, prop->property, name, new_val);
+        error_setg(errp, "conflict with -global %s.%s=%s",
+                   prop->driver, prop->property, prop->value);
     } else {
         /* Error message is vague, but a better one would be hard */
-        error_setg(errp, "%s=%s conflicts, and override is not implemented",
-                   name, new_val);
+        error_setg(errp, "property was already set");
     }
     return false;
 }
@@ -101,7 +100,7 @@ static void set_drive_helper(Object *obj, Visitor *v, const char *name,
      * TODO Should this really be an error?  If no, the old value
      * needs to be released before we store the new one.
      */
-    if (!check_prop_still_unset(obj, name, *ptr, str, errp)) {
+    if (!check_prop_still_unset(obj, name, *ptr, errp)) {
         return;
     }
 
@@ -236,7 +235,7 @@ static void set_chr(Object *obj, Visitor *v, const char *name, void *opaque,
      * TODO Should this really be an error?  If no, the old value
      * needs to be released before we store the new one.
      */
-    if (!check_prop_still_unset(obj, name, be->chr, str, errp)) {
+    if (!check_prop_still_unset(obj, name, be->chr, errp)) {
         return;
     }
 
@@ -404,7 +403,7 @@ static void set_netdev(Object *obj, Visitor *v, const char *name,
          * TODO Should this really be an error?  If no, the old value
          * needs to be released before we store the new one.
          */
-        if (!check_prop_still_unset(obj, name, ncs[i], str, errp)) {
+        if (!check_prop_still_unset(obj, name, ncs[i], errp)) {
             goto out;
         }
 
