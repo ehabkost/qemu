@@ -1,3 +1,4 @@
+#error "This should fail"
 /*
  * Copyright (c) 2018  Citrix Systems Inc.
  *
