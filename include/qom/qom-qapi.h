@@ -11,6 +11,8 @@
 #ifndef QEMU_QOM_QAPI_H
 #define QEMU_QOM_QAPI_H
 
+#include "qapi/dealloc-visitor.h"
+
 /**
  * typedef QAPITypeInfo: Reference to a QAPI type
  *
@@ -148,6 +150,79 @@ DECLARE_QAPI_TYPE(qapi_str, char *);
 
 DECLARE_QAPI_TYPE(qapi_size, uint64_t);
 
+
+/**
+ * DECLARE_VISIT_FUNC: Declare a visit function for C type @T
+ * @visit_fn: name of visitor function
+ * @T: visit function target type
+ *
+ * Declare QAPI visit function prototype, with the following
+ * signature::
+ *
+ *   bool visit_type_NAME(Visitor *v, const char *name, T *obj,
+ *                        Error **errp);
+ */
+#define DECLARE_VISIT_FUNC(visit_fn, T) \
+    bool visit_fn(Visitor *v, const char *name, T *obj, Error **errp)
+
+/**
+ * DEFINE_VISIT_WRAPPER: Define a visit function that translates data
+ *                       before and after calling another visit function
+ * @visit_fn: name of new visit function
+ * @outer_type: target obj type of @visit_fn
+ * @inner_visit: inner visit function
+ * @inner_type: target obj type of @inner_visit
+ * @wrap_fn: function for translating data from @outer_type to @inner_type
+ * @unwrap_fn: function for translating data from @inner_type to @outer_type
+ *
+ * The signature of visit_fn will be::
+ *
+ *   bool visit_type_NAME(Visitor *v, const char *name, outer_type *obj,
+ *                        Error **errp);
+ *
+ * The signature of @wrap_fn should be::
+ *
+ *   inner_type wrap_fn(outer_type value, Error **errp);
+ *
+ * The signature of @unwrap_fn should be::
+ *
+ *   outer_type unwrap_fn(inner_type value, Error **errp);
+ *
+ * @wrap_fn and @unwrap_fn must always take ownership of
+ * ``value`` and dealloc it if necessary (even in the case of errors).
+ */
+#define DEFINE_VISIT_WRAPPER(visit_fn, outer_type,               \
+                             inner_visit, inner_type,            \
+                             wrap_fn, unwrap_fn)                 \
+    DECLARE_VISIT_FUNC(visit_fn, outer_type)                     \
+    {                                                            \
+        Error *local_err = NULL;                                 \
+        inner_type in_value = wrap_fn(*obj, &local_err);         \
+        if (local_err) {                                         \
+            goto err;                                            \
+        }                                                        \
+                                                                 \
+        inner_visit(v, name, &in_value, &local_err);             \
+        if (local_err) {                                         \
+            goto dealloc_in;                                     \
+        }                                                        \
+                                                                 \
+        outer_type out_value = unwrap_fn(in_value, &local_err);  \
+        if (local_err) {                                         \
+            goto err;                                            \
+        }                                                        \
+                                                                 \
+        *obj = out_value;                                        \
+        return true;                                             \
+                                                                 \
+    dealloc_in:                                                  \
+        v = qapi_dealloc_visitor_new();                          \
+        inner_visit(v, NULL, &in_value, NULL);                   \
+        visit_free(v);                                           \
+    err:                                                         \
+        error_propagate(errp, local_err);                        \
+        return false;                                            \
+    }
 
 /**
  * DECLARE_VISITOR_MUX: Wrap input and output visitors into a single visitor
