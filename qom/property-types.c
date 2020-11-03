@@ -45,7 +45,7 @@ static uint32_t qdev_get_prop_mask(Property *prop)
     return 0x1 << prop->bitnr;
 }
 
-static void bit_prop_set(Property *props, void *field, bool val)
+static void bit_prop_set(Property *props, FieldPointer field, bool val)
 {
     uint32_t *p = FIELD_PTR(field, props, uint32_t);
     uint32_t mask = qdev_get_prop_mask(props);
@@ -97,7 +97,7 @@ static uint64_t qdev_get_prop_mask64(Property *prop)
     return 0x1ull << prop->bitnr;
 }
 
-static void bit64_prop_set(Property *props, void *field, bool val)
+static void bit64_prop_set(Property *props, FieldPointer field, bool val)
 {
     uint64_t *p = FIELD_PTR(field, props, uint64_t);
     uint64_t mask = qdev_get_prop_mask64(props);
@@ -321,7 +321,7 @@ const PropertyInfo prop_info_int64 = {
 
 /* --- string --- */
 
-static void release_string(const char *name, Property *prop, void *field)
+static void release_string(const char *name, Property *prop, FieldPointer field)
 {
     char **ptr = FIELD_PTR(field, prop, char *);
     g_free(*ptr);
@@ -393,10 +393,11 @@ static void set_size32(Visitor *v, const char *name,
     }
 
     if (value > UINT32_MAX) {
+        /* FIXME: change this in another patch */
         error_setg(errp,
-                   "Property %s.%s doesn't take value %" PRIu64
+                   "invalid value %" PRIu64
                    " (maximum: %u)",
-                   object_get_typename(obj), name, value, UINT32_MAX);
+                   value, UINT32_MAX);
         return;
     }
 
@@ -457,8 +458,7 @@ static void set_prop_arraylen(Visitor *v, const char *name,
          */
         arrayprop->offset = eltptr - (void *)obj;
         arrayprop->size = prop->arrayfieldsize;
-        assert(object_field_prop_ptr(obj, arrayprop,
-                                     prop->arrayfieldsize) == eltptr);
+        assert(object_field_prop_ptr(obj, arrayprop) == eltptr);
         object_property_add_field(obj, propname, arrayprop, op->allow_set);
     }
 }

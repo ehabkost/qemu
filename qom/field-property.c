@@ -5,19 +5,18 @@
 #include "qom/field-property.h"
 #include "qom/field-property-internal.h"
 
-void *object_field_prop_ptr(Object *obj, Property *prop, size_t expected_size)
+static FieldPointer object_field_prop_ptr(Object *obj, Property *prop)
 {
     void *ptr = obj;
     ptr += prop->offset;
-    assert(prop->size == expected_size);
-    return ptr;
+    return (FieldPointer) { ptr };
 }
 
 static void field_prop_get(Object *obj, Visitor *v, const char *name,
                            void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    void *field = object_field_prop_ptr(obj, prop, prop->size);
+    FieldPointer field = object_field_prop_ptr(obj, prop);
     return prop->info->get(v, name, prop, field, errp);
 }
 
@@ -35,7 +34,7 @@ static void field_prop_set(Object *obj, Visitor *v, const char *name,
                            void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    void *field = object_field_prop_ptr(obj, prop, prop->size);
+    FieldPointer field = object_field_prop_ptr(obj, prop);
 
     return prop->info->set(v, name, prop, field, errp);
 }
@@ -53,7 +52,7 @@ static ObjectPropertyAccessor *field_prop_setter(const PropertyInfo *info)
 static void field_prop_release(Object *obj, const char *name, void *opaque)
 {
     Property *prop = opaque;
-    void *field = object_field_prop_ptr(obj, prop, prop->size);
+    FieldPointer field = object_field_prop_ptr(obj, prop);
 
     if (prop->info->release) {
         prop->info->release(name, prop, field);

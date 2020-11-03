@@ -53,6 +53,12 @@ struct Property {
     const char   *link_type;
 };
 
+typedef struct FieldPointer {
+    /* private: */
+    void *address;
+} FieldPointer;
+
+
 /**
  * typedef FieldAccessor: a field property getters or setter function
  * @v: the visitor that contains the property data
@@ -63,7 +69,7 @@ struct Property {
  */
 typedef void FieldAccessor(Visitor *v,
                            const char *name, Property *prop,
-                           void *field,
+                           FieldPointer field,
                            Error **errp);
 
 /**
@@ -72,7 +78,7 @@ typedef void FieldAccessor(Visitor *v,
  * @name: the name of the property
  * @prop: Field property definition
  */
-typedef void FieldRelease(const char *name, Property *prop, void *field);
+typedef void FieldRelease(const char *name, Property *prop, FieldPointer field);
 
 
 /**
@@ -126,16 +132,6 @@ object_class_property_add_field(ObjectClass *oc, const char *name,
                                 ObjectPropertyAllowSet allow_set);
 
 /**
- * object_field_prop_ptr: Get pointer to property field
- * @obj: the object instance
- * @prop: field property definition
- * @expected_size: expected size of struct field
- *
- * Don't use this function directly, use the FIELD_PTR() macro instead.
- */
-void *object_field_prop_ptr(Object *obj, Property *prop, size_t expected_size);
-
-/**
  * FIELD_PTR: Get pointer to struct field for property
  *
  * This returns a pointer to type @type, pointing to the struct
@@ -143,7 +139,8 @@ void *object_field_prop_ptr(Object *obj, Property *prop, size_t expected_size);
  *
  * @type must match the expected type for the property.
  */
-#define FIELD_PTR(obj, prop, type) \
-    ((type *)object_field_prop_ptr((obj), (prop), sizeof(type)))
+#define FIELD_PTR(ptr, prop, type) \
+    ({ assert((prop)->size == sizeof(type)); \
+      (type *)(ptr).address; })
 
 #endif
