@@ -167,6 +167,36 @@ extern const PropertyInfo qdev_prop_link;
 #define DEFINE_PROP_END_OF_LIST()               \
     {}
 
+/**
+ * object_class_property_add_field: Add a field property to object class
+ * @oc: object class
+ * @name: property name
+ * @prop: property definition
+ *
+ * Add a field property to an object class.  A field property is
+ * a property that will change a field at a specific offset of the
+ * object instance struct.
+ *
+ * *@prop must exist for the life time of @oc.
+ */
+ObjectProperty *
+object_class_property_add_field(ObjectClass *oc, const char *name,
+                                Property *prop);
+
+
+/**
+ * object_class_add_field_properties: Add field properties from array to a class
+ * @oc: object class
+ * @props: array of property definitions
+ *
+ * Register an array of field properties to a class, using
+ * object_class_property_add_field() for each array element.
+ *
+ * The array at @props must end with DEFINE_PROP_END_OF_LIST(), and
+ * must exist for the life time of @oc.
+ */
+void object_class_add_field_properties(ObjectClass *oc, Property *props);
+
 /*
  * Set properties between creation and realization.
  *
