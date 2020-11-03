@@ -563,7 +563,6 @@ static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
     for (i = 0; i < *alenptr; i++, eltptr += prop->arrayfieldsize) {
         g_autofree char *propname = g_strdup_printf("%s[%d]", arrayname, i);
         Property *arrayprop = g_new0(Property, 1);
-        ObjectProperty *elmop;
         arrayprop->info = prop->arrayinfo;
         /* This ugly piece of pointer arithmetic sets up the offset so
          * that when the underlying get/set hooks call qdev_get_prop_ptr
@@ -572,13 +571,8 @@ static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
          */
         arrayprop->offset = eltptr - (void *)obj;
         assert(object_field_prop_ptr(obj, arrayprop) == eltptr);
-        elmop = object_property_add(obj, propname,
-                                    arrayprop->info->name,
-                                    field_prop_getter(arrayprop->info),
-                                    field_prop_setter(arrayprop->info),
-                                    arrayprop->info->release,
-                                    arrayprop);
-        elmop->allow_set = op->allow_set;
+        object_property_add_field(obj, propname, arrayprop,
+                                  op->allow_set);
     }
 }
 
