@@ -17,7 +17,8 @@ static void field_prop_get(Object *obj, Visitor *v, const char *name,
                            void *opaque, Error **errp)
 {
     Property *prop = opaque;
-    return prop->info->get(obj, v, name, opaque, errp);
+    void *field = object_field_prop_ptr(obj, prop, prop->size);
+    return prop->info->get(v, name, prop, field, errp);
 }
 
 /**
@@ -34,8 +35,9 @@ static void field_prop_set(Object *obj, Visitor *v, const char *name,
                            void *opaque, Error **errp)
 {
     Property *prop = opaque;
+    void *field = object_field_prop_ptr(obj, prop, prop->size);
 
-    return prop->info->set(obj, v, name, opaque, errp);
+    return prop->info->set(v, name, prop, field, errp);
 }
 
 /**
@@ -51,8 +53,10 @@ static ObjectPropertyAccessor *field_prop_setter(const PropertyInfo *info)
 static void field_prop_release(Object *obj, const char *name, void *opaque)
 {
     Property *prop = opaque;
+    void *field = object_field_prop_ptr(obj, prop, prop->size);
+
     if (prop->info->release) {
-        prop->info->release(obj, name, prop);
+        prop->info->release(name, prop, field);
     }
 }
 

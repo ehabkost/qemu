@@ -45,9 +45,9 @@ static uint32_t qdev_get_prop_mask(Property *prop)
     return 0x1 << prop->bitnr;
 }
 
-static void bit_prop_set(Object *obj, Property *props, bool val)
+static void bit_prop_set(Property *props, void *field, bool val)
 {
-    uint32_t *p = FIELD_PTR(obj, props, uint32_t);
+    uint32_t *p = FIELD_PTR(field, props, uint32_t);
     uint32_t mask = qdev_get_prop_mask(props);
     if (val) {
         *p |= mask;
@@ -73,7 +73,7 @@ static void prop_set_bit(Visitor *v, const char *name,
     if (!visit_type_bool(v, name, &value, errp)) {
         return;
     }
-    bit_prop_set(obj, prop, value);
+    bit_prop_set(prop, field, value);
 }
 
 static void set_default_value_bool(ObjectProperty *op, const Property *prop)
@@ -97,9 +97,9 @@ static uint64_t qdev_get_prop_mask64(Property *prop)
     return 0x1ull << prop->bitnr;
 }
 
-static void bit64_prop_set(Object *obj, Property *props, bool val)
+static void bit64_prop_set(Property *props, void *field, bool val)
 {
-    uint64_t *p = FIELD_PTR(obj, props, uint64_t);
+    uint64_t *p = FIELD_PTR(field, props, uint64_t);
     uint64_t mask = qdev_get_prop_mask64(props);
     if (val) {
         *p |= mask;
@@ -125,7 +125,7 @@ static void prop_set_bit64(Visitor *v, const char *name,
     if (!visit_type_bool(v, name, &value, errp)) {
         return;
     }
-    bit64_prop_set(obj, prop, value);
+    bit64_prop_set(prop, field, value);
 }
 
 const PropertyInfo prop_info_bit64 = {
@@ -321,9 +321,9 @@ const PropertyInfo prop_info_int64 = {
 
 /* --- string --- */
 
-static void release_string(Object *obj, const char *name, Property *prop)
+static void release_string(const char *name, Property *prop, void *field)
 {
-    char **ptr = FIELD_PTR(obj, prop, char *);
+    char **ptr = FIELD_PTR(field, prop, char *);
     g_free(*ptr);
 }
 

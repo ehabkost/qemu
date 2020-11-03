@@ -55,14 +55,15 @@ struct Property {
 
 /**
  * typedef FieldAccessor: a field property getters or setter function
- * @obj: the object instance
  * @v: the visitor that contains the property data
  * @name: the name of the property
  * @prop: Field property definition
+ * @field: Pointer to struct field
  * @errp: pointer to error information
  */
-typedef void FieldAccessor(Object *obj, Visitor *v,
+typedef void FieldAccessor(Visitor *v,
                            const char *name, Property *prop,
+                           void *field,
                            Error **errp);
 
 /**
@@ -71,7 +72,7 @@ typedef void FieldAccessor(Object *obj, Visitor *v,
  * @name: the name of the property
  * @prop: Field property definition
  */
-typedef void FieldRelease(Object *obj, const char *name, Property *prop);
+typedef void FieldRelease(const char *name, Property *prop, void *field);
 
 
 /**

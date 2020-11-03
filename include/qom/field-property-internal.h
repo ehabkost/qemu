@@ -8,10 +8,10 @@
 #ifndef QOM_STATIC_PROPERTY_INTERNAL_H
 #define QOM_STATIC_PROPERTY_INTERNAL_H
 
-void field_prop_get_enum(Object *obj, Visitor *v, const char *name,
-                         Property *prop, Error **errp);
-void field_prop_set_enum(Object *obj, Visitor *v, const char *name,
-                         Property *prop, Error **errp);
+void field_prop_get_enum(Visitor *v, const char *name,
+                         Property *prop, void *field, Error **errp);
+void field_prop_set_enum(Visitor *v, const char *name,
+                         Property *prop, void *field, Error **errp);
 
 void field_prop_set_default_value_enum(ObjectProperty *op,
                                        const Property *prop);
@@ -20,10 +20,10 @@ void field_prop_set_default_value_int(ObjectProperty *op,
 void field_prop_set_default_value_uint(ObjectProperty *op,
                                        const Property *prop);
 
-void field_prop_get_int32(Object *obj, Visitor *v, const char *name,
-                          Property *prop, Error **errp);
-void field_prop_get_size32(Object *obj, Visitor *v, const char *name,
-                           Property *prop, Error **errp);
+void field_prop_get_int32(Visitor *v, const char *name,
+                          Property *prop, void *field, Error **errp);
+void field_prop_get_size32(Visitor *v, const char *name,
+                           Property *prop, void *field, Error **errp);
 
 /**
  * object_property_add_field: Add a field property to an object instance
