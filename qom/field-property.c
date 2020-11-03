@@ -47,6 +47,14 @@ static ObjectPropertyAccessor *field_prop_setter(const PropertyInfo *info)
     return info->set ? field_prop_set : NULL;
 }
 
+static void field_prop_release(Object *obj, const char *name, void *opaque)
+{
+    Property *prop = opaque;
+    if (prop->info->release) {
+        prop->info->release(obj, name, prop);
+    }
+}
+
 /* Finish initialization of field property */
 static void field_prop_finish_init(ObjectProperty *op, Property *prop,
                                    ObjectPropertyAllowSet allow_set)
@@ -77,7 +85,7 @@ object_property_add_field(Object *obj, const char *name,
     op = object_property_add(obj, name, prop->info->name,
                              field_prop_getter(prop->info),
                              field_prop_setter(prop->info),
-                             prop->info->release,
+                             field_prop_release,
                              prop);
 
     field_prop_finish_init(op, prop, allow_set);
@@ -103,7 +111,7 @@ object_class_property_add_field(ObjectClass *oc, const char *name,
                                        name, prop->info->name,
                                        field_prop_getter(prop->info),
                                        field_prop_setter(prop->info),
-                                       prop->info->release,
+                                       field_prop_release,
                                        prop);
     }
 
