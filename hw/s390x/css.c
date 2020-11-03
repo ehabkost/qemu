@@ -2340,10 +2340,10 @@ void css_reset(void)
     channel_subsys.max_ssid = 0;
 }
 
-static void get_css_devid(Object *obj, Visitor *v, const char *name,
-                           Property *prop, Error **errp)
+static void get_css_devid(Visitor *v, const char *name,
+                           Property *prop, FieldPointer field, Error **errp)
 {
-    CssDevId *dev_id = FIELD_PTR(obj, prop, CssDevId);
+    CssDevId *dev_id = FIELD_PTR(field, prop, CssDevId);
     char buffer[] = "xx.x.xxxx";
     char *p = buffer;
     int r;
@@ -2368,10 +2368,10 @@ static void get_css_devid(Object *obj, Visitor *v, const char *name,
 /*
  * parse <cssid>.<ssid>.<devid> and assert valid range for cssid/ssid
  */
-static void set_css_devid(Object *obj, Visitor *v, const char *name,
-                           Property *prop, Error **errp)
+static void set_css_devid(Visitor *v, const char *name,
+                           Property *prop, FieldPointer field, Error **errp)
 {
-    CssDevId *dev_id = FIELD_PTR(obj, prop, CssDevId);
+    CssDevId *dev_id = FIELD_PTR(field, prop, CssDevId);
     char *str;
     int num, n1, n2;
     unsigned int cssid, ssid, devid;

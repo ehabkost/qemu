@@ -7,18 +7,18 @@
 #include "qapi/error.h"
 #include "qemu/uuid.h"
 
-void field_prop_get_enum(Object *obj, Visitor *v, const char *name,
-                          Property *prop, Error **errp)
+void field_prop_get_enum(Visitor *v, const char *name,
+                          Property *prop, FieldPointer field, Error **errp)
 {
-    int *ptr = FIELD_PTR(obj, prop, int);
+    int *ptr = FIELD_PTR(field, prop, int);
 
     visit_type_enum(v, name, ptr, prop->info->enum_table, errp);
 }
 
-void field_prop_set_enum(Object *obj, Visitor *v, const char *name,
-                          Property *prop, Error **errp)
+void field_prop_set_enum(Visitor *v, const char *name,
+                          Property *prop, FieldPointer field, Error **errp)
 {
-    int *ptr = FIELD_PTR(obj, prop, int);
+    int *ptr = FIELD_PTR(field, prop, int);
 
     visit_type_enum(v, name, ptr, prop->info->enum_table, errp);
 }
@@ -56,17 +56,17 @@ static void bit_prop_set(Object *obj, Property *props, bool val)
     }
 }
 
-static void prop_get_bit(Object *obj, Visitor *v, const char *name,
-                          Property *prop, Error **errp)
+static void prop_get_bit(Visitor *v, const char *name,
+                          Property *prop, FieldPointer field, Error **errp)
 {
-    uint32_t *p = FIELD_PTR(obj, prop, uint32_t);
+    uint32_t *p = FIELD_PTR(field, prop, uint32_t);
     bool value = (*p & qdev_get_prop_mask(prop)) != 0;
 
     visit_type_bool(v, name, &value, errp);
 }
 
-static void prop_set_bit(Object *obj, Visitor *v, const char *name,
-                          Property *prop, Error **errp)
+static void prop_set_bit(Visitor *v, const char *name,
+                          Property *prop, FieldPointer field, Error **errp)
 {
     bool value;
 
@@ -108,17 +108,17 @@ static void bit64_prop_set(Object *obj, Property *props, bool val)
     }
 }
 
-static void prop_get_bit64(Object *obj, Visitor *v, const char *name,
-                            Property *prop, Error **errp)
+static void prop_get_bit64(Visitor *v, const char *name,
+                            Property *prop, FieldPointer field, Error **errp)
 {
-    uint64_t *p = FIELD_PTR(obj, prop, uint64_t);
+    uint64_t *p = FIELD_PTR(field, prop, uint64_t);
     bool value = (*p & qdev_get_prop_mask64(prop)) != 0;
 
     visit_type_bool(v, name, &value, errp);
 }
 
-static void prop_set_bit64(Object *obj, Visitor *v, const char *name,
-                            Property *prop, Error **errp)
+static void prop_set_bit64(Visitor *v, const char *name,
+                            Property *prop, FieldPointer field, Error **errp)
 {
     bool value;
 
@@ -138,18 +138,18 @@ const PropertyInfo prop_info_bit64 = {
 
 /* --- bool --- */
 
-static void get_bool(Object *obj, Visitor *v, const char *name,
-                     Property *prop, Error **errp)
+static void get_bool(Visitor *v, const char *name,
+                     Property *prop, FieldPointer field, Error **errp)
 {
-    bool *ptr = FIELD_PTR(obj, prop, bool);
+    bool *ptr = FIELD_PTR(field, prop, bool);
 
     visit_type_bool(v, name, ptr, errp);
 }
 
-static void set_bool(Object *obj, Visitor *v, const char *name,
-                     Property *prop, Error **errp)
+static void set_bool(Visitor *v, const char *name,
+                     Property *prop, FieldPointer field, Error **errp)
 {
-    bool *ptr = FIELD_PTR(obj, prop, bool);
+    bool *ptr = FIELD_PTR(field, prop, bool);
 
     visit_type_bool(v, name, ptr, errp);
 }
@@ -163,18 +163,18 @@ const PropertyInfo prop_info_bool = {
 
 /* --- 8bit integer --- */
 
-static void get_uint8(Object *obj, Visitor *v, const char *name,
-                      Property *prop, Error **errp)
+static void get_uint8(Visitor *v, const char *name,
+                      Property *prop, FieldPointer field, Error **errp)
 {
-    uint8_t *ptr = FIELD_PTR(obj, prop, uint8_t);
+    uint8_t *ptr = FIELD_PTR(field, prop, uint8_t);
 
     visit_type_uint8(v, name, ptr, errp);
 }
 
-static void set_uint8(Object *obj, Visitor *v, const char *name,
-                      Property *prop, Error **errp)
+static void set_uint8(Visitor *v, const char *name,
+                      Property *prop, FieldPointer field, Error **errp)
 {
-    uint8_t *ptr = FIELD_PTR(obj, prop, uint8_t);
+    uint8_t *ptr = FIELD_PTR(field, prop, uint8_t);
 
     visit_type_uint8(v, name, ptr, errp);
 }
@@ -200,18 +200,18 @@ const PropertyInfo prop_info_uint8 = {
 
 /* --- 16bit integer --- */
 
-static void get_uint16(Object *obj, Visitor *v, const char *name,
-                        Property *prop, Error **errp)
+static void get_uint16(Visitor *v, const char *name,
+                        Property *prop, FieldPointer field, Error **errp)
 {
-    uint16_t *ptr = FIELD_PTR(obj, prop, uint16_t);
+    uint16_t *ptr = FIELD_PTR(field, prop, uint16_t);
 
     visit_type_uint16(v, name, ptr, errp);
 }
 
-static void set_uint16(Object *obj, Visitor *v, const char *name,
-                        Property *prop, Error **errp)
+static void set_uint16(Visitor *v, const char *name,
+                        Property *prop, FieldPointer field, Error **errp)
 {
-    uint16_t *ptr = FIELD_PTR(obj, prop, uint16_t);
+    uint16_t *ptr = FIELD_PTR(field, prop, uint16_t);
 
     visit_type_uint16(v, name, ptr, errp);
 }
@@ -225,34 +225,34 @@ const PropertyInfo prop_info_uint16 = {
 
 /* --- 32bit integer --- */
 
-static void get_uint32(Object *obj, Visitor *v, const char *name,
-                        Property *prop, Error **errp)
+static void get_uint32(Visitor *v, const char *name,
+                        Property *prop, FieldPointer field, Error **errp)
 {
-    uint32_t *ptr = FIELD_PTR(obj, prop, uint32_t);
+    uint32_t *ptr = FIELD_PTR(field, prop, uint32_t);
 
     visit_type_uint32(v, name, ptr, errp);
 }
 
-static void set_uint32(Object *obj, Visitor *v, const char *name,
-                        Property *prop, Error **errp)
+static void set_uint32(Visitor *v, const char *name,
+                        Property *prop, FieldPointer field, Error **errp)
 {
-    uint32_t *ptr = FIELD_PTR(obj, prop, uint32_t);
+    uint32_t *ptr = FIELD_PTR(field, prop, uint32_t);
 
     visit_type_uint32(v, name, ptr, errp);
 }
 
-void field_prop_get_int32(Object *obj, Visitor *v, const char *name,
-                           Property *prop, Error **errp)
+void field_prop_get_int32(Visitor *v, const char *name,
+                           Property *prop, FieldPointer field, Error **errp)
 {
-    int32_t *ptr = FIELD_PTR(obj, prop, int32_t);
+    int32_t *ptr = FIELD_PTR(field, prop, int32_t);
 
     visit_type_int32(v, name, ptr, errp);
 }
 
-static void set_int32(Object *obj, Visitor *v, const char *name,
-                      Property *prop, Error **errp)
+static void set_int32(Visitor *v, const char *name,
+                      Property *prop, FieldPointer field, Error **errp)
 {
-    int32_t *ptr = FIELD_PTR(obj, prop, int32_t);
+    int32_t *ptr = FIELD_PTR(field, prop, int32_t);
 
     visit_type_int32(v, name, ptr, errp);
 }
@@ -273,34 +273,34 @@ const PropertyInfo prop_info_int32 = {
 
 /* --- 64bit integer --- */
 
-static void get_uint64(Object *obj, Visitor *v, const char *name,
-                        Property *prop, Error **errp)
+static void get_uint64(Visitor *v, const char *name,
+                        Property *prop, FieldPointer field, Error **errp)
 {
-    uint64_t *ptr = FIELD_PTR(obj, prop, uint64_t);
+    uint64_t *ptr = FIELD_PTR(field, prop, uint64_t);
 
     visit_type_uint64(v, name, ptr, errp);
 }
 
-static void set_uint64(Object *obj, Visitor *v, const char *name,
-                        Property *prop, Error **errp)
+static void set_uint64(Visitor *v, const char *name,
+                        Property *prop, FieldPointer field, Error **errp)
 {
-    uint64_t *ptr = FIELD_PTR(obj, prop, uint64_t);
+    uint64_t *ptr = FIELD_PTR(field, prop, uint64_t);
 
     visit_type_uint64(v, name, ptr, errp);
 }
 
-static void get_int64(Object *obj, Visitor *v, const char *name,
-                       Property *prop, Error **errp)
+static void get_int64(Visitor *v, const char *name,
+                       Property *prop, FieldPointer field, Error **errp)
 {
-    int64_t *ptr = FIELD_PTR(obj, prop, int64_t);
+    int64_t *ptr = FIELD_PTR(field, prop, int64_t);
 
     visit_type_int64(v, name, ptr, errp);
 }
 
-static void set_int64(Object *obj, Visitor *v, const char *name,
-                       Property *prop, Error **errp)
+static void set_int64(Visitor *v, const char *name,
+                       Property *prop, FieldPointer field, Error **errp)
 {
-    int64_t *ptr = FIELD_PTR(obj, prop, int64_t);
+    int64_t *ptr = FIELD_PTR(field, prop, int64_t);
 
     visit_type_int64(v, name, ptr, errp);
 }
@@ -327,10 +327,10 @@ static void release_string(Object *obj, const char *name, Property *prop)
     g_free(*ptr);
 }
 
-static void get_string(Object *obj, Visitor *v, const char *name,
-                        Property *prop, Error **errp)
+static void get_string(Visitor *v, const char *name,
+                        Property *prop, FieldPointer field, Error **errp)
 {
-    char **ptr = FIELD_PTR(obj, prop, char *);
+    char **ptr = FIELD_PTR(field, prop, char *);
 
     if (!*ptr) {
         char *str = (char *)"";
@@ -340,10 +340,10 @@ static void get_string(Object *obj, Visitor *v, const char *name,
     }
 }
 
-static void set_string(Object *obj, Visitor *v, const char *name,
-                        Property *prop, Error **errp)
+static void set_string(Visitor *v, const char *name,
+                        Property *prop, FieldPointer field, Error **errp)
 {
-    char **ptr = FIELD_PTR(obj, prop, char *);
+    char **ptr = FIELD_PTR(field, prop, char *);
     char *str;
 
     if (!visit_type_str(v, name, &str, errp)) {
@@ -373,19 +373,19 @@ const PropertyInfo prop_info_on_off_auto = {
 
 /* --- 32bit unsigned int 'size' type --- */
 
-void field_prop_get_size32(Object *obj, Visitor *v, const char *name,
-                            Property *prop, Error **errp)
+void field_prop_get_size32(Visitor *v, const char *name,
+                            Property *prop, FieldPointer field, Error **errp)
 {
-    uint32_t *ptr = FIELD_PTR(obj, prop, uint32_t);
+    uint32_t *ptr = FIELD_PTR(field, prop, uint32_t);
     uint64_t value = *ptr;
 
     visit_type_size(v, name, &value, errp);
 }
 
-static void set_size32(Object *obj, Visitor *v, const char *name,
-                       Property *prop, Error **errp)
+static void set_size32(Visitor *v, const char *name,
+                       Property *prop, FieldPointer field, Error **errp)
 {
-    uint32_t *ptr = FIELD_PTR(obj, prop, uint32_t);
+    uint32_t *ptr = FIELD_PTR(field, prop, uint32_t);
     uint64_t value;
 
     if (!visit_type_size(v, name, &value, errp)) {
@@ -412,11 +412,12 @@ const PropertyInfo prop_info_size32 = {
 
 /* --- support for array properties --- */
 
-static void set_prop_arraylen(Object *obj, Visitor *v, const char *name,
-                               Property *prop, Error **errp)
+static void set_prop_arraylen(Visitor *v, const char *name,
+                               Property *prop, FieldPointer field,
+                               Error **errp)
 {
     ObjectProperty *op = object_property_find_err(obj, name, &error_abort);
-    uint32_t *alenptr = FIELD_PTR(obj, prop, uint32_t);
+    uint32_t *alenptr = FIELD_PTR(field, prop, uint32_t);
     void **arrayptr = (void *)obj + prop->arrayoffset;
     void *eltptr;
     const char *arrayname;
@@ -471,18 +472,18 @@ const PropertyInfo prop_info_arraylen = {
 
 /* --- 64bit unsigned int 'size' type --- */
 
-static void get_size(Object *obj, Visitor *v, const char *name,
-                     Property *prop, Error **errp)
+static void get_size(Visitor *v, const char *name,
+                     Property *prop, FieldPointer field, Error **errp)
 {
-    uint64_t *ptr = FIELD_PTR(obj, prop, uint64_t);
+    uint64_t *ptr = FIELD_PTR(field, prop, uint64_t);
 
     visit_type_size(v, name, ptr, errp);
 }
 
-static void set_size(Object *obj, Visitor *v, const char *name,
-                     Property *prop, Error **errp)
+static void set_size(Visitor *v, const char *name,
+                     Property *prop, FieldPointer field, Error **errp)
 {
-    uint64_t *ptr = FIELD_PTR(obj, prop, uint64_t);
+    uint64_t *ptr = FIELD_PTR(field, prop, uint64_t);
 
     visit_type_size(v, name, ptr, errp);
 }

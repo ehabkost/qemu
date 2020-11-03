@@ -32,10 +32,10 @@
 
 /* tpm backend property */
 
-static void get_tpm(Object *obj, Visitor *v, const char *name,
-                    Property *prop, Error **errp)
+static void get_tpm(Visitor *v, const char *name,
+                    Property *prop, FieldPointer field, Error **errp)
 {
-    TPMBackend **be = FIELD_PTR(obj, prop, TPMBackend *);
+    TPMBackend **be = FIELD_PTR(field, prop, TPMBackend *);
     char *p;
 
     p = g_strdup(*be ? (*be)->id : "");
@@ -43,10 +43,10 @@ static void get_tpm(Object *obj, Visitor *v, const char *name,
     g_free(p);
 }
 
-static void set_tpm(Object *obj, Visitor *v, const char *name,
-                    Property *prop, Error **errp)
+static void set_tpm(Visitor *v, const char *name,
+                    Property *prop, FieldPointer field, Error **errp)
 {
-    TPMBackend *s, **be = FIELD_PTR(obj, prop, TPMBackend *);
+    TPMBackend *s, **be = FIELD_PTR(field, prop, TPMBackend *);
     char *str;
 
     if (!visit_type_str(v, name, &str, errp)) {

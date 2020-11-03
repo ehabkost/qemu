@@ -332,10 +332,11 @@ static char *disk_to_vbd_name(unsigned int disk)
     return name;
 }
 
-static void xen_block_get_vdev(Object *obj, Visitor *v, const char *name,
-                                Property *prop, Error **errp)
+static void xen_block_get_vdev(Visitor *v, const char *name,
+                                Property *prop, FieldPointer field,
+                                Error **errp)
 {
-    XenBlockVdev *vdev = FIELD_PTR(obj, prop, XenBlockVdev);
+    XenBlockVdev *vdev = FIELD_PTR(field, prop, XenBlockVdev);
     char *str;
 
     switch (vdev->type) {
@@ -391,10 +392,11 @@ static int vbd_name_to_disk(const char *name, const char **endp,
     return 0;
 }
 
-static void xen_block_set_vdev(Object *obj, Visitor *v, const char *name,
-                                Property *prop, Error **errp)
+static void xen_block_set_vdev(Visitor *v, const char *name,
+                                Property *prop, FieldPointer field,
+                                Error **errp)
 {
-    XenBlockVdev *vdev = FIELD_PTR(obj, prop, XenBlockVdev);
+    XenBlockVdev *vdev = FIELD_PTR(field, prop, XenBlockVdev);
     char *str, *p;
     const char *end;
 

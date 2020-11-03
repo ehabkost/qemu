@@ -1319,19 +1319,19 @@ static void s390_pci_device_reset(DeviceState *dev)
     fmb_timer_free(pbdev);
 }
 
-static void s390_pci_get_fid(Object *obj, Visitor *v, const char *name,
-                          Property *prop, Error **errp)
+static void s390_pci_get_fid(Visitor *v, const char *name,
+                          Property *prop, FieldPointer field, Error **errp)
 {
-    uint32_t *ptr = FIELD_PTR(obj, prop, uint32_t);
+    uint32_t *ptr = FIELD_PTR(field, prop, uint32_t);
 
     visit_type_uint32(v, name, ptr, errp);
 }
 
-static void s390_pci_set_fid(Object *obj, Visitor *v, const char *name,
-                          Property *prop, Error **errp)
+static void s390_pci_set_fid(Visitor *v, const char *name,
+                          Property *prop, FieldPointer field, Error **errp)
 {
     S390PCIBusDevice *zpci = S390_PCI_DEVICE(obj);
-    uint32_t *ptr = FIELD_PTR(obj, prop, uint32_t);
+    uint32_t *ptr = FIELD_PTR(field, prop, uint32_t);
 
     if (!visit_type_uint32(v, name, ptr, errp)) {
         return;

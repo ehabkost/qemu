@@ -58,10 +58,10 @@ static bool check_prop_still_unset(Object *obj, const char *name,
 
 /* --- drive --- */
 
-static void get_drive(Object *obj, Visitor *v, const char *name,
-                      Property *prop, Error **errp)
+static void get_drive(Visitor *v, const char *name,
+                      Property *prop, FieldPointer field, Error **errp)
 {
-    void **ptr = FIELD_PTR(obj, prop, void *);
+    void **ptr = FIELD_PTR(field, prop, void *);
     const char *value;
     char *p;
 
@@ -163,14 +163,15 @@ fail:
     g_free(str);
 }
 
-static void set_drive(Object *obj, Visitor *v, const char *name, Property *prop,
-                      Error **errp)
+static void set_drive(Visitor *v, const char *name, Property *prop,
+                      FieldPointer field, Error **errp)
 {
     set_drive_helper(obj, v, name, prop, false, errp);
 }
 
-static void set_drive_iothread(Object *obj, Visitor *v, const char *name,
-                               Property *prop, Error **errp)
+static void set_drive_iothread(Visitor *v, const char *name,
+                               Property *prop, FieldPointer field,
+                               Error **errp)
 {
     set_drive_helper(obj, v, name, prop, true, errp);
 }
@@ -208,10 +209,10 @@ const PropertyInfo qdev_prop_drive_iothread = {
 
 /* --- character device --- */
 
-static void get_chr(Object *obj, Visitor *v, const char *name,
-                    Property *prop, Error **errp)
+static void get_chr(Visitor *v, const char *name,
+                    Property *prop, FieldPointer field, Error **errp)
 {
-    CharBackend *be = FIELD_PTR(obj, prop, CharBackend);
+    CharBackend *be = FIELD_PTR(field, prop, CharBackend);
     char *p;
 
     p = g_strdup(be->chr && be->chr->label ? be->chr->label : "");
@@ -219,10 +220,10 @@ static void get_chr(Object *obj, Visitor *v, const char *name,
     g_free(p);
 }
 
-static void set_chr(Object *obj, Visitor *v, const char *name,
-                    Property *prop, Error **errp)
+static void set_chr(Visitor *v, const char *name,
+                    Property *prop, FieldPointer field, Error **errp)
 {
-    CharBackend *be = FIELD_PTR(obj, prop, CharBackend);
+    CharBackend *be = FIELD_PTR(field, prop, CharBackend);
     Chardev *s;
     char *str;
 
@@ -275,10 +276,10 @@ const PropertyInfo qdev_prop_chr = {
  *   01:02:03:04:05:06
  *   01-02-03-04-05-06
  */
-static void get_mac(Object *obj, Visitor *v, const char *name,
-                    Property *prop, Error **errp)
+static void get_mac(Visitor *v, const char *name,
+                    Property *prop, FieldPointer field, Error **errp)
 {
-    MACAddr *mac = FIELD_PTR(obj, prop, MACAddr);
+    MACAddr *mac = FIELD_PTR(field, prop, MACAddr);
     char buffer[2 * 6 + 5 + 1];
     char *p = buffer;
 
@@ -289,10 +290,10 @@ static void get_mac(Object *obj, Visitor *v, const char *name,
     visit_type_str(v, name, &p, errp);
 }
 
-static void set_mac(Object *obj, Visitor *v, const char *name,
-                    Property *prop, Error **errp)
+static void set_mac(Visitor *v, const char *name,
+                    Property *prop, FieldPointer field, Error **errp)
 {
-    MACAddr *mac = FIELD_PTR(obj, prop, MACAddr);
+    MACAddr *mac = FIELD_PTR(field, prop, MACAddr);
     int i, pos;
     char *str;
     const char *p;
@@ -350,20 +351,20 @@ void qdev_prop_set_macaddr(DeviceState *dev, const char *name,
 }
 
 /* --- netdev device --- */
-static void get_netdev(Object *obj, Visitor *v, const char *name,
-                        Property *prop, Error **errp)
+static void get_netdev(Visitor *v, const char *name,
+                        Property *prop, FieldPointer field, Error **errp)
 {
-    NICPeers *peers_ptr = FIELD_PTR(obj, prop, NICPeers);
+    NICPeers *peers_ptr = FIELD_PTR(field, prop, NICPeers);
     char *p = g_strdup(peers_ptr->ncs[0] ? peers_ptr->ncs[0]->name : "");
 
     visit_type_str(v, name, &p, errp);
     g_free(p);
 }
 
-static void set_netdev(Object *obj, Visitor *v, const char *name,
-                        Property *prop, Error **errp)
+static void set_netdev(Visitor *v, const char *name,
+                        Property *prop, FieldPointer field, Error **errp)
 {
-    NICPeers *peers_ptr = FIELD_PTR(obj, prop, NICPeers);
+    NICPeers *peers_ptr = FIELD_PTR(field, prop, NICPeers);
     NetClientState **ncs = peers_ptr->ncs;
     NetClientState *peers[MAX_QUEUE_NUM];
     int queues, i = 0;
@@ -420,20 +421,20 @@ const PropertyInfo qdev_prop_netdev = {
 
 
 /* --- audiodev --- */
-static void get_audiodev(Object *obj, Visitor *v, const char* name,
-                          Property *prop, Error **errp)
+static void get_audiodev(Visitor *v, const char* name,
+                          Property *prop, FieldPointer field, Error **errp)
 {
-    QEMUSoundCard *card = FIELD_PTR(obj, prop, QEMUSoundCard);
+    QEMUSoundCard *card = FIELD_PTR(field, prop, QEMUSoundCard);
     char *p = g_strdup(audio_get_id(card));
 
     visit_type_str(v, name, &p, errp);
     g_free(p);
 }
 
-static void set_audiodev(Object *obj, Visitor *v, const char* name,
-                          Property *prop, Error **errp)
+static void set_audiodev(Visitor *v, const char* name,
+                          Property *prop, FieldPointer field, Error **errp)
 {
-    QEMUSoundCard *card = FIELD_PTR(obj, prop, QEMUSoundCard);
+    QEMUSoundCard *card = FIELD_PTR(field, prop, QEMUSoundCard);
     AudioState *state;
     char *str;
 
@@ -528,11 +529,11 @@ const PropertyInfo qdev_prop_losttickpolicy = {
 
 /* --- blocksize --- */
 
-static void set_blocksize(Object *obj, Visitor *v, const char *name,
-                           Property *prop, Error **errp)
+static void set_blocksize(Visitor *v, const char *name,
+                           Property *prop, FieldPointer field, Error **errp)
 {
     DeviceState *dev = DEVICE(obj);
-    uint32_t *ptr = FIELD_PTR(obj, prop, uint32_t);
+    uint32_t *ptr = FIELD_PTR(field, prop, uint32_t);
     uint64_t value;
     Error *local_err = NULL;
 
@@ -616,10 +617,11 @@ const PropertyInfo qdev_prop_multifd_compression = {
  *   where low/high addresses are uint64_t in hexadecimal
  *   and type is a non-negative decimal integer
  */
-static void get_reserved_region(Object *obj, Visitor *v, const char *name,
-                                 Property *prop, Error **errp)
+static void get_reserved_region(Visitor *v, const char *name,
+                                 Property *prop, FieldPointer field,
+                                 Error **errp)
 {
-    ReservedRegion *rr = FIELD_PTR(obj, prop, ReservedRegion);
+    ReservedRegion *rr = FIELD_PTR(field, prop, ReservedRegion);
     char buffer[64];
     char *p = buffer;
     int rc;
@@ -631,10 +633,11 @@ static void get_reserved_region(Object *obj, Visitor *v, const char *name,
     visit_type_str(v, name, &p, errp);
 }
 
-static void set_reserved_region(Object *obj, Visitor *v, const char *name,
-                                 Property *prop, Error **errp)
+static void set_reserved_region(Visitor *v, const char *name,
+                                 Property *prop, FieldPointer field,
+                                 Error **errp)
 {
-    ReservedRegion *rr = FIELD_PTR(obj, prop, ReservedRegion);
+    ReservedRegion *rr = FIELD_PTR(field, prop, ReservedRegion);
     Error *local_err = NULL;
     const char *endptr;
     char *str;
@@ -692,10 +695,10 @@ const PropertyInfo qdev_prop_reserved_region = {
 /*
  * bus-local address, i.e. "$slot" or "$slot.$fn"
  */
-static void set_pci_devfn(Object *obj, Visitor *v, const char *name,
-                           Property *prop, Error **errp)
+static void set_pci_devfn(Visitor *v, const char *name,
+                           Property *prop, FieldPointer field, Error **errp)
 {
-    int32_t value, *ptr = FIELD_PTR(obj, prop, int32_t);
+    int32_t value, *ptr = FIELD_PTR(field, prop, int32_t);
     unsigned int slot, fn, n;
     char *str;
 
@@ -753,10 +756,11 @@ const PropertyInfo qdev_prop_pci_devfn = {
 
 /* --- pci host address --- */
 
-static void get_pci_host_devaddr(Object *obj, Visitor *v, const char *name,
-                                  Property *prop, Error **errp)
+static void get_pci_host_devaddr(Visitor *v, const char *name,
+                                  Property *prop, FieldPointer field,
+                                  Error **errp)
 {
-    PCIHostDeviceAddress *addr = FIELD_PTR(obj, prop, PCIHostDeviceAddress);
+    PCIHostDeviceAddress *addr = FIELD_PTR(field, prop, PCIHostDeviceAddress);
     char buffer[] = "ffff:ff:ff.f";
     char *p = buffer;
     int rc = 0;
@@ -778,10 +782,11 @@ static void get_pci_host_devaddr(Object *obj, Visitor *v, const char *name,
  * Parse [<domain>:]<bus>:<slot>.<func>
  *   if <domain> is not supplied, it's assumed to be 0.
  */
-static void set_pci_host_devaddr(Object *obj, Visitor *v, const char *name,
-                                  Property *prop, Error **errp)
+static void set_pci_host_devaddr(Visitor *v, const char *name,
+                                  Property *prop, FieldPointer field,
+                                  Error **errp)
 {
-    PCIHostDeviceAddress *addr = FIELD_PTR(obj, prop, PCIHostDeviceAddress);
+    PCIHostDeviceAddress *addr = FIELD_PTR(field, prop, PCIHostDeviceAddress);
     char *str, *p;
     const char *e;
     unsigned long val;
@@ -866,10 +871,11 @@ const PropertyInfo qdev_prop_off_auto_pcibar = {
 
 /* --- PCIELinkSpeed 2_5/5/8/16 -- */
 
-static void get_prop_pcielinkspeed(Object *obj, Visitor *v, const char *name,
-                                    Property *prop, Error **errp)
+static void get_prop_pcielinkspeed(Visitor *v, const char *name,
+                                    Property *prop, FieldPointer field,
+                                    Error **errp)
 {
-    PCIExpLinkSpeed *p = FIELD_PTR(obj, prop, PCIExpLinkSpeed);
+    PCIExpLinkSpeed *p = FIELD_PTR(field, prop, PCIExpLinkSpeed);
     int speed;
 
     switch (*p) {
@@ -893,10 +899,11 @@ static void get_prop_pcielinkspeed(Object *obj, Visitor *v, const char *name,
     visit_type_enum(v, name, &speed, prop->info->enum_table, errp);
 }
 
-static void set_prop_pcielinkspeed(Object *obj, Visitor *v, const char *name,
-                                    Property *prop, Error **errp)
+static void set_prop_pcielinkspeed(Visitor *v, const char *name,
+                                    Property *prop, FieldPointer field,
+                                    Error **errp)
 {
-    PCIExpLinkSpeed *p = FIELD_PTR(obj, prop, PCIExpLinkSpeed);
+    PCIExpLinkSpeed *p = FIELD_PTR(field, prop, PCIExpLinkSpeed);
     int speed;
 
     if (!visit_type_enum(v, name, &speed, prop->info->enum_table,
@@ -934,10 +941,11 @@ const PropertyInfo qdev_prop_pcie_link_speed = {
 
 /* --- PCIELinkWidth 1/2/4/8/12/16/32 -- */
 
-static void get_prop_pcielinkwidth(Object *obj, Visitor *v, const char *name,
-                                    Property *prop, Error **errp)
+static void get_prop_pcielinkwidth(Visitor *v, const char *name,
+                                    Property *prop, FieldPointer field,
+                                    Error **errp)
 {
-    PCIExpLinkWidth *p = FIELD_PTR(obj, prop, PCIExpLinkWidth);
+    PCIExpLinkWidth *p = FIELD_PTR(field, prop, PCIExpLinkWidth);
     int width;
 
     switch (*p) {
@@ -970,10 +978,11 @@ static void get_prop_pcielinkwidth(Object *obj, Visitor *v, const char *name,
     visit_type_enum(v, name, &width, prop->info->enum_table, errp);
 }
 
-static void set_prop_pcielinkwidth(Object *obj, Visitor *v, const char *name,
-                                    Property *prop, Error **errp)
+static void set_prop_pcielinkwidth(Visitor *v, const char *name,
+                                    Property *prop, FieldPointer field,
+                                    Error **errp)
 {
-    PCIExpLinkWidth *p = FIELD_PTR(obj, prop, PCIExpLinkWidth);
+    PCIExpLinkWidth *p = FIELD_PTR(field, prop, PCIExpLinkWidth);
     int width;
 
     if (!visit_type_enum(v, name, &width, prop->info->enum_table,
@@ -1020,10 +1029,10 @@ const PropertyInfo qdev_prop_pcie_link_width = {
 
 /* --- UUID --- */
 
-static void get_uuid(Object *obj, Visitor *v, const char *name,
-                     Property *prop, Error **errp)
+static void get_uuid(Visitor *v, const char *name,
+                     Property *prop, FieldPointer field, Error **errp)
 {
-    QemuUUID *uuid = FIELD_PTR(obj, prop, QemuUUID);
+    QemuUUID *uuid = FIELD_PTR(field, prop, QemuUUID);
     char buffer[UUID_FMT_LEN + 1];
     char *p = buffer;
 
@@ -1034,10 +1043,10 @@ static void get_uuid(Object *obj, Visitor *v, const char *name,
 
 #define UUID_VALUE_AUTO        "auto"
 
-static void set_uuid(Object *obj, Visitor *v, const char *name,
-                    Property *prop, Error **errp)
+static void set_uuid(Visitor *v, const char *name,
+                    Property *prop, FieldPointer field, Error **errp)
 {
-    QemuUUID *uuid = FIELD_PTR(obj, prop, QemuUUID);
+    QemuUUID *uuid = FIELD_PTR(field, prop, QemuUUID);
     char *str;
 
     if (!visit_type_str(v, name, &str, errp)) {
