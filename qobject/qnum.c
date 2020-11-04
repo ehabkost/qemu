@@ -58,16 +58,14 @@ QNum *qnum_from_double(double value)
 }
 
 /**
- * qnum_get_try_int(): Get an integer representation of the number
- * @qn: QNum object
- * @val: pointer to value
+ * qnum_value_get_try_int(): Get an integer representation of the number
+ * @qv: QNum value
+ * @val: pointer to int64_t value
  *
  * Return true on success.
  */
-bool qnum_get_try_int(const QNum *qn, int64_t *val)
+static bool qnum_value_get_try_int(const QNumValue *qv, int64_t *val)
 {
-    const QNumValue *qv = &qn->value;
-
     switch (qv->kind) {
     case QNUM_I64:
         *val = qv->u.i64;
@@ -87,30 +85,51 @@ bool qnum_get_try_int(const QNum *qn, int64_t *val)
 }
 
 /**
- * qnum_get_int(): Get an integer representation of the number
+ * qnum_get_try_int(): Get an integer representation of the number
  * @qn: QNum object
+ * @val: pointer to int64_t value
+ *
+ * Return true on success.
+ */
+bool qnum_get_try_int(const QNum *qn, int64_t *val)
+{
+    return qnum_value_get_try_int(&qn->value, val);
+}
+
+/**
+ * qnum_value_get_int(): Get an integer representation of the number
+ * @qv: QNum value
  *
  * assert() on failure.
  */
-int64_t qnum_get_int(const QNum *qn)
+int64_t qnum_value_get_int(const QNumValue *qv)
 {
     int64_t val;
-    bool success = qnum_get_try_int(qn, &val);
+    bool success = qnum_value_get_try_int(qv, &val);
     assert(success);
     return val;
 }
 
 /**
+ * qnum_get_int(): Get an integer representation of the number
+ * @qv: QNum value
+ *
+ * assert() on failure.
+ */
+int64_t qnum_get_int(const QNum *qn)
+{
+    return qnum_value_get_int(&qn->value);
+}
+
+/**
  * qnum_value_get_try_uint(): Get an unsigned integer from the number
- * @qn: QNum object
- * @val: pointer to value
+ * @qv: QNum value
+ * @val: pointer to uint64_t value
  *
  * Return true on success.
  */
-bool qnum_get_try_uint(const QNum *qn, uint64_t *val)
+static bool qnum_value_get_try_uint(const QNumValue *qv, uint64_t *val)
 {
-    const QNumValue *qv = &qn->value;
-
     switch (qv->kind) {
     case QNUM_I64:
         if (qv->u.i64 < 0) {
@@ -130,6 +149,32 @@ bool qnum_get_try_uint(const QNum *qn, uint64_t *val)
 }
 
 /**
+ * qnum_value_get_try_uint(): Get an unsigned integer from the number
+ * @qn: QNum object
+ * @val: pointer to value
+ *
+ * Return true on success.
+ */
+bool qnum_get_try_uint(const QNum *qn, uint64_t *val)
+{
+    return qnum_value_get_try_uint(&qn->value, val);
+}
+
+/**
+ * qnum_value_get_uint(): Get an unsigned integer from the number
+ * @qv: QNum value
+ *
+ * assert() on failure.
+ */
+uint64_t qnum_value_get_uint(const QNumValue *qv)
+{
+    uint64_t val;
+    bool success = qnum_value_get_try_uint(qv, &val);
+    assert(success);
+    return val;
+}
+
+/**
  * qnum_get_uint(): Get an unsigned integer from the number
  * @qn: QNum object
  *
@@ -137,22 +182,17 @@ bool qnum_get_try_uint(const QNum *qn, uint64_t *val)
  */
 uint64_t qnum_get_uint(const QNum *qn)
 {
-    uint64_t val;
-    bool success = qnum_get_try_uint(qn, &val);
-    assert(success);
-    return val;
+    return qnum_value_get_uint(&qn->value);
 }
 
 /**
- * qnum_get_double(): Get a float representation of the number
+ * qnum_value_get_double(): Get a float representation of the number
  * @qn: QNum object
  *
- * qnum_get_double() loses precision for integers beyond 53 bits.
+ * qnum_value_get_double() loses precision for integers beyond 53 bits.
  */
-double qnum_get_double(const QNum *qn)
+double qnum_value_get_double(const QNumValue *qv)
 {
-    const QNumValue *qv = &qn->value;
-
     switch (qv->kind) {
     case QNUM_I64:
         return qv->u.i64;
@@ -164,6 +204,17 @@ double qnum_get_double(const QNum *qn)
 
     assert(0);
     return 0.0;
+}
+
+/**
+ * qnum_get_double(): Get a float representation of the number
+ * @qn: QNum object
+ *
+ * qnum_get_double() loses precision for integers beyond 53 bits.
+ */
+double qnum_get_double(const QNum *qn)
+{
+    return qnum_value_get_double(&qn->value);
 }
 
 char *qnum_to_string(QNum *qn)

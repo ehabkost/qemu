@@ -97,11 +97,14 @@ static inline const QNumValue *qnum_get_value(const QNum *qn)
 }
 
 bool qnum_get_try_int(const QNum *qn, int64_t *val);
+int64_t qnum_value_get_int(const QNumValue *qv);
 int64_t qnum_get_int(const QNum *qn);
 
 bool qnum_get_try_uint(const QNum *qn, uint64_t *val);
+uint64_t qnum_value_get_uint(const QNumValue *qv);
 uint64_t qnum_get_uint(const QNum *qn);
 
+double qnum_value_get_double(const QNumValue *qv);
 double qnum_get_double(const QNum *qn);
 
 char *qnum_to_string(QNum *qn);
