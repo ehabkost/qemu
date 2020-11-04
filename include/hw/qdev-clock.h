@@ -127,11 +127,11 @@ struct ClockPortInitElem {
 }
 
 /**
- * QDEV_CLOCK_(IN|OUT):
- * @devstate: structure type. @dev argument of qdev_init_clocks below must be
- * a pointer to that same type.
- * @field: a field in @_devstate (must be Clock*)
- * @callback: (for input only) callback (or NULL) to be called with the device
+ * QDEV_CLOCK_IN:
+ * @devstate: structure type. ``dev`` argument of qdev_init_clocks() must be
+ *            a pointer to that same type.
+ * @field: a field in @devstate (must be Clock*)
+ * @callback: callback (or NULL) to be called with the device
  * state as argument
  *
  * The name of the clock will be derived from @field
@@ -139,6 +139,14 @@ struct ClockPortInitElem {
 #define QDEV_CLOCK_IN(devstate, field, callback) \
     QDEV_CLOCK(false, devstate, field, callback)
 
+/**
+ * QDEV_CLOCK_OUT:
+ * @devstate: structure type. ``dev`` argument of qdev_init_clocks() must be
+ *            a pointer to that same type.
+ * @field: a field in @devstate (must be Clock*)
+ *
+ * The name of the clock will be derived from @field
+ */
 #define QDEV_CLOCK_OUT(devstate, field) \
     QDEV_CLOCK(true, devstate, field, NULL)
 
