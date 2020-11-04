@@ -30,8 +30,8 @@ static void qnum_from_int_test(void)
 
     qn = qnum_from_int(value);
     g_assert(qn != NULL);
-    g_assert_cmpint(qn->kind, ==, QNUM_I64);
-    g_assert_cmpint(qn->u.i64, ==, value);
+    g_assert_cmpint(qn->value.kind, ==, QNUM_I64);
+    g_assert_cmpint(qn->value.u.i64, ==, value);
     g_assert_cmpint(qn->base.refcnt, ==, 1);
     g_assert_cmpint(qobject_type(QOBJECT(qn)), ==, QTYPE_QNUM);
 
@@ -45,8 +45,8 @@ static void qnum_from_uint_test(void)
 
     qn = qnum_from_uint(value);
     g_assert(qn != NULL);
-    g_assert_cmpint(qn->kind, ==, QNUM_U64);
-    g_assert(qn->u.u64 == value);
+    g_assert_cmpint(qn->value.kind, ==, QNUM_U64);
+    g_assert(qn->value.u.u64 == value);
     g_assert(qn->base.refcnt == 1);
     g_assert(qobject_type(QOBJECT(qn)) == QTYPE_QNUM);
 
@@ -60,8 +60,8 @@ static void qnum_from_double_test(void)
 
     qn = qnum_from_double(value);
     g_assert(qn != NULL);
-    g_assert_cmpint(qn->kind, ==, QNUM_DOUBLE);
-    g_assert_cmpfloat(qn->u.dbl, ==, value);
+    g_assert_cmpint(qn->value.kind, ==, QNUM_DOUBLE);
+    g_assert_cmpfloat(qn->value.u.dbl, ==, value);
     g_assert_cmpint(qn->base.refcnt, ==, 1);
     g_assert_cmpint(qobject_type(QOBJECT(qn)), ==, QTYPE_QNUM);
 
@@ -74,7 +74,7 @@ static void qnum_from_int64_test(void)
     const int64_t value = 0x1234567890abcdefLL;
 
     qn = qnum_from_int(value);
-    g_assert_cmpint((int64_t) qn->u.i64, ==, value);
+    g_assert_cmpint((int64_t) qn->value.u.i64, ==, value);
 
     qobject_unref(qn);
 }
