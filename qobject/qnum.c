@@ -202,7 +202,7 @@ char *qnum_to_string(QNum *qn)
 }
 
 /**
- * qnum_is_equal(): Test whether the two QNums are equal
+ * qnum_value_is_equal(): Test whether two QNumValues are equal
  *
  * Negative integers are never considered equal to unsigned integers,
  * but positive integers in the range [0, INT64_MAX] are considered
@@ -210,13 +210,8 @@ char *qnum_to_string(QNum *qn)
  *
  * Doubles are never considered equal to integers.
  */
-bool qnum_is_equal(const QObject *x, const QObject *y)
+bool qnum_value_is_equal(const QNumValue *val_x, const QNumValue *val_y)
 {
-    const QNum *num_x = qobject_to(QNum, x);
-    const QNum *num_y = qobject_to(QNum, y);
-    const QNumValue *val_x = &num_x->value;
-    const QNumValue *val_y = &num_y->value;
-
     switch (val_x->kind) {
     case QNUM_I64:
         switch (val_y->kind) {
@@ -234,7 +229,7 @@ bool qnum_is_equal(const QObject *x, const QObject *y)
     case QNUM_U64:
         switch (val_y->kind) {
         case QNUM_I64:
-            return qnum_is_equal(y, x);
+            return qnum_value_is_equal(val_y, val_x);
         case QNUM_U64:
             /* Comparison in native uint64_t type */
             return val_x->u.u64 == val_y->u.u64;
@@ -255,6 +250,19 @@ bool qnum_is_equal(const QObject *x, const QObject *y)
     }
 
     abort();
+}
+
+/**
+ * qnum_is_equal(): Test whether the two QNums are equal
+ *
+ * See qnum_value_is_equal() for details on the comparison rules.
+ */
+bool qnum_is_equal(const QObject *x, const QObject *y)
+{
+    const QNum *qnum_x = qobject_to(QNum, x);
+    const QNum *qnum_y = qobject_to(QNum, y);
+
+    return qnum_value_is_equal(&qnum_x->value, &qnum_y->value);
 }
 
 /**
