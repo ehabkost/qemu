@@ -56,6 +56,20 @@ static void field_prop_release(Object *obj, const char *name, void *opaque)
     }
 }
 
+static void field_prop_set_default_value(ObjectProperty *op,
+                                         Property *prop)
+{
+    if (qlit_type(&prop->defval) == QTYPE_QNULL) {
+        return;
+    }
+
+    if (prop->info->set_default_value) {
+        prop->info->set_default_value(op, prop);
+    } else {
+        object_property_set_default(op, qobject_from_qlit(&prop->defval));
+    }
+}
+
 /* Finish initialization of field property */
 static void field_prop_finish_init(ObjectProperty *op, Property *prop,
                                    ObjectPropertyAllowSet allow_set)
@@ -66,9 +80,7 @@ static void field_prop_finish_init(ObjectProperty *op, Property *prop,
         property_set_description(op, prop->info->description);
     }
 
-    if (prop->set_default) {
-        prop->info->set_default_value(op, prop);
-    }
+    field_prop_set_default_value(op, prop);
 
     op->allow_set = allow_set;
 }

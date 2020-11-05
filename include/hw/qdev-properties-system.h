@@ -80,7 +80,7 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 
 #define DEFINE_PROP_UUID(_name, _state, _field, ...) \
     DEFINE_PROP(_name, _state, _field, qdev_prop_uuid, QemuUUID, \
-                .set_default = true,                             \
+                .defval = QLIT_QSTR("auto"),
                 __VA_ARGS__)
 
 #define DEFINE_PROP_AUDIODEV(_n, _s, _f, ...) \
