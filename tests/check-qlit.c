@@ -58,6 +58,11 @@ static void qlit_equal_qobject_test(void)
         QLIT_QNUM_INT(1),
         QLIT_QNUM_INT(INT64_MIN),
         QLIT_QNUM_INT(INT64_MAX),
+        QLIT_QNUM_UINT(UINT64_MAX),
+        /* Larger than UINT64_MAX: */
+        QLIT_QNUM_DOUBLE(18446744073709552e3),
+        /* Smaller than INT64_MIN: */
+        QLIT_QNUM_DOUBLE(-92233720368547758e2),
         QLIT_QSTR(""),
         QLIT_QSTR("foo"),
         qlit,

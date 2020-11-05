@@ -42,6 +42,10 @@ struct QLitDictEntry {
     { .type = QTYPE_QBOOL, .value.qbool = (val) }
 #define QLIT_QNUM_INT(val) \
     { .type = QTYPE_QNUM, .value.qnum = QNUM_VAL_INT(val) }
+#define QLIT_QNUM_UINT(val) \
+    { .type = QTYPE_QNUM, .value.qnum = QNUM_VAL_UINT(val) }
+#define QLIT_QNUM_DOUBLE(val) \
+    { .type = QTYPE_QNUM, .value.qnum = QNUM_VAL_DOUBLE(val) }
 #define QLIT_QSTR(val) \
     { .type = QTYPE_QSTRING, .value.qstr = (val) }
 #define QLIT_QDICT(val) \
