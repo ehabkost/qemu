@@ -48,6 +48,14 @@ static ObjectPropertyAccessor *field_prop_setter(const Property *prop)
     return prop->info->set ? field_prop_set : NULL;
 }
 
+/**
+ * field_prop_type_name: Return type name to be used for property
+ */
+static const char *field_prop_type_name(const Property *prop)
+{
+    return prop->info->name;
+}
+
 static void field_prop_release(Object *obj, const char *name, void *opaque)
 {
     Property *prop = opaque;
@@ -95,7 +103,8 @@ object_property_add_field(Object *obj, const char *name,
     assert(allow_set);
     assert(!prop->info->create);
 
-    op = object_property_add(obj, name, prop->info->name,
+    op = object_property_add(obj, name,
+                             field_prop_type_name(prop),
                              field_prop_getter(prop),
                              field_prop_setter(prop),
                              field_prop_release,
@@ -120,8 +129,8 @@ object_class_property_add_field(ObjectClass *oc, const char *name,
     if (prop->info->create) {
         op = prop->info->create(oc, name, prop);
     } else {
-        op = object_class_property_add(oc,
-                                       name, prop->info->name,
+        op = object_class_property_add(oc, name,
+                                       field_prop_type_name(prop),
                                        field_prop_getter(prop),
                                        field_prop_setter(prop),
                                        field_prop_release,
