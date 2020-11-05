@@ -23,11 +23,11 @@ static void field_prop_get(Object *obj, Visitor *v, const char *name,
 /**
  * field_prop_getter: Return getter function to be used for property
  *
- * Return value can be NULL if @info has no getter function.
+ * Return value can be NULL if the property won't be readable.
  */
-static ObjectPropertyAccessor *field_prop_getter(const PropertyInfo *info)
+static ObjectPropertyAccessor *field_prop_getter(const Property *prop)
 {
-    return info->get ? field_prop_get : NULL;
+    return prop->info->get ? field_prop_get : NULL;
 }
 
 static void field_prop_set(Object *obj, Visitor *v, const char *name,
@@ -41,11 +41,11 @@ static void field_prop_set(Object *obj, Visitor *v, const char *name,
 /**
  * field_prop_setter: Return setter function to be used for property
  *
- * Return value can be NULL if @info has not setter function.
+ * Return value can be NULL if the property won't be writable.
  */
-static ObjectPropertyAccessor *field_prop_setter(const PropertyInfo *info)
+static ObjectPropertyAccessor *field_prop_setter(const Property *prop)
 {
-    return info->set ? field_prop_set : NULL;
+    return prop->info->set ? field_prop_set : NULL;
 }
 
 static void field_prop_release(Object *obj, const char *name, void *opaque)
@@ -96,8 +96,8 @@ object_property_add_field(Object *obj, const char *name,
     assert(!prop->info->create);
 
     op = object_property_add(obj, name, prop->info->name,
-                             field_prop_getter(prop->info),
-                             field_prop_setter(prop->info),
+                             field_prop_getter(prop),
+                             field_prop_setter(prop),
                              field_prop_release,
                              prop);
 
@@ -122,8 +122,8 @@ object_class_property_add_field(ObjectClass *oc, const char *name,
     } else {
         op = object_class_property_add(oc,
                                        name, prop->info->name,
-                                       field_prop_getter(prop->info),
-                                       field_prop_setter(prop->info),
+                                       field_prop_getter(prop),
+                                       field_prop_setter(prop),
                                        field_prop_release,
                                        prop);
     }
