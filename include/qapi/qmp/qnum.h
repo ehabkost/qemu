@@ -107,6 +107,7 @@ uint64_t qnum_get_uint(const QNum *qn);
 double qnum_value_get_double(const QNumValue *qv);
 double qnum_get_double(const QNum *qn);
 
+char *qnum_value_to_string(const QNumValue *qv);
 char *qnum_to_string(const QNum *qn);
 
 bool qnum_value_is_equal(const QNumValue *num_x, const QNumValue *num_y);

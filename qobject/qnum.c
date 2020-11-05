@@ -217,9 +217,8 @@ double qnum_get_double(const QNum *qn)
     return qnum_value_get_double(&qn->value);
 }
 
-char *qnum_to_string(const QNum *qn)
+char *qnum_value_to_string(const QNumValue *qv)
 {
-    const QNumValue *qv = &qn->value;
     char *buffer;
     int len;
 
@@ -255,6 +254,11 @@ char *qnum_to_string(const QNum *qn)
 
     assert(0);
     return NULL;
+}
+
+char *qnum_to_string(const QNum *qn)
+{
+    return qnum_value_to_string(&qn->value);
 }
 
 /**
