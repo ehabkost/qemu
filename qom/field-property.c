@@ -51,7 +51,9 @@ static ObjectPropertyAccessor *field_prop_setter(const PropertyInfo *info)
 static void field_prop_finish_init(ObjectProperty *op, Property *prop,
                                    ObjectPropertyAllowSet allow_set)
 {
-    if (prop->info->description) {
+    if (prop->description) {
+        property_set_description(op, prop->description);
+    } else if (prop->info->description) {
         property_set_description(op, prop->info->description);
     }
 

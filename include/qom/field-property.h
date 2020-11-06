@@ -42,6 +42,8 @@ struct Property {
         int64_t i;
         uint64_t u;
     } defval;
+    /** @description: Property description, for help text */
+    const char *description;
     /* private: */
     int          arrayoffset;
     const PropertyInfo *arrayinfo;
@@ -55,7 +57,11 @@ struct Property {
 struct PropertyInfo {
     /** @name: property type name */
     const char *name;
-    /** @description: Description for help text */
+    /**
+     * @description: Default property description
+     *
+     * Property.description may override it for individual properties.
+     */
     const char *description;
     /** @enum_table: Used by field_prop_get_enum() and field_prop_set_enum() */
     const QEnumLookup *enum_table;
