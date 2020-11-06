@@ -47,6 +47,21 @@ static ObjectPropertyAccessor *field_prop_setter(const PropertyInfo *info)
     return info->set ? field_prop_set : NULL;
 }
 
+/* Finish initialization of field property */
+static void field_prop_finish_init(ObjectProperty *op, Property *prop,
+                                   ObjectPropertyAllowSet allow_set)
+{
+    if (prop->info->description) {
+        property_set_description(op, prop->info->description);
+    }
+
+    if (prop->set_default) {
+        prop->info->set_default_value(op, prop);
+    }
+
+    op->allow_set = allow_set;
+}
+
 ObjectProperty *
 object_property_add_field(Object *obj, const char *name,
                           Property *prop,
@@ -63,17 +78,10 @@ object_property_add_field(Object *obj, const char *name,
                              prop->info->release,
                              prop);
 
-    object_property_set_description(obj, name,
-                                    prop->info->description);
-
-    if (prop->set_default) {
-        prop->info->set_default_value(op, prop);
-        if (op->init) {
-            op->init(obj, op);
-        }
+    field_prop_finish_init(op, prop, allow_set);
+    if (op->init) {
+        op->init(obj, op);
     }
-
-    op->allow_set = allow_set;
     return op;
 }
 
@@ -96,15 +104,8 @@ object_class_property_add_field(ObjectClass *oc, const char *name,
                                        prop->info->release,
                                        prop);
     }
-    if (prop->set_default) {
-        prop->info->set_default_value(op, prop);
-    }
-    if (prop->info->description) {
-        object_class_property_set_description(oc, name,
-                                              prop->info->description);
-    }
 
-    op->allow_set = allow_set;
+    field_prop_finish_init(op, prop, allow_set);
     return op;
 }
 
