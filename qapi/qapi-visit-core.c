@@ -372,9 +372,8 @@ static bool input_type_enum(Visitor *v, const char *name, int *obj,
         return false;
     }
 
-    value = qapi_enum_parse(lookup, enum_str, -1, NULL);
+    value = qapi_enum_parse(lookup, enum_str, -1, errp);
     if (value < 0) {
-        error_setg(errp, QERR_INVALID_PARAMETER, enum_str);
         g_free(enum_str);
         return false;
     }
