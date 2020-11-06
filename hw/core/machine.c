@@ -848,8 +848,7 @@ static void machine_class_init(ObjectClass *oc, void *data)
     object_class_property_add_str(oc, "memory-backend",
                                   machine_get_memdev, machine_set_memdev);
     object_class_property_set_description(oc, "memory-backend",
-                                          "Set RAM backend"
-                                          "Valid value is ID of hostmem based backend");
+                                          "ID of memory backend object");
 }
 
 static void machine_class_base_init(ObjectClass *oc, void *data)
