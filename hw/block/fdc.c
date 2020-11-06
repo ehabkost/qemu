@@ -508,9 +508,8 @@ struct FloppyDrive {
 static Property floppy_drive_properties[] = {
     DEFINE_PROP_UINT32("unit", FloppyDrive, unit, -1),
     DEFINE_BLOCK_PROPERTIES(FloppyDrive, conf),
-    DEFINE_PROP_SIGNED("drive-type", FloppyDrive, type,
-                        FLOPPY_DRIVE_TYPE_AUTO, qdev_prop_fdc_drive_type,
-                        FloppyDriveType),
+    DEFINE_PROP_FDC_DRIVE_TYPE("drive-type", FloppyDrive, type,
+                               FLOPPY_DRIVE_TYPE_AUTO),
     DEFINE_PROP_END_OF_LIST(),
 };
 
@@ -2896,15 +2895,12 @@ static Property isa_fdc_properties[] = {
     DEFINE_PROP_DRIVE("driveB", FDCtrlISABus, state.qdev_for_drives[1].blk),
     DEFINE_PROP_BIT("check_media_rate", FDCtrlISABus, state.check_media_rate,
                     0, true),
-    DEFINE_PROP_SIGNED("fdtypeA", FDCtrlISABus, state.qdev_for_drives[0].type,
-                        FLOPPY_DRIVE_TYPE_AUTO, qdev_prop_fdc_drive_type,
-                        FloppyDriveType),
-    DEFINE_PROP_SIGNED("fdtypeB", FDCtrlISABus, state.qdev_for_drives[1].type,
-                        FLOPPY_DRIVE_TYPE_AUTO, qdev_prop_fdc_drive_type,
-                        FloppyDriveType),
-    DEFINE_PROP_SIGNED("fallback", FDCtrlISABus, state.fallback,
-                        FLOPPY_DRIVE_TYPE_288, qdev_prop_fdc_drive_type,
-                        FloppyDriveType),
+    DEFINE_PROP_FDC_DRIVE_TYPE("fdtypeA", FDCtrlISABus, state.qdev_for_drives[0].type,
+                               FLOPPY_DRIVE_TYPE_AUTO),
+    DEFINE_PROP_FDC_DRIVE_TYPE("fdtypeB", FDCtrlISABus, state.qdev_for_drives[1].type,
+                               FLOPPY_DRIVE_TYPE_AUTO),
+    DEFINE_PROP_FDC_DRIVE_TYPE("fallback", FDCtrlISABus, state.fallback,
+                               FLOPPY_DRIVE_TYPE_288),
     DEFINE_PROP_END_OF_LIST(),
 };
 
@@ -2955,15 +2951,12 @@ static const VMStateDescription vmstate_sysbus_fdc ={
 static Property sysbus_fdc_properties[] = {
     DEFINE_PROP_DRIVE("driveA", FDCtrlSysBus, state.qdev_for_drives[0].blk),
     DEFINE_PROP_DRIVE("driveB", FDCtrlSysBus, state.qdev_for_drives[1].blk),
-    DEFINE_PROP_SIGNED("fdtypeA", FDCtrlSysBus, state.qdev_for_drives[0].type,
-                        FLOPPY_DRIVE_TYPE_AUTO, qdev_prop_fdc_drive_type,
-                        FloppyDriveType),
-    DEFINE_PROP_SIGNED("fdtypeB", FDCtrlSysBus, state.qdev_for_drives[1].type,
-                        FLOPPY_DRIVE_TYPE_AUTO, qdev_prop_fdc_drive_type,
-                        FloppyDriveType),
-    DEFINE_PROP_SIGNED("fallback", FDCtrlISABus, state.fallback,
-                        FLOPPY_DRIVE_TYPE_144, qdev_prop_fdc_drive_type,
-                        FloppyDriveType),
+    DEFINE_PROP_FDC_DRIVE_TYPE("fdtypeA", FDCtrlSysBus, state.qdev_for_drives[0].type,
+                               FLOPPY_DRIVE_TYPE_AUTO),
+    DEFINE_PROP_FDC_DRIVE_TYPE("fdtypeB", FDCtrlSysBus, state.qdev_for_drives[1].type,
+                               FLOPPY_DRIVE_TYPE_AUTO),
+    DEFINE_PROP_FDC_DRIVE_TYPE("fallback", FDCtrlISABus, state.fallback,
+                               FLOPPY_DRIVE_TYPE_144),
     DEFINE_PROP_END_OF_LIST(),
 };
 
@@ -2984,12 +2977,10 @@ static const TypeInfo sysbus_fdc_info = {
 
 static Property sun4m_fdc_properties[] = {
     DEFINE_PROP_DRIVE("drive", FDCtrlSysBus, state.qdev_for_drives[0].blk),
-    DEFINE_PROP_SIGNED("fdtype", FDCtrlSysBus, state.qdev_for_drives[0].type,
-                        FLOPPY_DRIVE_TYPE_AUTO, qdev_prop_fdc_drive_type,
-                        FloppyDriveType),
-    DEFINE_PROP_SIGNED("fallback", FDCtrlISABus, state.fallback,
-                        FLOPPY_DRIVE_TYPE_144, qdev_prop_fdc_drive_type,
-                        FloppyDriveType),
+    DEFINE_PROP_FDC_DRIVE_TYPE("fdtype", FDCtrlSysBus, state.qdev_for_drives[0].type,
+                               FLOPPY_DRIVE_TYPE_AUTO),
+    DEFINE_PROP_FDC_DRIVE_TYPE("fallback", FDCtrlISABus, state.fallback,
+                               FLOPPY_DRIVE_TYPE_144),
     DEFINE_PROP_END_OF_LIST(),
 };
 

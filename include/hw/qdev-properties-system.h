@@ -89,5 +89,9 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 #define DEFINE_PROP_UUID_NODEFAULT(_name, _state, _field, ...) \
     DEFINE_PROP(_name, _state, _field, qdev_prop_uuid, QemuUUID, __VA_ARGS__)
 
+#define DEFINE_PROP_FDC_DRIVE_TYPE(_name, _state, _field, _defval, ...) \
+    DEFINE_PROP_UNSIGNED(_name, _state, _field, _defval,                \
+                         qdev_prop_fdc_drive_type, FloppyDriveType,     \
+                         __VA_ARGS__)
 
 #endif
