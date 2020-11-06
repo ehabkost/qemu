@@ -1891,17 +1891,34 @@ ObjectProperty *object_property_add_const_link(Object *obj, const char *name,
                                                Object *target);
 
 /**
+ * property_set_description:
+ * @op: the property whose description will be set
+ * @description: the description of the property
+ *
+ * Set a property's description.
+ */
+void property_set_description(ObjectProperty *op,
+                              const char *description);
+
+/**
  * object_property_set_description:
  * @obj: the object owning the property
  * @name: the name of the property
  * @description: the description of the property on the object
  *
  * Set an object property's description.
- *
- * Returns: %true on success, %false on failure.
  */
 void object_property_set_description(Object *obj, const char *name,
                                      const char *description);
+
+/**
+ * object_class_property_set_description:
+ * @klass: the class owning the property
+ * @name: the name of the property
+ * @description: the description of the property
+ *
+ * Set class property's description.
+ */
 void object_class_property_set_description(ObjectClass *klass, const char *name,
                                            const char *description);
 

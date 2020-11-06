@@ -2780,14 +2780,20 @@ object_property_add_alias(Object *obj, const char *name,
     return op;
 }
 
+void property_set_description(ObjectProperty *op,
+                              const char *description)
+{
+    g_free(op->description);
+    op->description = g_strdup(description);
+}
+
 void object_property_set_description(Object *obj, const char *name,
                                      const char *description)
 {
     ObjectProperty *op;
 
     op = object_property_find_err(obj, name, &error_abort);
-    g_free(op->description);
-    op->description = g_strdup(description);
+    property_set_description(op, description);
 }
 
 void object_class_property_set_description(ObjectClass *klass,
@@ -2797,8 +2803,7 @@ void object_class_property_set_description(ObjectClass *klass,
     ObjectProperty *op;
 
     op = g_hash_table_lookup(klass->properties, name);
-    g_free(op->description);
-    op->description = g_strdup(description);
+    property_set_description(op, description);
 }
 
 static void object_class_init(ObjectClass *klass, void *data)
