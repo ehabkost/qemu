@@ -213,31 +213,6 @@ GlobalProperty hw_compat_2_1[] = {
 };
 const size_t hw_compat_2_1_len = G_N_ELEMENTS(hw_compat_2_1);
 
-static void machine_get_phandle_start(Object *obj, Visitor *v,
-                                      const char *name, void *opaque,
-                                      Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-    int64_t value = ms->phandle_start;
-
-    visit_type_int(v, name, &value, errp);
-}
-
-static void machine_set_phandle_start(Object *obj, Visitor *v,
-                                      const char *name, void *opaque,
-                                      Error **errp)
-{
-    MachineState *ms = MACHINE(obj);
-    int64_t value;
-
-    if (!visit_type_int(v, name, &value, errp)) {
-        return;
-    }
-
-    ms->phandle_start = value;
-}
-
-
 static bool machine_get_usb(Object *obj, Error **errp)
 {
     MachineState *ms = MACHINE(obj);
@@ -612,6 +587,8 @@ static Property machine_props[] = {
                      .description = "Set on/off to enable/disable graphics emulation"),
     DEFINE_PROP_BOOL("suppress-vmdesc", MachineState, suppress_vmdesc, false,
                      .description = "Set on to disable self-describing migration"),
+    DEFINE_PROP_UINT32("phandle-start", MachineState, phandle_start, 0,
+                       .description = "The first phandle ID we may generate dynamically"),
     DEFINE_PROP_END_OF_LIST(),
 };
 
@@ -634,12 +611,6 @@ static void machine_class_init(ObjectClass *oc, void *data)
      * from being set after machine was already initialized
      */
     object_class_add_field_properties(oc, machine_props, prop_allow_set_always);
-
-    object_class_property_add(oc, "phandle-start", "int",
-        machine_get_phandle_start, machine_set_phandle_start,
-        NULL, NULL);
-    object_class_property_set_description(oc, "phandle-start",
-        "The first phandle ID we may generate dynamically");
 
     object_class_property_add_bool(oc, "usb",
         machine_get_usb, machine_set_usb);
