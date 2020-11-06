@@ -27,7 +27,7 @@ extern MachineState *current_machine;
 
 void machine_run_board_init(MachineState *machine);
 bool machine_usb(MachineState *machine);
-int machine_phandle_start(MachineState *machine);
+uint32_t machine_phandle_start(MachineState *machine);
 bool machine_dump_guest_core(MachineState *machine);
 bool machine_mem_merge(MachineState *machine);
 HotpluggableCPUList *machine_query_hotpluggable_cpus(MachineState *machine);
@@ -259,7 +259,7 @@ struct MachineState {
 
     char *dtb;
     char *dumpdtb;
-    int phandle_start;
+    uint32_t phandle_start;
     char *dt_compatible;
     bool dump_guest_core;
     bool mem_merge;

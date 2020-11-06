@@ -459,7 +459,7 @@ int qemu_fdt_setprop_phandle(void *fdt, const char *node_path,
 
 uint32_t qemu_fdt_alloc_phandle(void *fdt)
 {
-    static int phandle = 0x0;
+    static uint32_t phandle = 0x0;
 
     /*
      * We need to find out if the user gave us special instruction at

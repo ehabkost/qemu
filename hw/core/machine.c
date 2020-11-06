@@ -937,7 +937,7 @@ bool machine_usb(MachineState *machine)
     return machine->usb;
 }
 
-int machine_phandle_start(MachineState *machine)
+uint32_t machine_phandle_start(MachineState *machine)
 {
     return machine->phandle_start;
 }
