@@ -35,6 +35,7 @@
 #include "hw/pci/pci_bus.h"
 #include "migration/vmstate.h"
 #include "qapi/error.h"
+#include "qapi/qmp/qnum.h"
 #include "qom/qom-qobject.h"
 #include "trace.h"
 
@@ -73,14 +74,11 @@ static int acpi_pcihp_get_bsel(PCIBus *bus)
 static void *acpi_set_bsel(PCIBus *bus, void *opaque)
 {
     unsigned *bsel_alloc = opaque;
-    unsigned *bus_bsel;
 
     if (qbus_is_hotpluggable(BUS(bus))) {
-        bus_bsel = g_malloc(sizeof *bus_bsel);
-
-        *bus_bsel = (*bsel_alloc)++;
-        object_property_add_uint32_ptr(OBJECT(bus), ACPI_PCIHP_PROP_BSEL,
-                                       bus_bsel, OBJ_PROP_FLAG_READ);
+        unsigned bus_bsel = (*bsel_alloc)++;
+        object_property_add_const_uint(OBJECT(bus), ACPI_PCIHP_PROP_BSEL,
+                                       bus_bsel);
     }
 
     return bsel_alloc;
