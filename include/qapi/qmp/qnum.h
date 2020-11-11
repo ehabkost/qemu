@@ -58,6 +58,11 @@ QNum *qnum_from_int(int64_t value);
 QNum *qnum_from_uint(uint64_t value);
 QNum *qnum_from_double(double value);
 
+static inline QNumKind qnum_kind(const QNum *qn)
+{
+    return qn->kind;
+}
+
 bool qnum_get_try_int(const QNum *qn, int64_t *val);
 int64_t qnum_get_int(const QNum *qn);
 
