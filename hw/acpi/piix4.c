@@ -46,6 +46,7 @@
 #include "hw/core/cpu.h"
 #include "trace.h"
 #include "qom/object.h"
+#include "qom/qom-qobject.h"
 
 #define GPE_BASE 0xafe0
 #define GPE_LEN 4
@@ -439,22 +440,16 @@ static void piix4_pm_machine_ready(Notifier *n, void *opaque)
 
 static void piix4_pm_add_properties(PIIX4PMState *s)
 {
-    static const uint8_t acpi_enable_cmd = ACPI_ENABLE;
-    static const uint8_t acpi_disable_cmd = ACPI_DISABLE;
-    static const uint32_t gpe0_blk = GPE_BASE;
-    static const uint32_t gpe0_blk_len = GPE_LEN;
-    static const uint16_t sci_int = 9;
-
-    object_property_add_uint8_ptr(OBJECT(s), ACPI_PM_PROP_ACPI_ENABLE_CMD,
-                                  &acpi_enable_cmd, OBJ_PROP_FLAG_READ);
-    object_property_add_uint8_ptr(OBJECT(s), ACPI_PM_PROP_ACPI_DISABLE_CMD,
-                                  &acpi_disable_cmd, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(OBJECT(s), ACPI_PM_PROP_GPE0_BLK,
-                                  &gpe0_blk, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(OBJECT(s), ACPI_PM_PROP_GPE0_BLK_LEN,
-                                  &gpe0_blk_len, OBJ_PROP_FLAG_READ);
-    object_property_add_uint16_ptr(OBJECT(s), ACPI_PM_PROP_SCI_INT,
-                                  &sci_int, OBJ_PROP_FLAG_READ);
+    object_property_add_const_uint(OBJECT(s), ACPI_PM_PROP_ACPI_ENABLE_CMD,
+                                   ACPI_ENABLE);
+    object_property_add_const_uint(OBJECT(s), ACPI_PM_PROP_ACPI_DISABLE_CMD,
+                                   ACPI_DISABLE);
+    object_property_add_const_uint(OBJECT(s), ACPI_PM_PROP_GPE0_BLK,
+                                   GPE_BASE);
+    object_property_add_const_uint(OBJECT(s), ACPI_PM_PROP_GPE0_BLK_LEN,
+                                   GPE_LEN);
+    object_property_add_const_uint(OBJECT(s), ACPI_PM_PROP_SCI_INT,
+                                   9);
     object_property_add_uint32_ptr(OBJECT(s), ACPI_PM_PROP_PM_IO_BASE,
                                   &s->io_base, OBJ_PROP_FLAG_READ);
 }
