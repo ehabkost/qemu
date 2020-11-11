@@ -32,6 +32,7 @@
 #include "qemu/log.h"
 #include "cpu.h"
 #include "qapi/visitor.h"
+#include "qom/qom-qobject.h"
 #include "qemu/range.h"
 #include "hw/isa/isa.h"
 #include "hw/sysbus.h"
@@ -646,15 +647,12 @@ static void ich9_lpc_initfn(Object *obj)
 {
     ICH9LPCState *lpc = ICH9_LPC_DEVICE(obj);
 
-    static const uint8_t acpi_enable_cmd = ICH9_APM_ACPI_ENABLE;
-    static const uint8_t acpi_disable_cmd = ICH9_APM_ACPI_DISABLE;
-
     object_property_add_uint8_ptr(obj, ACPI_PM_PROP_SCI_INT,
                                   &lpc->sci_gsi, OBJ_PROP_FLAG_READ);
-    object_property_add_uint8_ptr(OBJECT(lpc), ACPI_PM_PROP_ACPI_ENABLE_CMD,
-                                  &acpi_enable_cmd, OBJ_PROP_FLAG_READ);
-    object_property_add_uint8_ptr(OBJECT(lpc), ACPI_PM_PROP_ACPI_DISABLE_CMD,
-                                  &acpi_disable_cmd, OBJ_PROP_FLAG_READ);
+    object_property_add_const_uint(OBJECT(lpc), ACPI_PM_PROP_ACPI_ENABLE_CMD,
+                                   ICH9_APM_ACPI_ENABLE);
+    object_property_add_const_uint(OBJECT(lpc), ACPI_PM_PROP_ACPI_DISABLE_CMD,
+                                   ICH9_APM_ACPI_DISABLE);
     object_property_add_uint64_ptr(obj, ICH9_LPC_SMI_NEGOTIATED_FEAT_PROP,
                                    &lpc->smi_negotiated_features,
                                    OBJ_PROP_FLAG_READ);
