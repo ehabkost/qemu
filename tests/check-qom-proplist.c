@@ -22,6 +22,8 @@
 
 #include "qapi/error.h"
 #include "qom/object.h"
+#include "qom/qom-qobject.h"
+#include "qapi/qmp/qnum.h"
 #include "qemu/module.h"
 #include "qemu/option.h"
 #include "qemu/config-file.h"
@@ -141,6 +143,8 @@ static void dummy_class_init(ObjectClass *cls, void *data)
                                    &dummy_animal_map,
                                    dummy_get_av,
                                    dummy_set_av);
+    object_class_property_add_const_uint(cls, "const42", 42);
+    object_class_property_add_const_int(cls, "minus42", -42);
 }
 
 
@@ -505,6 +509,20 @@ static void test_dummy_getenum(void)
     object_unparent(OBJECT(dobj));
 }
 
+static void test_dummy_getconst(void)
+{
+    Object *obj = object_new(TYPE_DUMMY);
+    Error *err = NULL;
+
+    g_assert_cmpint(object_property_get_int(obj, "const42", &error_abort), ==, 42);
+    g_assert_cmpint(object_property_get_uint(obj, "const42", &error_abort), ==, 42);
+
+    g_assert_cmpint(object_property_get_int(obj, "minus42", &error_abort), ==, -42);
+    object_property_get_uint(obj, "minus42", &err);
+    error_free_or_abort(&err);
+
+    object_unref(obj);
+}
 
 static void test_dummy_prop_iterator(ObjectPropertyIterator *iter,
                                      const char *expected[], int n)
@@ -531,7 +549,7 @@ static void test_dummy_iterator(void)
 {
     const char *expected[] = {
         "type",                 /* inherited from TYPE_OBJECT */
-        "sv", "av",             /* class properties */
+        "sv", "av", "const42", "minus42", /* class properties */
         "bv"};                  /* instance property */
     Object *parent = object_get_objects_root();
     DummyObject *dobj = DUMMY_OBJECT(
@@ -552,7 +570,7 @@ static void test_dummy_iterator(void)
 
 static void test_dummy_class_iterator(void)
 {
-    const char *expected[] = { "type", "av", "sv" };
+    const char *expected[] = { "type", "av", "sv", "const42", "minus42" };
     ObjectPropertyIterator iter;
     ObjectClass *klass = object_class_by_name(TYPE_DUMMY);
 
@@ -629,6 +647,7 @@ int main(int argc, char **argv)
     g_test_add_func("/qom/proplist/createcmdline", test_dummy_createcmdl);
     g_test_add_func("/qom/proplist/badenum", test_dummy_badenum);
     g_test_add_func("/qom/proplist/getenum", test_dummy_getenum);
+    g_test_add_func("/qom/proplist/getconst", test_dummy_getconst);
     g_test_add_func("/qom/proplist/iterator", test_dummy_iterator);
     g_test_add_func("/qom/proplist/class_iterator", test_dummy_class_iterator);
     g_test_add_func("/qom/proplist/delchild", test_dummy_delchild);
