@@ -202,6 +202,7 @@ static void xen_accel_class_init(ObjectClass *oc, void *data)
     ac->setup_post = xen_setup_post;
     ac->allowed = &xen_allowed;
     ac->compat_props = g_ptr_array_new();
+    ac->accel_ops = &xen_cpus;
 
     compat_props_add(ac->compat_props, compat, G_N_ELEMENTS(compat));
 
@@ -225,12 +226,3 @@ static void xen_type_init(void)
 }
 
 type_init(xen_type_init);
-
-static void xen_accel_cpu_init(void)
-{
-    if (xen_enabled()) {
-        cpus_register_accel(&xen_cpus);
-    }
-}
-
-accel_cpu_init(xen_accel_cpu_init);

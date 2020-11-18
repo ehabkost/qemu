@@ -52,6 +52,13 @@ typedef struct AccelClass {
      * compat_props or user-provided global properties.
      */
     GPtrArray *compat_props;
+    /**
+     * @accel_ops: accelerator-specific CPU methods
+     *
+     * If set, cpus_register_accel() will be called automatically after
+     * init_machine().
+     */
+    const struct CpuAccelOps *accel_ops;
 } AccelClass;
 
 #define TYPE_ACCEL "accel"

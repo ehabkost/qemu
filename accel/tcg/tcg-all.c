@@ -172,6 +172,7 @@ static void tcg_accel_class_init(ObjectClass *oc, void *data)
     ac->name = "tcg";
     ac->init_machine = tcg_init;
     ac->allowed = &tcg_allowed;
+    ac->accel_ops = &tcg_cpus;
 
     object_class_property_add_str(oc, "thread",
                                   tcg_get_thread,
@@ -199,12 +200,3 @@ static void register_accel_types(void)
 }
 
 type_init(register_accel_types);
-
-static void tcg_accel_cpu_init(void)
-{
-    if (tcg_enabled()) {
-        cpus_register_accel(&tcg_cpus);
-    }
-}
-
-accel_cpu_init(tcg_accel_cpu_init);

@@ -3206,6 +3206,7 @@ static void kvm_accel_class_init(ObjectClass *oc, void *data)
     ac->init_machine = kvm_init;
     ac->has_memory = kvm_accel_has_memory;
     ac->allowed = &kvm_allowed;
+    ac->accel_ops = &kvm_cpus;
 
     object_class_property_add(oc, "kernel-irqchip", "on|off|split",
         NULL, kvm_set_kernel_irqchip,
@@ -3234,12 +3235,3 @@ static void kvm_type_init(void)
 }
 
 type_init(kvm_type_init);
-
-static void kvm_accel_cpu_init(void)
-{
-    if (kvm_enabled()) {
-        cpus_register_accel(&kvm_cpus);
-    }
-}
-
-accel_cpu_init(kvm_accel_cpu_init);

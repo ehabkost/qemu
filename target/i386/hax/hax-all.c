@@ -1124,6 +1124,7 @@ static void hax_accel_class_init(ObjectClass *oc, void *data)
     ac->name = "HAX";
     ac->init_machine = hax_accel_init;
     ac->allowed = &hax_allowed;
+    ac->accel_ops = &hax_cpus;
 }
 
 static const TypeInfo hax_accel_type = {
@@ -1138,12 +1139,3 @@ static void hax_type_init(void)
 }
 
 type_init(hax_type_init);
-
-static void hax_accel_cpu_init(void)
-{
-    if (hax_enabled()) {
-        cpus_register_accel(&hax_cpus);
-    }
-}
-
-accel_cpu_init(hax_accel_cpu_init);

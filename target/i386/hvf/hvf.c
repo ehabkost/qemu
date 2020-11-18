@@ -896,6 +896,7 @@ static void hvf_accel_class_init(ObjectClass *oc, void *data)
     ac->name = "HVF";
     ac->init_machine = hvf_accel_init;
     ac->allowed = &hvf_allowed;
+    ac->accel_ops = &hvf_cpus;
 }
 
 static const TypeInfo hvf_accel_type = {
@@ -910,12 +911,3 @@ static void hvf_type_init(void)
 }
 
 type_init(hvf_type_init);
-
-static void hvf_accel_cpu_init(void)
-{
-    if (hvf_enabled()) {
-        cpus_register_accel(&hvf_cpus);
-    }
-}
-
-accel_cpu_init(hvf_accel_cpu_init);

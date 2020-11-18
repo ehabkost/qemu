@@ -28,6 +28,7 @@
 #include "hw/boards.h"
 #include "sysemu/arch_init.h"
 #include "sysemu/sysemu.h"
+#include "sysemu/cpus.h"
 #include "qom/object.h"
 
 static const TypeInfo accel_type = {
@@ -60,6 +61,9 @@ int accel_init_machine(AccelState *accel, MachineState *ms)
         return ret;
     }
 
+    if (acc->accel_ops) {
+        cpus_register_accel(acc->accel_ops);
+    }
     object_set_accelerator_compat_props(acc->compat_props);
     return ret;
 }

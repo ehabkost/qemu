@@ -30,17 +30,12 @@ const CpuAccelOps qtest_cpus = {
     .get_virtual_clock = qtest_get_virtual_clock,
 };
 
-static int qtest_init_accel(MachineState *ms)
-{
-    return 0;
-}
-
 static void qtest_accel_class_init(ObjectClass *oc, void *data)
 {
     AccelClass *ac = ACCEL_CLASS(oc);
     ac->name = "QTest";
-    ac->init_machine = qtest_init_accel;
     ac->allowed = &qtest_allowed;
+    ac->accel_ops = &qtest_cpus;
 }
 
 #define TYPE_QTEST_ACCEL ACCEL_CLASS_NAME("qtest")
@@ -57,12 +52,3 @@ static void qtest_type_init(void)
 }
 
 type_init(qtest_type_init);
-
-static void qtest_accel_cpu_init(void)
-{
-    if (qtest_enabled()) {
-        cpus_register_accel(&qtest_cpus);
-    }
-}
-
-accel_cpu_init(qtest_accel_cpu_init);

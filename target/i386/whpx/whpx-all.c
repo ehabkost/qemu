@@ -1666,6 +1666,7 @@ static void whpx_accel_class_init(ObjectClass *oc, void *data)
     ac->name = "WHPX";
     ac->init_machine = whpx_accel_init;
     ac->allowed = &whpx_allowed;
+    ac->accel_ops = &whpx_cpus;
 }
 
 static const TypeInfo whpx_accel_type = {
@@ -1711,12 +1712,3 @@ error:
 }
 
 type_init(whpx_type_init);
-
-static void whpx_accel_cpu_init(void)
-{
-    if (whpx_enabled()) {
-        cpus_register_accel(&whpx_cpus);
-    }
-}
-
-accel_cpu_init(whpx_accel_cpu_init);
