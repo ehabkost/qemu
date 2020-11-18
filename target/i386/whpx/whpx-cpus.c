@@ -85,7 +85,7 @@ static void whpx_kick_vcpu_thread(CPUState *cpu)
     }
 }
 
-const CpusAccel whpx_cpus = {
+const CpuAccelOps whpx_cpus = {
     .create_vcpu_thread = whpx_start_vcpu_thread,
     .kick_vcpu_thread = whpx_kick_vcpu_thread,
 

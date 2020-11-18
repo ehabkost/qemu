@@ -7,7 +7,7 @@
 
 /* CPU execution threads */
 
-typedef struct CpusAccel {
+typedef struct CpuAccelOps {
     void (*create_vcpu_thread)(CPUState *cpu); /* MANDATORY */
     void (*kick_vcpu_thread)(CPUState *cpu);
 
@@ -20,12 +20,12 @@ typedef struct CpusAccel {
 
     int64_t (*get_virtual_clock)(void);
     int64_t (*get_elapsed_ticks)(void);
-} CpusAccel;
+} CpuAccelOps;
 
 /* register accel-specific cpus interface implementation */
-void cpus_register_accel(const CpusAccel *i);
+void cpus_register_accel(const CpuAccelOps *i);
 
-/* Create a dummy vcpu for CpusAccel->create_vcpu_thread */
+/* Create a dummy vcpu for CpuAccelOps->create_vcpu_thread */
 void dummy_start_vcpu_thread(CPUState *);
 
 /* interface available for cpus accelerator threads */

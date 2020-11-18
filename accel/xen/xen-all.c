@@ -154,7 +154,7 @@ static void xen_setup_post(MachineState *ms, AccelState *accel)
     }
 }
 
-const CpusAccel xen_cpus = {
+const CpuAccelOps xen_cpus = {
     .create_vcpu_thread = dummy_start_vcpu_thread,
 };
 

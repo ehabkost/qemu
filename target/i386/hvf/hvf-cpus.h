@@ -12,7 +12,7 @@
 
 #include "sysemu/cpus.h"
 
-extern const CpusAccel hvf_cpus;
+extern const CpuAccelOps hvf_cpus;
 
 int hvf_init_vcpu(CPUState *);
 int hvf_vcpu_exec(CPUState *);

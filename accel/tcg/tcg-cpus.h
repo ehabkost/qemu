@@ -12,6 +12,6 @@
 
 #include "sysemu/cpus.h"
 
-extern const CpusAccel tcg_cpus;
+extern const CpuAccelOps tcg_cpus;
 
 #endif /* TCG_CPUS_H */

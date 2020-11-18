@@ -74,7 +74,7 @@ static void hax_start_vcpu_thread(CPUState *cpu)
 #endif
 }
 
-const CpusAccel hax_cpus = {
+const CpuAccelOps hax_cpus = {
     .create_vcpu_thread = hax_start_vcpu_thread,
     .kick_vcpu_thread = hax_kick_vcpu_thread,
 

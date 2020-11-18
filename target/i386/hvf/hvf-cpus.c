@@ -121,7 +121,7 @@ static void hvf_start_vcpu_thread(CPUState *cpu)
                        cpu, QEMU_THREAD_JOINABLE);
 }
 
-const CpusAccel hvf_cpus = {
+const CpuAccelOps hvf_cpus = {
     .create_vcpu_thread = hvf_start_vcpu_thread,
 
     .synchronize_post_reset = hvf_cpu_synchronize_post_reset,

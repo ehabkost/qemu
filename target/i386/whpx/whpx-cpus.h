@@ -12,7 +12,7 @@
 
 #include "sysemu/cpus.h"
 
-extern const CpusAccel whpx_cpus;
+extern const CpuAccelOps whpx_cpus;
 
 int whpx_init_vcpu(CPUState *cpu);
 int whpx_vcpu_exec(CPUState *cpu);

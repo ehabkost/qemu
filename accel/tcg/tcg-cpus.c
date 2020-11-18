@@ -559,7 +559,7 @@ static void tcg_handle_interrupt(CPUState *cpu, int mask)
     }
 }
 
-const CpusAccel tcg_cpus = {
+const CpuAccelOps tcg_cpus = {
     .create_vcpu_thread = tcg_start_vcpu_thread,
     .kick_vcpu_thread = tcg_kick_vcpu_thread,
 

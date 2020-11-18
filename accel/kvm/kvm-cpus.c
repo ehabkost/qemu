@@ -74,7 +74,7 @@ static void kvm_start_vcpu_thread(CPUState *cpu)
                        cpu, QEMU_THREAD_JOINABLE);
 }
 
-const CpusAccel kvm_cpus = {
+const CpuAccelOps kvm_cpus = {
     .create_vcpu_thread = kvm_start_vcpu_thread,
 
     .synchronize_post_reset = kvm_cpu_synchronize_post_reset,
