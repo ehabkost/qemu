@@ -909,7 +909,6 @@ int main(int argc, char **argv)
 
     /* init tcg before creating CPUs and to get qemu_host_page_size */
     tcg_exec_init(0);
-    module_call_init(MODULE_INIT_ACCEL_CPU);
     cpu_accel_arch_init("tcg");
 
 
