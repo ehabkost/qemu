@@ -10,7 +10,7 @@
 #ifndef HOST_CPU_H
 #define HOST_CPU_H
 
-void host_cpu_class_init(X86CPUClass *xcc);
+void host_cpu_class_init(const char *accel_name, X86CPUClass *xcc);
 void host_cpu_instance_init(X86CPU *cpu);
 void host_cpu_max_instance_init(X86CPU *cpu);
 void host_cpu_realizefn(X86CPU *cpu, Error **errp);

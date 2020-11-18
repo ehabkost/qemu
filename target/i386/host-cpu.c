@@ -174,13 +174,13 @@ void host_cpu_max_instance_init(X86CPU *cpu)
                             &error_abort);
 }
 
-void host_cpu_class_init(X86CPUClass *xcc)
+void host_cpu_class_init(const char *accel_name, X86CPUClass *xcc)
 {
     xcc->host_cpuid_required = true;
     xcc->ordering = 8;
     xcc->model_description =
         g_strdup_printf("%s processor with all supported host features ",
-                        xcc->accel->name);
+                        accel_name);
 }
 
 static const TypeInfo host_cpu_type_info = {

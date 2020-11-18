@@ -17,7 +17,7 @@
 
 static void hvf_cpu_common_class_init(X86CPUClass *xcc)
 {
-    host_cpu_class_init(xcc);
+    host_cpu_class_init("hvf", xcc);
 }
 
 static void hvf_cpu_max_instance_init(X86CPU *cpu)

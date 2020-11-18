@@ -44,7 +44,7 @@ static void kvm_cpu_realizefn(X86CPU *cpu, Error **errp)
 
 static void kvm_cpu_common_class_init(X86CPUClass *xcc)
 {
-    host_cpu_class_init(xcc);
+    host_cpu_class_init("kvm", xcc);
 }
 
 /*
