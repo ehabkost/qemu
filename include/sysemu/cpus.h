@@ -25,6 +25,9 @@ typedef struct CpuAccelOps {
 /* register accel-specific cpus interface implementation */
 void cpus_register_accel(const CpuAccelOps *i);
 
+/* Call arch-specific accel initialization */
+void cpu_accel_arch_init(const char *accel_name);
+
 /* Create a dummy vcpu for CpuAccelOps->create_vcpu_thread */
 void dummy_start_vcpu_thread(CPUState *);
 

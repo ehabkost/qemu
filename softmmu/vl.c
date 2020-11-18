@@ -2744,6 +2744,7 @@ static int do_configure_accelerator(void *opaque, QemuOpts *opts, Error **errp)
         return 0;
     }
 
+    cpu_accel_arch_init(acc);
     return 1;
 }
 

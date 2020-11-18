@@ -128,18 +128,23 @@ static void kvm_cpu_instance_init(X86CPU *cpu)
     }
 }
 
-static const X86CPUAccel kvm_cpu_accel = {
-    .name = TYPE_X86_CPU "-kvm",
+static void kvm_cpu_accel_interface_init(ObjectClass *oc, void *data)
+{
+    X86CPUAccelInterface *acc = X86_CPU_ACCEL_CLASS(oc);
+    acc->realizefn = kvm_cpu_realizefn;
+    acc->common_class_init = kvm_cpu_common_class_init;
+    acc->instance_init = kvm_cpu_instance_init;
+};
 
-    .realizefn = kvm_cpu_realizefn,
-    .common_class_init = kvm_cpu_common_class_init,
-    .instance_init = kvm_cpu_instance_init,
+static const TypeInfo kvm_cpu_accel_type_info = {
+    .name = X86_CPU_ACCEL_NAME("kvm"),
+    .parent = TYPE_X86_CPU_ACCEL,
+    .class_init = kvm_cpu_accel_interface_init,
 };
 
 static void kvm_cpu_accel_init(void)
 {
-    if (kvm_enabled()) {
-        x86_cpu_accel_init(&kvm_cpu_accel);
-    }
+    type_register_static(&kvm_cpu_accel_type_info);
 }
-accel_cpu_init(kvm_cpu_accel_init);
+
+type_init(kvm_cpu_accel_init);

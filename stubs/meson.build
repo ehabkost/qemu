@@ -1,4 +1,5 @@
 stub_ss.add(files('arch_type.c'))
+stub_ss.add(files('cpu_accel_arch_init.c'))
 stub_ss.add(files('bdrv-next-monitor-owned.c'))
 stub_ss.add(files('blk-commit-all.c'))
 stub_ss.add(files('blk-exp-close-all.c'))

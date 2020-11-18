@@ -7041,6 +7041,12 @@ static const TypeInfo x86_base_cpu_type_info = {
         .class_init = x86_cpu_base_class_init,
 };
 
+static const TypeInfo x86_cpu_accel_type_info = {
+    .name = TYPE_X86_CPU_ACCEL,
+    .parent = TYPE_INTERFACE,
+    .class_size = sizeof(X86CPUAccelInterface),
+};
+
 static void x86_cpu_register_types(void)
 {
     int i;
@@ -7051,6 +7057,7 @@ static void x86_cpu_register_types(void)
     }
     type_register_static(&max_x86_cpu_type_info);
     type_register_static(&x86_base_cpu_type_info);
+    type_register_static(&x86_cpu_accel_type_info);
 }
 
 type_init(x86_cpu_register_types)
@@ -7058,13 +7065,22 @@ type_init(x86_cpu_register_types)
 static void x86_cpu_accel_init_aux(ObjectClass *klass, void *opaque)
 {
     X86CPUClass *xcc = X86_CPU_CLASS(klass);
-    const X86CPUAccel **accel = opaque;
+    const X86CPUAccelInterface **accel = opaque;
 
     xcc->accel = *accel;
     xcc->accel->common_class_init(xcc);
 }
 
-void x86_cpu_accel_init(const X86CPUAccel *accel)
+static void x86_cpu_accel_init(const X86CPUAccelInterface *accel)
 {
     object_class_foreach(x86_cpu_accel_init_aux, TYPE_X86_CPU, false, &accel);
+}
+
+void cpu_accel_arch_init(const char *accel_name)
+{
+    g_autofree char *cpu_accel_name =
+        g_strdup_printf(X86_CPU_ACCEL_NAME("%s"), accel_name);
+    X86CPUAccelInterface *acc = X86_CPU_ACCEL_CLASS(object_class_by_name(cpu_accel_name));
+    assert(acc);
+    x86_cpu_accel_init(acc);
 }

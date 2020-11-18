@@ -34,7 +34,7 @@ OBJECT_DECLARE_TYPE(X86CPU, X86CPUClass,
                     X86_CPU)
 
 typedef struct X86CPUModel X86CPUModel;
-typedef struct X86CPUAccel X86CPUAccel;
+typedef struct X86CPUAccelInterface X86CPUAccelInterface;
 
 /**
  * X86CPUClass:
@@ -71,13 +71,11 @@ struct X86CPUClass {
     DeviceUnrealize parent_unrealize;
     DeviceReset parent_reset;
 
-    const X86CPUAccel *accel;
+    const X86CPUAccelInterface *accel;
 };
 
 /**
- * X86CPUAccel:
- * @name: string name of the X86 CPU Accelerator
- *
+ * X86CPUAccelInterface:
  * @common_class_init: initializer for the common cpu
  * @instance_init: cpu instance initialization
  * @realizefn: realize function, called first in x86 cpu realize
@@ -85,14 +83,16 @@ struct X86CPUClass {
  * X86 CPU accelerator-specific CPU initializations
  */
 
-struct X86CPUAccel {
-    const char *name;
-
+struct X86CPUAccelInterface {
+    ObjectClass parent_class;
     void (*common_class_init)(X86CPUClass *xcc);
     void (*instance_init)(X86CPU *cpu);
     void (*realizefn)(X86CPU *cpu, Error **errp);
 };
 
-void x86_cpu_accel_init(const X86CPUAccel *accel);
+#define TYPE_X86_CPU_ACCEL "x86-cpu-accel"
+OBJECT_DECLARE_INTERFACE(X86CPUAccel, X86CPUAccelInterface, X86_CPU_ACCEL);
+
+#define X86_CPU_ACCEL_NAME(acc) (acc "-x86-cpu-accel")
 
 #endif

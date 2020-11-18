@@ -46,19 +46,23 @@ static void hvf_cpu_instance_init(X86CPU *cpu)
     }
 }
 
-static const X86CPUAccel hvf_cpu_accel = {
-    .name = TYPE_X86_CPU "-hvf",
+static void hvf_cpu_accel_interface_init(ObjectClass *oc, void *data)
+{
+    X86CPUAccelInterface *acc = X86_CPU_ACCEL_CLASS(oc);
+    acc->realizefn = host_cpu_realizefn;
+    acc->common_class_init = hvf_cpu_common_class_init;
+    acc->instance_init = hvf_cpu_instance_init;
+};
 
-    .realizefn = host_cpu_realizefn,
-    .common_class_init = hvf_cpu_common_class_init,
-    .instance_init = hvf_cpu_instance_init,
+static const TypeInfo hvf_cpu_accel_type_info = {
+    .name = X86_CPU_ACCEL_NAME("hvf"),
+    .parent = TYPE_X86_CPU_ACCEL,
+    .class_init = hvf_cpu_accel_interface_init,
 };
 
 static void hvf_cpu_accel_init(void)
 {
-    if (hvf_enabled()) {
-        x86_cpu_accel_init(&hvf_cpu_accel);
-    }
+    type_register_static(&hvf_cpu_accel_type_info);
 }
 
-accel_cpu_init(hvf_cpu_accel_init);
+type_init(hvf_cpu_accel_init);

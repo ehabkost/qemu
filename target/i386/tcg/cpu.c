@@ -150,19 +150,23 @@ static void tcg_cpu_instance_init(X86CPU *cpu)
     x86_cpu_apply_props(cpu, tcg_default_props);
 }
 
-static const X86CPUAccel tcg_cpu_accel = {
-    .name = TYPE_X86_CPU "-tcg",
+static void tcg_cpu_accel_interface_init(ObjectClass *oc, void *data)
+{
+    X86CPUAccelInterface *acc = X86_CPU_ACCEL_CLASS(oc);
+    acc->realizefn = tcg_cpu_realizefn;
+    acc->common_class_init = tcg_cpu_common_class_init;
+    acc->instance_init = tcg_cpu_instance_init;
+};
 
-    .realizefn = tcg_cpu_realizefn,
-    .common_class_init = tcg_cpu_common_class_init,
-    .instance_init = tcg_cpu_instance_init,
+static const TypeInfo tcg_cpu_accel_type_info = {
+    .name = X86_CPU_ACCEL_NAME("tcg"),
+    .parent = TYPE_X86_CPU_ACCEL,
+    .class_init = tcg_cpu_accel_interface_init,
 };
 
 static void tcg_cpu_accel_init(void)
 {
-    if (tcg_enabled()) {
-        x86_cpu_accel_init(&tcg_cpu_accel);
-    }
+    type_register_static(&tcg_cpu_accel_type_info);
 }
 
-accel_cpu_init(tcg_cpu_accel_init);
+type_init(tcg_cpu_accel_init);
