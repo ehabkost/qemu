@@ -29,11 +29,6 @@ static QLitObject qlit = QLIT_QDICT(((QLitDictEntry[]) {
     { },
 }));
 
-static QLitObject qlit_foo = QLIT_QDICT(((QLitDictEntry[]) {
-    { "foo", QLIT_QNUM_INT(42) },
-    { },
-}));
-
 static QObject *make_qobject(void)
 {
     QDict *qdict = qdict_new();
@@ -53,16 +48,33 @@ static QObject *make_qobject(void)
 
 static void qlit_equal_qobject_test(void)
 {
+    /* Each entry in the values[] array should be different from the others */
+    QLitObject values[] = {
+        qlit,
+        QLIT_QDICT(((QLitDictEntry[]) {
+            { "foo", QLIT_QNUM_INT(42) },
+            { },
+        })),
+    };
+    int i;
     QObject *qobj = make_qobject();
 
     g_assert(qlit_equal_qobject(&qlit, qobj));
-
-    g_assert(!qlit_equal_qobject(&qlit_foo, qobj));
 
     qdict_put(qobject_to(QDict, qobj), "bee", qlist_new());
     g_assert(!qlit_equal_qobject(&qlit, qobj));
 
     qobject_unref(qobj);
+
+    for (i = 0; i < ARRAY_SIZE(values); i++) {
+        int j;
+        QObject *o = qobject_from_qlit(&values[i]);
+        for (j = 0; j < ARRAY_SIZE(values); j++) {
+            g_assert(qlit_equal_qobject(&values[j], o) == (i == j));
+        }
+        qobject_unref(o);
+    }
+
 }
 
 static void qlit_equal_large_qnum_test(void)
