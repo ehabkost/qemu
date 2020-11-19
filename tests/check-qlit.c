@@ -65,6 +65,24 @@ static void qlit_equal_qobject_test(void)
     qobject_unref(qobj);
 }
 
+static void qlit_equal_large_qnum_test(void)
+{
+    /* 2^32-1 */
+    QNum *large = qnum_from_uint(9223372036854775807LL);
+    /* 2^32 */
+    QNum *too_large = qnum_from_uint(9223372036854775808ULL);
+    QNum *dbl = qnum_from_double(9223372036854775808.0);
+    QLitObject qlit_large = QLIT_QNUM(9223372036854775807LL);
+
+    g_assert(qlit_equal_qobject(&qlit_large, QOBJECT(large)));
+    g_assert(!qlit_equal_qobject(&qlit_large, QOBJECT(too_large)));
+    g_assert(!qlit_equal_qobject(&qlit_large, QOBJECT(dbl)));
+
+    qobject_unref(dbl);
+    qobject_unref(large);
+    qobject_unref(too_large);
+}
+
 static void qobject_from_qlit_test(void)
 {
     QObject *obj, *qobj = qobject_from_qlit(&qlit);
@@ -95,6 +113,7 @@ int main(int argc, char **argv)
     g_test_init(&argc, &argv, NULL);
 
     g_test_add_func("/qlit/equal_qobject", qlit_equal_qobject_test);
+    g_test_add_func("/qlit/equal_large_qnum", qlit_equal_large_qnum_test);
     g_test_add_func("/qlit/qobject_from_qlit", qobject_from_qlit_test);
 
     return g_test_run();
