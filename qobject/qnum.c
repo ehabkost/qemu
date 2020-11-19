@@ -209,8 +209,8 @@ char *qnum_to_string(QNum *qn)
  */
 bool qnum_is_equal(const QObject *x, const QObject *y)
 {
-    QNum *num_x = qobject_to(QNum, x);
-    QNum *num_y = qobject_to(QNum, y);
+    const QNum *num_x = qobject_to(QNum, x);
+    const QNum *num_y = qobject_to(QNum, y);
 
     switch (num_x->kind) {
     case QNUM_I64:
