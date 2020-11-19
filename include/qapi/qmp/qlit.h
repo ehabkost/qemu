@@ -15,6 +15,7 @@
 #define QLIT_H
 
 #include "qobject.h"
+#include "qnum.h"
 
 typedef struct QLitDictEntry QLitDictEntry;
 typedef struct QLitObject QLitObject;
@@ -23,7 +24,7 @@ struct QLitObject {
     QType type;
     union {
         bool qbool;
-        int64_t qnum;
+        QNumValue qnum;
         const char *qstr;
         QLitDictEntry *qdict;
         QLitObject *qlist;
@@ -40,7 +41,7 @@ struct QLitDictEntry {
 #define QLIT_QBOOL(val) \
     { .type = QTYPE_QBOOL, .value.qbool = (val) }
 #define QLIT_QNUM_INT(val) \
-    { .type = QTYPE_QNUM, .value.qnum = (val) }
+    { .type = QTYPE_QNUM, .value.qnum = QNUM_VAL_INT(val) }
 #define QLIT_QSTR(val) \
     { .type = QTYPE_QSTRING, .value.qstr = (val) }
 #define QLIT_QDICT(val) \
