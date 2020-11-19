@@ -1062,7 +1062,7 @@ static void simple_dict(void)
         {
             .encoded = "{\"foo\": 42, \"bar\": \"hello world\"}",
             .decoded = QLIT_QDICT(((QLitDictEntry[]){
-                        { "foo", QLIT_QNUM(42) },
+                        { "foo", QLIT_QNUM_INT(42) },
                         { "bar", QLIT_QSTR("hello world") },
                         { }
                     })),
@@ -1074,7 +1074,7 @@ static void simple_dict(void)
         }, {
             .encoded = "{\"foo\": 43}",
             .decoded = QLIT_QDICT(((QLitDictEntry[]){
-                        { "foo", QLIT_QNUM(43) },
+                        { "foo", QLIT_QNUM_INT(43) },
                         { }
                     })),
         },
@@ -1160,15 +1160,15 @@ static void simple_list(void)
         {
             .encoded = "[43,42]",
             .decoded = QLIT_QLIST(((QLitObject[]){
-                        QLIT_QNUM(43),
-                        QLIT_QNUM(42),
+                        QLIT_QNUM_INT(43),
+                        QLIT_QNUM_INT(42),
                         { }
                     })),
         },
         {
             .encoded = "[43]",
             .decoded = QLIT_QLIST(((QLitObject[]){
-                        QLIT_QNUM(43),
+                        QLIT_QNUM_INT(43),
                         { }
                     })),
         },
@@ -1217,35 +1217,35 @@ static void simple_whitespace(void)
         {
             .encoded = " [ 43 , 42 ]",
             .decoded = QLIT_QLIST(((QLitObject[]){
-                        QLIT_QNUM(43),
-                        QLIT_QNUM(42),
+                        QLIT_QNUM_INT(43),
+                        QLIT_QNUM_INT(42),
                         { }
                     })),
         },
         {
             .encoded = "\t[ 43 , { 'h' : 'b' },\r\n\t[ ], 42 ]\n",
             .decoded = QLIT_QLIST(((QLitObject[]){
-                        QLIT_QNUM(43),
+                        QLIT_QNUM_INT(43),
                         QLIT_QDICT(((QLitDictEntry[]){
                                     { "h", QLIT_QSTR("b") },
                                     { }})),
                         QLIT_QLIST(((QLitObject[]){
                                     { }})),
-                        QLIT_QNUM(42),
+                        QLIT_QNUM_INT(42),
                         { }
                     })),
         },
         {
             .encoded = " [ 43 , { 'h' : 'b' , 'a' : 32 }, [ ], 42 ]",
             .decoded = QLIT_QLIST(((QLitObject[]){
-                        QLIT_QNUM(43),
+                        QLIT_QNUM_INT(43),
                         QLIT_QDICT(((QLitDictEntry[]){
                                     { "h", QLIT_QSTR("b") },
-                                    { "a", QLIT_QNUM(32) },
+                                    { "a", QLIT_QNUM_INT(32) },
                                     { }})),
                         QLIT_QLIST(((QLitObject[]){
                                     { }})),
-                        QLIT_QNUM(42),
+                        QLIT_QNUM_INT(42),
                         { }
                     })),
         },
@@ -1275,11 +1275,11 @@ static void simple_interpolation(void)
     QObject *embedded_obj;
     QObject *obj;
     QLitObject decoded = QLIT_QLIST(((QLitObject[]){
-            QLIT_QNUM(1),
+            QLIT_QNUM_INT(1),
             QLIT_QSTR("100%"),
             QLIT_QLIST(((QLitObject[]){
-                        QLIT_QNUM(32),
-                        QLIT_QNUM(42),
+                        QLIT_QNUM_INT(32),
+                        QLIT_QNUM_INT(42),
                         {}})),
             {}}));
 
