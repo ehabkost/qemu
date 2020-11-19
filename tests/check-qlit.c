@@ -50,9 +50,25 @@ static void qlit_equal_qobject_test(void)
 {
     /* Each entry in the values[] array should be different from the others */
     QLitObject values[] = {
+        QLIT_QNULL,
+        QLIT_QBOOL(false),
+        QLIT_QBOOL(true),
+        QLIT_QNUM_INT(-1),
+        QLIT_QNUM_INT(0),
+        QLIT_QNUM_INT(1),
+        QLIT_QNUM_INT(INT64_MIN),
+        QLIT_QNUM_INT(INT64_MAX),
+        QLIT_QSTR(""),
+        QLIT_QSTR("foo"),
         qlit,
         QLIT_QDICT(((QLitDictEntry[]) {
             { "foo", QLIT_QNUM_INT(42) },
+            { },
+        })),
+        QLIT_QLIST(((QLitObject[]){
+            QLIT_QNUM_INT(-1),
+            QLIT_QNUM_INT(0),
+            QLIT_QNUM_INT(1),
             { },
         })),
     };
