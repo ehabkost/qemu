@@ -17,12 +17,12 @@
 #include "qapi/qmp/qstring.h"
 
 static QLitObject qlit = QLIT_QDICT(((QLitDictEntry[]) {
-    { "foo", QLIT_QNUM(42) },
+    { "foo", QLIT_QNUM_INT(42) },
     { "bar", QLIT_QSTR("hello world") },
     { "baz", QLIT_QNULL },
     { "bee", QLIT_QLIST(((QLitObject[]) {
-        QLIT_QNUM(43),
-        QLIT_QNUM(44),
+        QLIT_QNUM_INT(43),
+        QLIT_QNUM_INT(44),
         QLIT_QBOOL(true),
         { },
     }))},
@@ -30,7 +30,7 @@ static QLitObject qlit = QLIT_QDICT(((QLitDictEntry[]) {
 }));
 
 static QLitObject qlit_foo = QLIT_QDICT(((QLitDictEntry[]) {
-    { "foo", QLIT_QNUM(42) },
+    { "foo", QLIT_QNUM_INT(42) },
     { },
 }));
 
@@ -72,7 +72,7 @@ static void qlit_equal_large_qnum_test(void)
     /* 2^32 */
     QNum *too_large = qnum_from_uint(9223372036854775808ULL);
     QNum *dbl = qnum_from_double(9223372036854775808.0);
-    QLitObject qlit_large = QLIT_QNUM(9223372036854775807LL);
+    QLitObject qlit_large = QLIT_QNUM_INT(9223372036854775807LL);
 
     g_assert(qlit_equal_qobject(&qlit_large, QOBJECT(large)));
     g_assert(!qlit_equal_qobject(&qlit_large, QOBJECT(too_large)));
