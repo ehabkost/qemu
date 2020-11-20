@@ -84,19 +84,11 @@ static void prop_set_bit(Object *obj, Visitor *v, const char *name,
     bit_prop_set(obj, prop, value);
 }
 
-static void set_default_value_bool(ObjectProperty *op, const Property *prop,
-                                   const QObject *defval)
-{
-    QBool *qb = qobject_to(QBool, defval);
-    object_property_set_default_bool(op, qbool_get_bool(qb));
-}
-
 const PropertyInfo prop_info_bit = {
     .name  = "bool",
     .description = "on/off",
     .get   = prop_get_bit,
     .set   = prop_set_bit,
-    .set_default_value = set_default_value_bool,
 };
 
 /* Bit64 */
@@ -145,7 +137,6 @@ const PropertyInfo prop_info_bit64 = {
     .description = "on/off",
     .get   = prop_get_bit64,
     .set   = prop_set_bit64,
-    .set_default_value = set_default_value_bool,
 };
 
 /* --- bool --- */
@@ -172,7 +163,6 @@ const PropertyInfo prop_info_bool = {
     .name  = "bool",
     .get   = get_bool,
     .set   = set_bool,
-    .set_default_value = set_default_value_bool,
 };
 
 /* --- 8bit integer --- */
