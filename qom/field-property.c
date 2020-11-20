@@ -62,6 +62,17 @@ static void static_prop_release_dynamic_prop(Object *obj, const char *name,
     g_free(prop);
 }
 
+static void field_prop_set_default_value(ObjectProperty *op,
+                                         Property *prop)
+{
+    if (!prop->set_default) {
+        return;
+    }
+
+    assert(prop->info->set_default_value);
+    prop->info->set_default_value(op, prop);
+}
+
 ObjectProperty *
 object_property_add_field(Object *obj, const char *name,
                           Property *prop,
@@ -83,11 +94,9 @@ object_property_add_field(Object *obj, const char *name,
     object_property_set_description(obj, name,
                                     newprop->info->description);
 
-    if (newprop->set_default) {
-        newprop->info->set_default_value(op, newprop);
-        if (op->init) {
-            op->init(obj, op);
-        }
+    field_prop_set_default_value(op, newprop);
+    if (op->init) {
+        op->init(obj, op);
     }
 
     op->allow_set = allow_set;
@@ -113,9 +122,8 @@ object_class_property_add_field_static(ObjectClass *oc, const char *name,
                                        prop->info->release,
                                        prop);
     }
-    if (prop->set_default) {
-        prop->info->set_default_value(op, prop);
-    }
+
+    field_prop_set_default_value(op, prop);
     if (prop->info->description) {
         object_class_property_set_description(oc, name,
                                               prop->info->description);
