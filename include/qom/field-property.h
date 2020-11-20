@@ -53,6 +53,9 @@ struct PropertyInfo {
      * @set_default_value: Callback for initializing the default value
      *
      * @defval is a weak reference.
+     *
+     * Optional.  If not set and Property.defval is not QTYPE_NONE,
+     * object_property_set_default() will be called.
      */
     void (*set_default_value)(ObjectProperty *op, const Property *prop,
                               const QObject *defval);

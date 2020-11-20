@@ -72,8 +72,16 @@ static void field_prop_set_default_value(ObjectProperty *op,
     }
 
     defval = qobject_from_qlit(&prop->defval);
-    assert(prop->info->set_default_value);
-    prop->info->set_default_value(op, prop, defval);
+    if (prop->info->set_default_value) {
+        /* .set_default_value() gets a weak reference */
+        prop->info->set_default_value(op, prop, defval);
+    } else {
+        /*
+         * object_property_set_default() takes ownership,
+         * so qobject_ref() is needed.
+         */
+        object_property_set_default(op, qobject_ref(defval));
+    }
     qobject_unref(defval);
 }
 
