@@ -1078,18 +1078,10 @@ static void set_uuid(Object *obj, Visitor *v, const char *name, void *opaque,
     g_free(str);
 }
 
-static void set_default_uuid(ObjectProperty *op, const Property *prop,
-                                  const QObject *defval)
-{
-    QString *qs = qobject_to(QString, defval);
-    object_property_set_default_str(op, qstring_get_str(qs));
-}
-
 const PropertyInfo qdev_prop_uuid = {
     .name  = "str",
     .description = "UUID (aka GUID) or \"" UUID_VALUE_AUTO
         "\" for random value",
     .get   = get_uuid,
     .set   = set_uuid,
-    .set_default_value = set_default_uuid,
 };
