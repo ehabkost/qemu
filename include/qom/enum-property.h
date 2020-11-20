@@ -27,4 +27,19 @@ void field_prop_set_default_value_enum(ObjectProperty *op,
 #define DEFINE_PROP_ENUM(_n, ...) \
     PROP_ENUM(__VA_ARGS__, .name_template = (_n))
 
+/**
+ * DEFINE_ENUM_PROP_INFO: Initializer for PropertyInfo variable for enum type
+ *
+ * Enum types have specific requirements for the PropertyInfo variable,
+ * so they need to be initialized using this macro.
+ */
+#define DEFINE_ENUM_PROP_INFO(_type, ...) { \
+        .name  = stringify(_type),                              \
+        .enum_table  = &(_type ## _lookup),                     \
+        .get   = field_prop_get_enum,                           \
+        .set   = field_prop_set_enum,                           \
+        .set_default_value = field_prop_set_default_value_enum, \
+        ## __VA_ARGS__                                           \
+    }
+
 #endif

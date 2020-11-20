@@ -536,13 +536,8 @@ void qdev_set_nic_properties(DeviceState *dev, NICInfo *nd)
 
 QEMU_BUILD_BUG_ON(sizeof(LostTickPolicy) != sizeof(int));
 
-const PropertyInfo qdev_prop_losttickpolicy = {
-    .name  = "LostTickPolicy",
-    .enum_table  = &LostTickPolicy_lookup,
-    .get   = field_prop_get_enum,
-    .set   = field_prop_set_enum,
-    .set_default_value = field_prop_set_default_value_enum,
-};
+const PropertyInfo qdev_prop_losttickpolicy =
+    DEFINE_ENUM_PROP_INFO(LostTickPolicy);
 
 /* --- blocksize --- */
 
@@ -578,53 +573,33 @@ const PropertyInfo qdev_prop_blocksize = {
 
 QEMU_BUILD_BUG_ON(sizeof(BlockdevOnError) != sizeof(int));
 
-const PropertyInfo qdev_prop_blockdev_on_error = {
-    .name = "BlockdevOnError",
-    .description = "Error handling policy, "
-                   "report/ignore/enospc/stop/auto",
-    .enum_table = &BlockdevOnError_lookup,
-    .get = field_prop_get_enum,
-    .set = field_prop_set_enum,
-    .set_default_value = field_prop_set_default_value_enum,
-};
+const PropertyInfo qdev_prop_blockdev_on_error =
+    DEFINE_ENUM_PROP_INFO(BlockdevOnError,
+                          .description = "Error handling policy, "
+                                         "report/ignore/enospc/stop/auto");
 
 /* --- BIOS CHS translation */
 
 QEMU_BUILD_BUG_ON(sizeof(BiosAtaTranslation) != sizeof(int));
 
-const PropertyInfo qdev_prop_bios_chs_trans = {
-    .name = "BiosAtaTranslation",
-    .description = "Logical CHS translation algorithm, "
-                   "auto/none/lba/large/rechs",
-    .enum_table = &BiosAtaTranslation_lookup,
-    .get = field_prop_get_enum,
-    .set = field_prop_set_enum,
-    .set_default_value = field_prop_set_default_value_enum,
-};
+const PropertyInfo qdev_prop_bios_chs_trans =
+    DEFINE_ENUM_PROP_INFO(BiosAtaTranslation,
+        .description = "Logical CHS translation algorithm, "
+                       "auto/none/lba/large/rechs");
 
 /* --- FDC default drive types */
 
-const PropertyInfo qdev_prop_fdc_drive_type = {
-    .name = "FdcDriveType",
-    .description = "FDC drive type, "
-                   "144/288/120/none/auto",
-    .enum_table = &FloppyDriveType_lookup,
-    .get = field_prop_get_enum,
-    .set = field_prop_set_enum,
-    .set_default_value = field_prop_set_default_value_enum,
-};
+const PropertyInfo qdev_prop_fdc_drive_type =
+    DEFINE_ENUM_PROP_INFO(FloppyDriveType,
+        .description = "FDC drive type, "
+                       "144/288/120/none/auto");
 
 /* --- MultiFDCompression --- */
 
-const PropertyInfo qdev_prop_multifd_compression = {
-    .name = "MultiFDCompression",
-    .description = "multifd_compression values, "
-                   "none/zlib/zstd",
-    .enum_table = &MultiFDCompression_lookup,
-    .get = field_prop_get_enum,
-    .set = field_prop_set_enum,
-    .set_default_value = field_prop_set_default_value_enum,
-};
+const PropertyInfo qdev_prop_multifd_compression =
+    DEFINE_ENUM_PROP_INFO(MultiFDCompression,
+        .description = "multifd_compression values, "
+                       "none/zlib/zstd");
 
 /* --- Reserved Region --- */
 
