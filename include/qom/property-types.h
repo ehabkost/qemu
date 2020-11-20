@@ -25,34 +25,29 @@ extern const PropertyInfo prop_info_link;
 
 #define PROP_SIGNED(_state, _field, _defval, _prop, _type, ...) \
     FIELD_PROP(_state, _field, _prop, _type,                    \
-               .set_default = true,                             \
-               .defval.i    = (_type)_defval,                   \
+               .defval = QLIT_QNUM_INT((_type)_defval),                \
                __VA_ARGS__)
 
 #define PROP_UNSIGNED(_state, _field, _defval, _prop, _type, ...) \
     FIELD_PROP(_state, _field, _prop, _type,                    \
-               .set_default = true,                             \
-               .defval.u  = (_type)_defval,                     \
+               .defval = QLIT_QNUM_UINT((_type)_defval),               \
                __VA_ARGS__)
 
 #define PROP_BIT(_state, _field, _bit, _defval, ...) \
     FIELD_PROP(_state, _field, prop_info_bit, uint32_t,         \
                .bitnr       = (_bit),                           \
-               .set_default = true,                             \
-               .defval.u    = (bool)_defval,                    \
+               .defval = QLIT_QBOOL(_defval),                   \
                __VA_ARGS__)
 
 #define PROP_BIT64(_state, _field, _bit, _defval, ...) \
     FIELD_PROP(_state, _field, prop_info_bit64, uint64_t,       \
                .bitnr    = (_bit),                              \
-               .set_default = true,                             \
-               .defval.u  = (bool)_defval,                      \
+               .defval = QLIT_QBOOL(_defval),                   \
                __VA_ARGS__)
 
 #define PROP_BOOL(_state, _field, _defval, ...) \
     FIELD_PROP(_state, _field, prop_info_bool, bool,            \
-               .set_default = true,                             \
-               .defval.u    = (bool)_defval,                    \
+               .defval = QLIT_QBOOL(_defval),                   \
                __VA_ARGS__)
 
 #define PROP_LINK(_state, _field, _type, _ptr_type, ...) \
@@ -131,8 +126,7 @@ extern const PropertyInfo prop_info_link;
                           _arrayfield, _arrayprop, _arraytype) \
     DEFINE_PROP((PROP_ARRAY_LEN_PREFIX _name),                 \
                 _state, _field, prop_info_arraylen, uint32_t,  \
-                .set_default = true,                           \
-                .defval.u = 0,                                 \
+                .defval = QLIT_QNUM_UINT(0),                   \
                 .arrayinfo = &(_arrayprop),                    \
                 .arrayfieldsize = sizeof(_arraytype),          \
                 .arrayoffset = offsetof(_state, _arrayfield))

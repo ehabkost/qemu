@@ -1080,7 +1080,8 @@ static void set_uuid(Object *obj, Visitor *v, const char *name, void *opaque,
     g_free(str);
 }
 
-static void set_default_uuid_auto(ObjectProperty *op, const Property *prop)
+static void set_default_uuid_auto(ObjectProperty *op, const Property *prop,
+                                  const QObject *defval)
 {
     object_property_set_default_str(op, UUID_VALUE_AUTO);
 }

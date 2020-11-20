@@ -65,7 +65,12 @@ extern const PropertyInfo qdev_prop_pcie_link_width;
 
 #define DEFINE_PROP_UUID(_name, _state, _field) \
     DEFINE_PROP(_name, _state, _field, qdev_prop_uuid, QemuUUID, \
-                .set_default = true)
+                /*                                               \
+                 * Note that set_default_uuid_auto() currently   \
+                 * ignores the actual value value of .defval,    \
+                 * we just need it to not be not QTYPE_NONE      \
+                 */                                              \
+                .defval = QLIT_QNULL)
 
 #define DEFINE_PROP_AUDIODEV(_n, _s, _f) \
     DEFINE_PROP(_n, _s, _f, qdev_prop_audiodev, QEMUSoundCard)
