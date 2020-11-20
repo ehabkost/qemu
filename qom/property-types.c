@@ -195,27 +195,10 @@ static void set_uint8(Object *obj, Visitor *v, const char *name, void *opaque,
     visit_type_uint8(v, name, ptr, errp);
 }
 
-void field_prop_set_default_value_int(ObjectProperty *op,
-                                      const Property *prop,
-                                      const QObject *defval)
-{
-    QNum *qn = qobject_to(QNum, defval);
-    object_property_set_default_int(op, qnum_get_int(qn));
-}
-
-void field_prop_set_default_value_uint(ObjectProperty *op,
-                                       const Property *prop,
-                                       const QObject *defval)
-{
-    QNum *qn = qobject_to(QNum, defval);
-    object_property_set_default_uint(op, qnum_get_uint(qn));
-}
-
 const PropertyInfo prop_info_uint8 = {
     .name  = "uint8",
     .get   = get_uint8,
     .set   = set_uint8,
-    .set_default_value = field_prop_set_default_value_uint,
 };
 
 /* --- 16bit integer --- */
@@ -242,7 +225,6 @@ const PropertyInfo prop_info_uint16 = {
     .name  = "uint16",
     .get   = get_uint16,
     .set   = set_uint16,
-    .set_default_value = field_prop_set_default_value_uint,
 };
 
 /* --- 32bit integer --- */
@@ -287,14 +269,12 @@ const PropertyInfo prop_info_uint32 = {
     .name  = "uint32",
     .get   = get_uint32,
     .set   = set_uint32,
-    .set_default_value = field_prop_set_default_value_uint,
 };
 
 const PropertyInfo prop_info_int32 = {
     .name  = "int32",
     .get   = field_prop_get_int32,
     .set   = set_int32,
-    .set_default_value = field_prop_set_default_value_int,
 };
 
 /* --- 64bit integer --- */
@@ -339,14 +319,12 @@ const PropertyInfo prop_info_uint64 = {
     .name  = "uint64",
     .get   = get_uint64,
     .set   = set_uint64,
-    .set_default_value = field_prop_set_default_value_uint,
 };
 
 const PropertyInfo prop_info_int64 = {
     .name  = "int64",
     .get   = get_int64,
     .set   = set_int64,
-    .set_default_value = field_prop_set_default_value_int,
 };
 
 /* --- string --- */
@@ -441,7 +419,6 @@ const PropertyInfo prop_info_size32 = {
     .name  = "size",
     .get = field_prop_get_size32,
     .set = set_size32,
-    .set_default_value = field_prop_set_default_value_uint,
 };
 
 /* --- support for array properties --- */
@@ -505,7 +482,6 @@ const PropertyInfo prop_info_arraylen = {
     .name = "uint32",
     .get = get_uint32,
     .set = set_prop_arraylen,
-    .set_default_value = field_prop_set_default_value_uint,
 };
 
 /* --- 64bit unsigned int 'size' type --- */
@@ -532,7 +508,6 @@ const PropertyInfo prop_info_size = {
     .name  = "size",
     .get = get_size,
     .set = set_size,
-    .set_default_value = field_prop_set_default_value_uint,
 };
 
 /* --- object link property --- */

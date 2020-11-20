@@ -16,12 +16,6 @@ void field_prop_set_enum(Object *obj, Visitor *v, const char *name,
 void field_prop_set_default_value_enum(ObjectProperty *op,
                                        const Property *prop,
                                        const QObject *defval);
-void field_prop_set_default_value_int(ObjectProperty *op,
-                                      const Property *prop,
-                                       const QObject *defval);
-void field_prop_set_default_value_uint(ObjectProperty *op,
-                                       const Property *prop,
-                                       const QObject *defval);
 
 void field_prop_get_int32(Object *obj, Visitor *v, const char *name,
                           void *opaque, Error **errp);
