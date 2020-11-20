@@ -1089,7 +1089,7 @@ static void set_default_uuid_auto(ObjectProperty *op, const Property *prop,
 const PropertyInfo qdev_prop_uuid = {
     .name  = "str",
     .description = "UUID (aka GUID) or \"" UUID_VALUE_AUTO
-        "\" for random value (default)",
+        "\" for random value",
     .get   = get_uuid,
     .set   = set_uuid,
     .set_default_value = set_default_uuid_auto,
