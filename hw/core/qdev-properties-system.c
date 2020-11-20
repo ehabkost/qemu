@@ -25,6 +25,7 @@
 #include "qemu/units.h"
 #include "qemu/uuid.h"
 #include "qemu/error-report.h"
+#include "qom/enum-property.h"
 #include "qom/field-property-internal.h"
 
 #include "audio/audio.h"

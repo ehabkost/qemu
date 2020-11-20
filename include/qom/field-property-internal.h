@@ -8,15 +8,6 @@
 #ifndef QOM_STATIC_PROPERTY_INTERNAL_H
 #define QOM_STATIC_PROPERTY_INTERNAL_H
 
-void field_prop_get_enum(Object *obj, Visitor *v, const char *name,
-                         void *opaque, Error **errp);
-void field_prop_set_enum(Object *obj, Visitor *v, const char *name,
-                         void *opaque, Error **errp);
-
-void field_prop_set_default_value_enum(ObjectProperty *op,
-                                       const Property *prop,
-                                       const QObject *defval);
-
 void field_prop_get_int32(Object *obj, Visitor *v, const char *name,
                           void *opaque, Error **errp);
 void field_prop_get_size32(Object *obj, Visitor *v, const char *name,

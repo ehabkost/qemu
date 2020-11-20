@@ -5,6 +5,7 @@ qom_ss.add(files(
   'object_interfaces.c',
   'qom-qobject.c',
   'field-property.c',
+  'enum-property.c',
   'property-types.c',
 ))
 
