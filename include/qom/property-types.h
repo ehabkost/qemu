@@ -5,6 +5,7 @@
 #define QOM_PROPERTY_TYPES_H
 
 #include "qom/field-property.h"
+#include "qom/enum-property.h"
 
 extern const PropertyInfo prop_info_bit;
 extern const PropertyInfo prop_info_bit64;
@@ -72,7 +73,7 @@ extern const PropertyInfo prop_info_link;
 #define PROP_STRING(_s, _f, ...) \
     FIELD_PROP(_s, _f, prop_info_string, char*, __VA_ARGS__)
 #define PROP_ON_OFF_AUTO(_s, _f, _d, ...) \
-    PROP_SIGNED(_s, _f, _d, prop_info_on_off_auto, OnOffAuto, __VA_ARGS__)
+    PROP_ENUM(_s, _f, _d, prop_info_on_off_auto, OnOffAuto, __VA_ARGS__)
 #define PROP_SIZE32(_s, _f, _d, ...) \
     PROP_UNSIGNED(_s, _f, _d, prop_info_size32, uint32_t, __VA_ARGS__)
 
