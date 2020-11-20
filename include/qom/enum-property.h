@@ -20,4 +20,11 @@ void field_prop_set_default_value_enum(ObjectProperty *op,
                                        const Property *prop,
                                        const QObject *defval);
 
+#define PROP_ENUM(_state, _field, _defval, _prop, _type, ...) \
+    PROP_SIGNED(_state, _field, _defval, _prop, _type,        \
+                __VA_ARGS__)
+
+#define DEFINE_PROP_ENUM(_n, ...) \
+    PROP_ENUM(__VA_ARGS__, .name_template = (_n))
+
 #endif
