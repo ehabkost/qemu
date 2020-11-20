@@ -571,7 +571,6 @@ const PropertyInfo qdev_prop_blocksize = {
                    " and " MAX_BLOCK_SIZE_STR,
     .get   = field_prop_get_size32,
     .set   = set_blocksize,
-    .set_default_value = field_prop_set_default_value_uint,
 };
 
 /* --- Block device error handling policy --- */
@@ -769,7 +768,6 @@ const PropertyInfo qdev_prop_pci_devfn = {
     .print = print_pci_devfn,
     .get   = field_prop_get_int32,
     .set   = set_pci_devfn,
-    .set_default_value = field_prop_set_default_value_int,
 };
 
 /* --- pci host address --- */
