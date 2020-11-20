@@ -15,6 +15,7 @@
 #include "hw/qdev-properties-system.h"
 #include "qapi/error.h"
 #include "qapi/visitor.h"
+#include "qapi/qmp/qstring.h"
 #include "qapi/qapi-types-block.h"
 #include "qapi/qapi-types-machine.h"
 #include "qapi/qapi-types-migration.h"
@@ -1059,8 +1060,6 @@ static void get_uuid(Object *obj, Visitor *v, const char *name, void *opaque,
     visit_type_str(v, name, &p, errp);
 }
 
-#define UUID_VALUE_AUTO        "auto"
-
 static void set_uuid(Object *obj, Visitor *v, const char *name, void *opaque,
                     Error **errp)
 {
@@ -1080,10 +1079,11 @@ static void set_uuid(Object *obj, Visitor *v, const char *name, void *opaque,
     g_free(str);
 }
 
-static void set_default_uuid_auto(ObjectProperty *op, const Property *prop,
+static void set_default_uuid(ObjectProperty *op, const Property *prop,
                                   const QObject *defval)
 {
-    object_property_set_default_str(op, UUID_VALUE_AUTO);
+    QString *qs = qobject_to(QString, defval);
+    object_property_set_default_str(op, qstring_get_str(qs));
 }
 
 const PropertyInfo qdev_prop_uuid = {
@@ -1092,5 +1092,5 @@ const PropertyInfo qdev_prop_uuid = {
         "\" for random value",
     .get   = get_uuid,
     .set   = set_uuid,
-    .set_default_value = set_default_uuid_auto,
+    .set_default_value = set_default_uuid,
 };
