@@ -65,12 +65,16 @@ static void static_prop_release_dynamic_prop(Object *obj, const char *name,
 static void field_prop_set_default_value(ObjectProperty *op,
                                          Property *prop)
 {
-    if (!prop->set_default) {
+    QObject *defval;
+
+    if (prop->defval.type == QTYPE_NONE) {
         return;
     }
 
+    defval = qobject_from_qlit(&prop->defval);
     assert(prop->info->set_default_value);
-    prop->info->set_default_value(op, prop);
+    prop->info->set_default_value(op, prop, defval);
+    qobject_unref(defval);
 }
 
 ObjectProperty *

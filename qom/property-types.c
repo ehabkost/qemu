@@ -6,6 +6,8 @@
 #include "qapi/visitor.h"
 #include "qapi/error.h"
 #include "qemu/uuid.h"
+#include "qapi/qmp/qnum.h"
+#include "qapi/qmp/qbool.h"
 
 void field_prop_get_enum(Object *obj, Visitor *v, const char *name,
                          void *opaque, Error **errp)
@@ -26,10 +28,12 @@ void field_prop_set_enum(Object *obj, Visitor *v, const char *name,
 }
 
 void field_prop_set_default_value_enum(ObjectProperty *op,
-                                       const Property *prop)
+                                       const Property *prop,
+                                       const QObject *defval)
 {
+    QNum *qn = qobject_to(QNum, defval);
     object_property_set_default_str(op,
-        qapi_enum_lookup(prop->info->enum_table, prop->defval.i));
+        qapi_enum_lookup(prop->info->enum_table, qnum_get_int(qn)));
 }
 
 const PropertyInfo prop_info_enum = {
@@ -80,9 +84,11 @@ static void prop_set_bit(Object *obj, Visitor *v, const char *name,
     bit_prop_set(obj, prop, value);
 }
 
-static void set_default_value_bool(ObjectProperty *op, const Property *prop)
+static void set_default_value_bool(ObjectProperty *op, const Property *prop,
+                                   const QObject *defval)
 {
-    object_property_set_default_bool(op, prop->defval.u);
+    QBool *qb = qobject_to(QBool, defval);
+    object_property_set_default_bool(op, qbool_get_bool(qb));
 }
 
 const PropertyInfo prop_info_bit = {
@@ -190,15 +196,19 @@ static void set_uint8(Object *obj, Visitor *v, const char *name, void *opaque,
 }
 
 void field_prop_set_default_value_int(ObjectProperty *op,
-                                      const Property *prop)
+                                      const Property *prop,
+                                      const QObject *defval)
 {
-    object_property_set_default_int(op, prop->defval.i);
+    QNum *qn = qobject_to(QNum, defval);
+    object_property_set_default_int(op, qnum_get_int(qn));
 }
 
 void field_prop_set_default_value_uint(ObjectProperty *op,
-                                       const Property *prop)
+                                       const Property *prop,
+                                       const QObject *defval)
 {
-    object_property_set_default_uint(op, prop->defval.u);
+    QNum *qn = qobject_to(QNum, defval);
+    object_property_set_default_uint(op, qnum_get_uint(qn));
 }
 
 const PropertyInfo prop_info_uint8 = {
