@@ -7258,7 +7258,7 @@ static void x86_cpu_common_class_init(ObjectClass *oc, void *data)
 #endif
     cc->dump_state = x86_cpu_dump_state;
     cc->set_pc = x86_cpu_set_pc;
-    cc->synchronize_from_tb = x86_cpu_synchronize_from_tb;
+    cc->tcg_ops.synchronize_from_tb = x86_cpu_synchronize_from_tb;
     cc->gdb_read_register = x86_cpu_gdb_read_register;
     cc->gdb_write_register = x86_cpu_gdb_write_register;
     cc->get_arch_id = x86_cpu_get_arch_id;
