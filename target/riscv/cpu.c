@@ -563,7 +563,7 @@ static void riscv_cpu_class_init(ObjectClass *c, void *data)
 #endif
 #ifdef CONFIG_TCG
     cc->tcg_ops.initialize = riscv_translate_init;
-    cc->tlb_fill = riscv_cpu_tlb_fill;
+    cc->tcg_ops.tlb_fill = riscv_cpu_tlb_fill;
 #endif
     device_class_set_props(dc, riscv_cpu_properties);
 }

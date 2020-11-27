@@ -250,7 +250,7 @@ static void mips_cpu_class_init(ObjectClass *c, void *data)
     cc->disas_set_info = mips_cpu_disas_set_info;
 #ifdef CONFIG_TCG
     cc->tcg_ops.initialize = mips_tcg_init;
-    cc->tlb_fill = mips_cpu_tlb_fill;
+    cc->tcg_ops.tlb_fill = mips_cpu_tlb_fill;
 #endif
 
     cc->gdb_num_core_regs = 73;
