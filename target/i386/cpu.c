@@ -7254,7 +7254,7 @@ static void x86_cpu_common_class_init(ObjectClass *oc, void *data)
     cc->has_work = x86_cpu_has_work;
 #ifdef CONFIG_TCG
     cc->do_interrupt = x86_cpu_do_interrupt;
-    cc->cpu_exec_interrupt = x86_cpu_exec_interrupt;
+    cc->tcg_ops.cpu_exec_interrupt = x86_cpu_exec_interrupt;
 #endif
     cc->dump_state = x86_cpu_dump_state;
     cc->set_pc = x86_cpu_set_pc;
@@ -7285,8 +7285,8 @@ static void x86_cpu_common_class_init(ObjectClass *oc, void *data)
 #if defined(CONFIG_TCG) && !defined(CONFIG_USER_ONLY)
     cc->debug_excp_handler = breakpoint_handler;
 #endif
-    cc->cpu_exec_enter = x86_cpu_exec_enter;
-    cc->cpu_exec_exit = x86_cpu_exec_exit;
+    cc->tcg_ops.cpu_exec_enter = x86_cpu_exec_enter;
+    cc->tcg_ops.cpu_exec_exit = x86_cpu_exec_exit;
 #ifdef CONFIG_TCG
     cc->tcg_ops.initialize = tcg_x86_init;
     cc->tlb_fill = x86_cpu_tlb_fill;
