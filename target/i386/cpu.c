@@ -7283,7 +7283,7 @@ static void x86_cpu_common_class_init(ObjectClass *oc, void *data)
     cc->gdb_num_core_regs = 50;
 #endif
 #if defined(CONFIG_TCG) && !defined(CONFIG_USER_ONLY)
-    cc->debug_excp_handler = breakpoint_handler;
+    cc->tcg_ops.debug_excp_handler = breakpoint_handler;
 #endif
     cc->tcg_ops.cpu_exec_enter = x86_cpu_exec_enter;
     cc->tcg_ops.cpu_exec_exit = x86_cpu_exec_exit;
