@@ -29,6 +29,8 @@ struct smbios_phys_mem_area {
 typedef enum SmbiosEntryPointType {
     SMBIOS_ENTRY_POINT_21,
     SMBIOS_ENTRY_POINT_30,
+    /* Choose 3.0 automatically if table is too large for SMBIOS 2.1 */
+    SMBIOS_ENTRY_POINT_AUTO,
 } SmbiosEntryPointType;
 
 /* SMBIOS Entry Point

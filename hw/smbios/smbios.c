@@ -842,6 +842,11 @@ void smbios_set_defaults(const char *manufacturer, const char *product,
 
 static void smbios_entry_point_setup(void)
 {
+    if (smbios_ep_type == SMBIOS_ENTRY_POINT_AUTO) {
+        smbios_ep_type = (smbios_tables_len > UINT16_MAX) ?
+                         SMBIOS_ENTRY_POINT_30 : SMBIOS_ENTRY_POINT_21;
+    }
+
     switch (smbios_ep_type) {
     case SMBIOS_ENTRY_POINT_21:
         memcpy(ep.ep21.anchor_string, "_SM_", 4);
@@ -1044,6 +1049,7 @@ static bool save_opt_list(size_t *ndest, char ***dest, QemuOpts *opts,
 const char *smbios_entry_point_types[] = {
     [SMBIOS_ENTRY_POINT_21] = "2.1",
     [SMBIOS_ENTRY_POINT_30] = "3.0",
+    [SMBIOS_ENTRY_POINT_AUTO] = "auto",
 };
 
 QEnumLookup smbios_entry_point_lookup = {
