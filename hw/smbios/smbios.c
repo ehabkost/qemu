@@ -1041,6 +1041,28 @@ static bool save_opt_list(size_t *ndest, char ***dest, QemuOpts *opts,
     return true;
 }
 
+const char *smbios_entry_point_types[] = {
+    [SMBIOS_ENTRY_POINT_21] = "2.1",
+    [SMBIOS_ENTRY_POINT_30] = "3.0",
+};
+
+QEnumLookup smbios_entry_point_lookup = {
+    .array = smbios_entry_point_types,
+    .size = ARRAY_SIZE(smbios_entry_point_types),
+};
+
+static bool smbios_entry_point_parse(const char *str,
+                                     SmbiosEntryPointType *value,
+                                     Error **errp)
+{
+    int r = qapi_enum_parse(&smbios_entry_point_lookup, str, -1, errp);
+    if (r == -1) {
+        return false;
+    }
+    *value = r;
+    return true;
+}
+
 void smbios_entry_add(QemuOpts *opts, Error **errp)
 {
     const char *val;
@@ -1255,15 +1277,7 @@ void smbios_entry_add(QemuOpts *opts, Error **errp)
             return;
         }
 
-        if (!strcmp(val, "2.1")) {
-            smbios_ep_type = SMBIOS_ENTRY_POINT_21;
-            smbios_ep_type_set = true;
-        } else if (!strcmp(val, "3.0")) {
-            smbios_ep_type = SMBIOS_ENTRY_POINT_30;
-            smbios_ep_type_set = true;
-        } else {
-            error_setg(errp, "Invalid entry point type: %s", val);
-        }
+        smbios_ep_type_set = smbios_entry_point_parse(val, &smbios_ep_type, errp);
         return;
     }
 
