@@ -48,7 +48,7 @@ static void bcm2836_init(Object *obj)
                                 bc->cpu_type);
     }
     if (bc->core_count > 1) {
-        qdev_property_add_static(DEVICE(obj), &bcm2836_enabled_cores_property);
+        qdev_object_property_add(DEVICE(obj), &bcm2836_enabled_cores_property);
         qdev_prop_set_uint32(DEVICE(obj), "enabled-cpus", bc->core_count);
     }
 

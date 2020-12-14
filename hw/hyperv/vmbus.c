@@ -2459,7 +2459,7 @@ static void vmbus_dev_instance_init(Object *obj)
         /* Class wants to only have a single instance with a fixed UUID */
         vdev->instanceid = vdc->instanceid;
     } else {
-        qdev_property_add_static(DEVICE(vdev), &vmbus_dev_instanceid);
+        qdev_object_property_add(DEVICE(vdev), &vmbus_dev_instanceid);
     }
 }
 

@@ -211,15 +211,18 @@ void error_set_from_qdev_prop_error(Error **errp, int ret, Object *obj,
                                     const char *name, const char *value);
 
 /**
- * qdev_property_add_static:
+ * qdev_object_property_add:
  * @dev: Device to add the property to.
  * @prop: The qdev property definition.
  *
- * Add a static QOM property to @dev for qdev property @prop.
- * On error, store error in @errp.  Static properties access data in a struct.
+ * Add a instance property to @dev, based on property definition @prop.
  * The type of the QOM property is derived from prop->info.
+ * On error, store error in @errp.
+ *
+ * This function should not be used in new code.  Please add class properties
+ * instead, using device_class_set_props().
  */
-void qdev_property_add_static(DeviceState *dev, Property *prop);
+void qdev_object_property_add(DeviceState *dev, Property *prop);
 
 /**
  * qdev_alias_all_properties: Create aliases on source for all target properties
