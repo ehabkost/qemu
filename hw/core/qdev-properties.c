@@ -819,7 +819,7 @@ const PropertyInfo qdev_prop_link = {
     .create = create_link_property,
 };
 
-void qdev_property_add_static(DeviceState *dev, Property *prop)
+void qdev_object_property_add(DeviceState *dev, Property *prop)
 {
     Object *obj = OBJECT(dev);
     ObjectProperty *op;

@@ -1174,15 +1174,15 @@ void arm_cpu_post_init(Object *obj)
 
     if (arm_feature(&cpu->env, ARM_FEATURE_CBAR) ||
         arm_feature(&cpu->env, ARM_FEATURE_CBAR_RO)) {
-        qdev_property_add_static(DEVICE(obj), &arm_cpu_reset_cbar_property);
+        qdev_object_property_add(DEVICE(obj), &arm_cpu_reset_cbar_property);
     }
 
     if (!arm_feature(&cpu->env, ARM_FEATURE_M)) {
-        qdev_property_add_static(DEVICE(obj), &arm_cpu_reset_hivecs_property);
+        qdev_object_property_add(DEVICE(obj), &arm_cpu_reset_hivecs_property);
     }
 
     if (arm_feature(&cpu->env, ARM_FEATURE_AARCH64)) {
-        qdev_property_add_static(DEVICE(obj), &arm_cpu_rvbar_property);
+        qdev_object_property_add(DEVICE(obj), &arm_cpu_rvbar_property);
     }
 
 #ifndef CONFIG_USER_ONLY
@@ -1190,7 +1190,7 @@ void arm_cpu_post_init(Object *obj)
         /* Add the has_el3 state CPU property only if EL3 is allowed.  This will
          * prevent "has_el3" from existing on CPUs which cannot support EL3.
          */
-        qdev_property_add_static(DEVICE(obj), &arm_cpu_has_el3_property);
+        qdev_object_property_add(DEVICE(obj), &arm_cpu_has_el3_property);
 
         object_property_add_link(obj, "secure-memory",
                                  TYPE_MEMORY_REGION,
@@ -1200,7 +1200,7 @@ void arm_cpu_post_init(Object *obj)
     }
 
     if (arm_feature(&cpu->env, ARM_FEATURE_EL2)) {
-        qdev_property_add_static(DEVICE(obj), &arm_cpu_has_el2_property);
+        qdev_object_property_add(DEVICE(obj), &arm_cpu_has_el2_property);
     }
 #endif
 
@@ -1219,26 +1219,26 @@ void arm_cpu_post_init(Object *obj)
         : cpu_isar_feature(aa32_vfp, cpu)) {
         cpu->has_vfp = true;
         if (!kvm_enabled()) {
-            qdev_property_add_static(DEVICE(obj), &arm_cpu_has_vfp_property);
+            qdev_object_property_add(DEVICE(obj), &arm_cpu_has_vfp_property);
         }
     }
 
     if (arm_feature(&cpu->env, ARM_FEATURE_NEON)) {
         cpu->has_neon = true;
         if (!kvm_enabled()) {
-            qdev_property_add_static(DEVICE(obj), &arm_cpu_has_neon_property);
+            qdev_object_property_add(DEVICE(obj), &arm_cpu_has_neon_property);
         }
     }
 
     if (arm_feature(&cpu->env, ARM_FEATURE_M) &&
         arm_feature(&cpu->env, ARM_FEATURE_THUMB_DSP)) {
-        qdev_property_add_static(DEVICE(obj), &arm_cpu_has_dsp_property);
+        qdev_object_property_add(DEVICE(obj), &arm_cpu_has_dsp_property);
     }
 
     if (arm_feature(&cpu->env, ARM_FEATURE_PMSA)) {
-        qdev_property_add_static(DEVICE(obj), &arm_cpu_has_mpu_property);
+        qdev_object_property_add(DEVICE(obj), &arm_cpu_has_mpu_property);
         if (arm_feature(&cpu->env, ARM_FEATURE_V7)) {
-            qdev_property_add_static(DEVICE(obj),
+            qdev_object_property_add(DEVICE(obj),
                                      &arm_cpu_pmsav7_dregion_property);
         }
     }
@@ -1257,10 +1257,10 @@ void arm_cpu_post_init(Object *obj)
                                        OBJ_PROP_FLAG_READWRITE);
     }
 
-    qdev_property_add_static(DEVICE(obj), &arm_cpu_cfgend_property);
+    qdev_object_property_add(DEVICE(obj), &arm_cpu_cfgend_property);
 
     if (arm_feature(&cpu->env, ARM_FEATURE_GENERIC_TIMER)) {
-        qdev_property_add_static(DEVICE(cpu), &arm_cpu_gt_cntfrq_property);
+        qdev_object_property_add(DEVICE(cpu), &arm_cpu_gt_cntfrq_property);
     }
 
     if (kvm_enabled()) {
