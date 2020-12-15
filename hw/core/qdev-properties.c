@@ -819,11 +819,11 @@ const PropertyInfo qdev_prop_link = {
     .create = create_link_property,
 };
 
-void qdev_object_property_add(DeviceState *dev, Property *prop)
+ObjectProperty *
+object_property_add_field(Object *obj, const char *name,
+                          Property *prop)
 {
-    Object *obj = OBJECT(dev);
     ObjectProperty *op;
-    const char *name = prop->name_template;
 
     assert(!prop->info->create);
 
@@ -841,6 +841,13 @@ void qdev_object_property_add(DeviceState *dev, Property *prop)
             op->init(obj, op);
         }
     }
+
+    return op;
+}
+
+void qdev_object_property_add(DeviceState *dev, Property *prop)
+{
+    object_property_add_field(OBJECT(dev), prop->name_template, prop);
 }
 
 static void qdev_class_add_property(DeviceClass *klass, const char *name,
