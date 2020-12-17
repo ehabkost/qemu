@@ -35,6 +35,7 @@ softmmu_ss.add(files(
   'sysbus.c',
   'vm-change-state-handler.c',
   'clock-vmstate.c',
+  'cpu-softmmu.c',
 ))
 
 specific_ss.add(when: 'CONFIG_SOFTMMU', if_true: files(

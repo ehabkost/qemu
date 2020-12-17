@@ -117,26 +117,10 @@ void cpu_exit(CPUState *cpu)
     qatomic_set(&cpu->icount_decr_ptr->u16.high, -1);
 }
 
-int cpu_write_elf32_qemunote(WriteCoreDumpFunction f, CPUState *cpu,
-                             void *opaque)
-{
-    CPUClass *cc = CPU_GET_CLASS(cpu);
-
-    return (*cc->write_elf32_qemunote)(f, cpu, opaque);
-}
-
 static int cpu_common_write_elf32_qemunote(WriteCoreDumpFunction f,
                                            CPUState *cpu, void *opaque)
 {
     return 0;
-}
-
-int cpu_write_elf32_note(WriteCoreDumpFunction f, CPUState *cpu,
-                         int cpuid, void *opaque)
-{
-    CPUClass *cc = CPU_GET_CLASS(cpu);
-
-    return (*cc->write_elf32_note)(f, cpu, cpuid, opaque);
 }
 
 static int cpu_common_write_elf32_note(WriteCoreDumpFunction f,
@@ -146,26 +130,10 @@ static int cpu_common_write_elf32_note(WriteCoreDumpFunction f,
     return -1;
 }
 
-int cpu_write_elf64_qemunote(WriteCoreDumpFunction f, CPUState *cpu,
-                             void *opaque)
-{
-    CPUClass *cc = CPU_GET_CLASS(cpu);
-
-    return (*cc->write_elf64_qemunote)(f, cpu, opaque);
-}
-
 static int cpu_common_write_elf64_qemunote(WriteCoreDumpFunction f,
                                            CPUState *cpu, void *opaque)
 {
     return 0;
-}
-
-int cpu_write_elf64_note(WriteCoreDumpFunction f, CPUState *cpu,
-                         int cpuid, void *opaque)
-{
-    CPUClass *cc = CPU_GET_CLASS(cpu);
-
-    return (*cc->write_elf64_note)(f, cpu, cpuid, opaque);
 }
 
 static int cpu_common_write_elf64_note(WriteCoreDumpFunction f,
@@ -207,19 +175,6 @@ static bool cpu_common_exec_interrupt(CPUState *cpu, int int_req)
 {
     return false;
 }
-
-#if !defined(CONFIG_USER_ONLY)
-GuestPanicInformation *cpu_get_crash_info(CPUState *cpu)
-{
-    CPUClass *cc = CPU_GET_CLASS(cpu);
-    GuestPanicInformation *res = NULL;
-
-    if (cc->get_crash_info) {
-        res = cc->get_crash_info(cpu);
-    }
-    return res;
-}
-#endif
 
 void cpu_dump_state(CPUState *cpu, FILE *f, int flags)
 {
